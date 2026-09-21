@@ -7,129 +7,90 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script srcහරි! දැන් අපි මේක **ikman.lk** වගේ **Classified Ads Platform** එකක් විදිහට හදමු.
-
-මෙතන තියෙන ප්‍රධාන වෙනස්කම්:
-1.  **No Delivery:** භාණ්ඩ බාර දීමක් නෑ. Buyer සහ Seller කෙලින්ම කතා කරනවා (Phone/Chat).
-2.  **Approval System:** Ad එකක් දැම්මම එයා Public වෙන්නේ නෑ. Admin Approve කළාට පස්සේ තමයි පේන්නේ.
-3.  **Paid/Premium Ads:** මුල් පිටුවේ උඩින්ම "Featured Ads" පෙන්වනවා (Payment එක ගෙවපු අයට).
-4.  **Ad Slots:** Home Page එකේ Side වලින් සහ Middle වලින් Banner Ads පෙන්වනවා.
-5.  **Categories:** Land, House, Vehicles, Mobiles, etc.
-
-මම ඔයාට **සම්පූර්ණ Files 5** දෙන්නම්. පරණ ඒවා Delete කරලා මේවා දාන්න.
-
----
-
-### 1️⃣ `index.html` (Home Page - ikman Style)
-*මෙතන Featured Ads (Paid), Side Banners, සහ Categories තියෙනවා.*
-
-```html
-<!DOCTYPE html>
-<html lang="si">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emarket - Classifieds</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 min-h-screen">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-blue-700 flex items-center gap-2">
-                <i class="fas fa-layer-group"></i> Emarket
-            </a>
-            
-            <div class="hidden md:flex flex-1 mx-8 relative">
-                <input type="text" placeholder="Search ads..." class="w-full pl-4 pr-10 py-2 border rounded-l-lg focus:outline-none focus:border-blue-500">
-                <button class="bg-blue-600 text-white px-4 rounded-r-lg hover:bg-blue-700"><i class="fas fa-search"></i></button>
+    <!-- Header -->
+    <header class="bg-gray-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold"><i class="fas fa-shield-alt mr-2"></i> Admin Dashboard</h1>
+            <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold">Logout</button>
+        </div>
+    </header>
+
+    <div class="container mx-auto p-6 max-w-6xl">
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
+                <p class="text-gray-500 text-xs uppercase font-bold">Pending Ads</p>
+                <p class="text-2xl font-bold text-gray-800" id="countPending">0</p>
             </div>
-
-            <div class="flex items-center gap-3">
-                <a href="post-ad.html" class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 transition shadow-sm">
-                    + Post Free Ad
-                </a>
-                <div id="authSection">
-                    <!-- JS will load Login or User Menu here -->
-                </div>
+            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
+                <p class="text-gray-500 text-xs uppercase font-bold">Approved Ads</p>
+                <p class="text-2xl font-bold text-gray-800" id="countApproved">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
+                <p class="text-gray-500 text-xs uppercase font-bold">Premium Ads</p>
+                <p class="text-2xl font-bold text-gray-800" id="countPremium">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                <p class="text-gray-500 text-xs uppercase font-bold">Total Users</p>
+                <p class="text-2xl font-bold text-gray-800" id="countUsers">0</p>
             </div>
         </div>
-    </nav>
 
-    <!-- Main Layout -->
-    <div class="container mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        <!-- Left Sidebar (Categories & Filters) -->
-        <aside class="lg:col-span-1 space-y-6">
-            <div class="bg-white p-4 rounded-lg shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3 border-b pb-2">Categories</h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#" onclick="filterCat('All')" class="flex items-center gap-2 text-blue-600 font-medium"><i class="fas fa-th-large w-5"></i> All Ads</a></li>
-                    <li><a href="#" onclick="filterCat('Vehicles')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-car w-5"></i> Vehicles</a></li>
-                    <li><a href="#" onclick="filterCat('Property')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-home w-5"></i> Property</a></li>
-                    <li><a href="#" onclick="filterCat('Mobiles')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-mobile-alt w-5"></i> Mobile Phones</a></li>
-                    <li><a href="#" onclick="filterCat('Electronics')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-laptop w-5"></i> Electronics</a></li>
-                    <li><a href="#" onclick="filterCat('Jobs')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-briefcase w-5"></i> Jobs</a></li>
-                </ul>
+        <!-- Pending Approvals Section -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="p-4 bg-yellow-50 border-b border-yellow-100 flex justify-between items-center">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-clock text-yellow-600"></i> Pending Approvals</h2>
+                <span class="bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold" id="pendingBadge">0</span>
             </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                        <tr>
+                            <th class="p-4">Ad Details</th>
+                            <th class="p-4">Seller</th>
+                            <th class="p-4">Price</th>
+                            <th class="p-4">Type</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingTableBody" class="divide-y divide-gray-100 text-sm">
+                        <tr><td colspan="5" class="p-8 text-center text-gray-400">Checking for pending ads...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            <!-- Side Ad Slot 1 -->
-            <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
-                Ad Slot (300x250)
+        <!-- Recent Approved Ads -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-green-50 border-b border-green-100">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-check-circle text-green-600"></i> Recently Approved Ads</h2>
             </div>
-        </aside>
-
-        <!-- Center Content -->
-        <main class="lg:col-span-2 space-y-6">
-            
-            <!-- Featured Ads (Paid/Premium) -->
-            <div>
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Premium Ads</h2>
-                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Sponsored</span>
-                </div>
-                <div id="featuredAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Paid Ads Load Here -->
-                </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                        <tr>
+                            <th class="p-4">Title</th>
+                            <th class="p-4">Category</th>
+                            <th class="p-4">Premium</th>
+                            <th class="p-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvedTableBody" class="divide-y divide-gray-100 text-sm">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
             </div>
-
-            <!-- Middle Ad Slot -->
-            <div class="bg-gray-200 h-24 w-full rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300 my-4">
-                Horizontal Ad Slot (728x90)
-            </div>
-
-            <!-- Latest Ads -->
-            <div>
-                <h2 class="text-lg font-bold text-gray-800 mb-3">Latest Ads</h2>
-                <div id="latestAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="col-span-2 text-center py-10 text-gray-400">Loading ads...</div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Right Sidebar (Side Ad Slot 2) -->
-        <aside class="hidden lg:block lg:col-span-1">
-            <div class="sticky top-24 space-y-6">
-                <div class="bg-gray-200 h-[600px] rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
-                    Vertical Ad Slot (160x600)
-                </div>
-            </div>
-        </aside>
+        </div>
 
     </div>
 
-    <!-- Mobile FAB for Post Ad -->
-    <a href="post-ad.html" class="md:hidden fixed bottom-6 right-6 bg-orange-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg text-2xl z-50 hover:bg-orange-600">
-        <i class="fas fa-plus"></i>
-    </a>
-
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -142,83 +103,105 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Auth UI Logic
-        auth.onAuthStateChanged(user => {
-            const section = document.getElementById('authSection');
-            if (user) {
-                section.innerHTML = `
-                    <div class="relative group">
-                        <button class="flex items-center gap-2 text-gray-700 font-medium hover:text-blue-600">
-                            <img src="https://ui-avatars.com/api/?name=${user.email}&background=random" class="w-8 h-8 rounded-full">
-                            <span class="hidden md:inline">${user.email.split('@')[0]}</span>
-                        </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block border z-50">
-                            <a href="my-ads.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Ads</a>
-                            <a href="admin.html" id="adminLink" class="hidden block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Panel</a>
-                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
-                        </div>
-                    </div>
-                `;
-                // Check Admin
-                db.collection('users').doc(user.uid).get().then(doc => {
-                    if(doc.exists && doc.data().userType === 'admin') {
-                        document.getElementById('adminLink').classList.remove('hidden');
-                    }
-                });
+        // Security Check
+        auth.onAuthStateChanged(async user => {
+            if (!user) { window.location.href = "login.html"; return; }
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (!doc.exists || doc.data().userType !== 'admin') {
+                alert("Access Denied!");
+                window.location.href = "index.html";
             } else {
-                section.innerHTML = `<a href="login.html" class="text-blue-600 font-bold hover:underline">Login / Sign Up</a>`;
+                loadData();
             }
         });
 
-        function logout() { auth.signOut().then(() => window.location.reload()); }
+        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
 
-        // Load Ads
-        function loadAds(isFeatured = false, containerId, category = 'All') {
-            let query = db.collection('ads').where('status', '==', 'approved');
-            
-            if (isFeatured) query = query.where('isPremium', '==', true);
-            if (category !== 'All') query = query.where('category', '==', category);
-            
-            query = query.orderBy('createdAt', 'desc').limit(isFeatured ? 4 : 10);
-
-            query.onSnapshot(snap => {
-                const container = document.getElementById(containerId);
+        function loadData() {
+            // Pending Ads
+            db.collection('ads').where('status', '==', 'pending').orderBy('createdAt', 'desc').onSnapshot(snap => {
+                document.getElementById('countPending').innerText = snap.size;
+                document.getElementById('pendingBadge').innerText = snap.size;
+                
+                const tbody = document.getElementById('pendingTableBody');
                 if (snap.empty) {
-                    container.innerHTML = `<div class="col-span-2 text-center py-8 text-gray-500">No ads found.</div>`;
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400">No pending ads. Great job!</td></tr>';
                     return;
                 }
                 
-                container.innerHTML = snap.docs.map(doc => {
+                tbody.innerHTML = snap.docs.map(doc => {
                     const ad = doc.data();
                     return `
-                        <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden flex flex-col h-full cursor-pointer" onclick="window.location.href='ad-details.html?id=${doc.id}'">
-                            <div class="relative h-48 bg-gray-100">
-                                <img src="${ad.images[0] || 'https://via.placeholder.com/400x300'}" class="w-full h-full object-cover">
-                                ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
-                                <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">${ad.category}</span>
-                            </div>
-                            <div class="p-3 flex-grow">
-                                <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title}</h3>
-                                <p class="text-blue-700 font-extrabold text-lg">Rs. ${Number(ad.price).toLocaleString()}</p>
-                                <p class="text-xs text-gray-500 mt-1 truncate"><i class="fas fa-map-marker-alt mr-1"></i>${ad.location || 'Sri Lanka'}</p>
-                            </div>
-                            <div class="px-3 pb-3 pt-0 flex justify-between items-center text-xs text-gray-400">
-                                <span>${new Date(ad.createdAt?.seconds * 1000).toLocaleDateString()}</span>
-                                <span class="text-blue-500 font-medium">View Details ></span>
-                            </div>
-                        </div>
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="${ad.images[0]}" class="w-12 h-12 rounded object-cover bg-gray-200">
+                                    <div>
+                                        <p class="font-bold text-gray-800">${ad.title}</p>
+                                        <p class="text-xs text-gray-500">${ad.category} • ${ad.location}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-4 text-gray-600">${ad.sellerEmail}</td>
+                            <td class="p-4 font-bold text-blue-600">Rs. ${Number(ad.price).toLocaleString()}</td>
+                            <td class="p-4">
+                                ${ad.isPremium ? '<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded font-bold">PREMIUM</span>' : '<span class="text-gray-400 text-xs">Free</span>'}
+                            </td>
+                            <td class="p-4 text-right space-x-2">
+                                <button onclick="approveAd('${doc.id}')" class="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-green-700">Approve</button>
+                                <button onclick="rejectAd('${doc.id}')" class="bg-red-100 text-red-600 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-200">Reject</button>
+                            </td>
+                        </tr>
                     `;
                 }).join('');
             });
+
+            // Approved Ads Count & List
+            db.collection('ads').where('status', '==', 'approved').get().then(snap => {
+                document.getElementById('countApproved').innerText = snap.size;
+                const tbody = document.getElementById('approvedTableBody');
+                tbody.innerHTML = snap.docs.slice(0, 5).map(doc => {
+                    const ad = doc.data();
+                    return `
+                        <tr>
+                            <td class="p-4 font-medium text-gray-800">${ad.title}</td>
+                            <td class="p-4 text-gray-500">${ad.category}</td>
+                            <td class="p-4">${ad.isPremium ? 'Yes' : 'No'}</td>
+                            <td class="p-4 text-right">
+                                <button onclick="togglePremium('${doc.id}', ${!ad.isPremium})" class="text-blue-600 hover:underline text-xs font-bold">
+                                    ${ad.isPremium ? 'Remove Premium' : 'Make Premium'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            });
+
+            // Premium Count
+            db.collection('ads').where('isPremium', '==', true).get().then(snap => {
+                document.getElementById('countPremium').innerText = snap.size;
+            });
+
+            // Users Count
+            db.collection('users').get().then(snap => {
+                document.getElementById('countUsers').innerText = snap.size;
+            });
         }
 
-        // Initial Load
-        loadAds(true, 'featuredAdsGrid');
-        loadAds(false, 'latestAdsGrid');
+        async function approveAd(id) {
+            if(confirm("Approve this ad? It will be visible to public.")) {
+                await db.collection('ads').doc(id).update({ status: 'approved' });
+            }
+        }
 
-        function filterCat(cat) {
-            loadAds(false, 'latestAdsGrid', cat);
-            // Update active state visually (optional)
+        async function rejectAd(id) {
+            if(confirm("Reject and delete this ad?")) {
+                await db.collection('ads').doc(id).delete();
+            }
+        }
+
+        async function togglePremium(id, status) {
+            await db.collection('ads').doc(id).update({ isPremium: status });
         }
     </script>
 </body>
