@@ -3,91 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Emarket</title>
+    <title id="pageTitle">Ad Details - Emarket</title>
+    <meta name="description" id="pageDesc" content="View details of this ad on Emarket.">
+    
+    <!-- Social Share Meta Tags (Dynamic via JS) -->
+    <meta property="og:title" id="ogTitle" content="Emarket Ad">
+    <meta property="og:description" id="ogDesc" content="Check out this amazing deal!">
+    <meta property="og:image" id="ogImage" content="">
+    <meta property="og:url" content="">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 pb-20">
 
-    <!-- Header -->
-    <header class="bg-gray-900 text-white p-4 shadow-lg sticky top-0 z-50">
+    <nav class="bg-white shadow-sm p-4 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold"><i class="fas fa-shield-alt mr-2"></i> Admin Dashboard</h1>
-            <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold">Logout</button>
+            <a href="index.html" class="text-xl font-bold text-blue-700"><i class="fas fa-arrow-left mr-2"></i> Back</a>
+            <div class="flex gap-3">
+                <button onclick="shareAd('whatsapp')" class="text-green-600 text-xl"><i class="fab fa-whatsapp"></i></button>
+                <button onclick="shareAd('facebook')" class="text-blue-600 text-xl"><i class="fab fa-facebook"></i></button>
+                <button onclick="copyLink()" class="text-gray-600 text-xl"><i class="fas fa-link"></i></button>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <div class="container mx-auto p-6 max-w-6xl">
+    <div class="container mx-auto px-4 py-6 max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Pending Ads</p>
-                <p class="text-2xl font-bold text-gray-800" id="countPending">0</p>
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <img id="mainImage" src="" class="w-full h-64 md:h-96 object-cover bg-gray-200">
+                <div id="thumbGrid" class="flex gap-2 p-2 overflow-x-auto bg-gray-50"></div>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Approved Ads</p>
-                <p class="text-2xl font-bold text-gray-800" id="countApproved">0</p>
+
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span id="adCategory" class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase"></span>
+                        <h1 id="adTitle" class="text-2xl font-bold text-gray-900 mt-2"></h1>
+                    </div>
+                    <p id="adPrice" class="text-2xl font-extrabold text-blue-700"></p>
+                </div>
+                
+                <div class="flex items-center gap-2 text-gray-500 text-sm mb-6 border-b pb-4">
+                    <i class="fas fa-map-marker-alt"></i> <span id="adLocation"></span>
+                    <span class="mx-2">•</span>
+                    <i class="far fa-clock"></i> <span id="adDate"></span>
+                </div>
+
+                <h3 class="font-bold text-gray-800 mb-2">Description</h3>
+                <p id="adDesc" class="text-gray-600 leading-relaxed whitespace-pre-line"></p>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Premium Ads</p>
-                <p class="text-2xl font-bold text-gray-800" id="countPremium">0</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Total Users</p>
-                <p class="text-2xl font-bold text-gray-800" id="countUsers">0</p>
+
+            <!-- Reviews Section -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-star text-yellow-400"></i> Reviews & Ratings 
+                    <span id="avgRating" class="text-sm font-normal text-gray-500">(0 reviews)</span>
+                </h3>
+                
+                <!-- Add Review Form -->
+                <div id="reviewFormContainer" class="mb-6 p-4 bg-gray-50 rounded-lg hidden">
+                    <div class="flex gap-1 mb-2 text-2xl text-gray-300 cursor-pointer" id="starContainer">
+                        <i class="fas fa-star hover:text-yellow-400" data-val="1"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="2"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="3"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="4"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="5"></i>
+                    </div>
+                    <textarea id="reviewText" rows="2" class="w-full p-2 border rounded mb-2 text-sm" placeholder="Write a review..."></textarea>
+                    <button onclick="submitReview()" class="bg-blue-600 text-white px-4 py-1.5 rounded text-sm font-bold">Submit Review</button>
+                </div>
+                <button id="loginToReviewBtn" onclick="window.location.href='login.html'" class="w-full border border-dashed border-gray-300 p-3 rounded text-gray-500 text-sm mb-6">Login to write a review</button>
+
+                <!-- Reviews List -->
+                <div id="reviewsList" class="space-y-4">
+                    <p class="text-gray-400 text-sm">No reviews yet.</p>
+                </div>
             </div>
         </div>
 
-        <!-- Pending Approvals Section -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-            <div class="p-4 bg-yellow-50 border-b border-yellow-100 flex justify-between items-center">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-clock text-yellow-600"></i> Pending Approvals</h2>
-                <span class="bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold" id="pendingBadge">0</span>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th class="p-4">Ad Details</th>
-                            <th class="p-4">Seller</th>
-                            <th class="p-4">Price</th>
-                            <th class="p-4">Type</th>
-                            <th class="p-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pendingTableBody" class="divide-y divide-gray-100 text-sm">
-                        <tr><td colspan="5" class="p-8 text-center text-gray-400">Checking for pending ads...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Recent Approved Ads -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="p-4 bg-green-50 border-b border-green-100">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-check-circle text-green-600"></i> Recently Approved Ads</h2>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th class="p-4">Title</th>
-                            <th class="p-4">Category</th>
-                            <th class="p-4">Premium</th>
-                            <th class="p-4 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="approvedTableBody" class="divide-y divide-gray-100 text-sm">
-                        <!-- Loaded via JS -->
-                    </tbody>
-                </table>
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
+                <h3 class="font-bold text-gray-800 mb-4">Seller Information</h3>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl"><i class="fas fa-user"></i></div>
+                    <div>
+                        <p class="font-bold text-gray-800">Private Seller</p>
+                        <p class="text-xs text-gray-500">Member since 2024</p>
+                    </div>
+                </div>
+                
+                <button id="showPhoneBtn" onclick="revealPhone()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2 mb-2">
+                    <i class="fas fa-phone-alt"></i> Show Phone Number
+                </button>
+                <a id="phoneLink" href="#" class="hidden w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-bold text-center border border-gray-200 hover:bg-gray-200 mb-2"></a>
+                
+                <!-- Message Seller Button -->
+                <button onclick="openChatModal()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-comment-dots"></i> Message Seller
+                </button>
             </div>
         </div>
+    </div>
 
+    <!-- Chat Modal -->
+    <div id="chatModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 relative">
+            <button onclick="document.getElementById('chatModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            <h3 class="font-bold text-lg mb-4">Message Seller</h3>
+            <textarea id="chatMessage" rows="4" class="w-full border rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Hi, is this still available?"></textarea>
+            <button onclick="sendMessageToSeller()" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Send Message</button>
+        </div>
     </div>
 
     <script>
@@ -103,105 +135,173 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Security Check
-        auth.onAuthStateChanged(async user => {
-            if (!user) { window.location.href = "login.html"; return; }
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (!doc.exists || doc.data().userType !== 'admin') {
-                alert("Access Denied!");
-                window.location.href = "index.html";
-            } else {
-                loadData();
+        const urlParams = new URLSearchParams(window.location.search);
+        const adId = urlParams.get('id');
+        let currentRating = 0;
+        let currentAdData = null;
+
+        if (adId) {
+            db.collection('ads').doc(adId).get().then(doc => {
+                if (!doc.exists) { document.body.innerHTML = "<div class='p-10 text-center'>Ad not found.</div>"; return; }
+                
+                currentAdData = doc.data();
+                const ad = currentAdData;
+                
+                // Populate UI
+                document.getElementById('mainImage').src = ad.images[0] || 'https://via.placeholder.com/600x400';
+                document.getElementById('adTitle').innerText = ad.title;
+                document.getElementById('adPrice').innerText = `Rs. ${Number(ad.price).toLocaleString()}`;
+                document.getElementById('adCategory').innerText = ad.category;
+                document.getElementById('adLocation').innerText = ad.location;
+                document.getElementById('adDesc').innerText = ad.desc;
+                document.getElementById('adDate').innerText = new Date(ad.createdAt.seconds * 1000).toLocaleDateString();
+                window.adPhone = ad.phone;
+
+                // Thumbnails
+                document.getElementById('thumbGrid').innerHTML = ad.images.map(img => 
+                    `<img src="${img}" onclick="document.getElementById('mainImage').src='${img}'" class="w-16 h-16 object-cover rounded cursor-pointer border hover:border-blue-500 transition">`
+                ).join('');
+
+                // Update SEO Meta Tags Dynamically
+                document.title = `${ad.title} - Rs. ${ad.price} | Emarket`;
+                document.getElementById('pageDesc').content = ad.desc.substring(0, 150);
+                document.getElementById('ogTitle').content = ad.title;
+                document.getElementById('ogDesc').content = ad.desc.substring(0, 150);
+                document.getElementById('ogImage').content = ad.images[0];
+                document.getElementById('ogUrl').content = window.location.href;
+
+                // Load Reviews
+                loadReviews(adId);
+            });
+        }
+
+        function revealPhone() {
+            document.getElementById('showPhoneBtn').classList.add('hidden');
+            const display = document.createElement('p');
+            display.className = "text-center text-lg font-bold text-gray-800 mt-2 tracking-widest";
+            display.innerText = window.adPhone;
+            document.getElementById('showPhoneBtn').parentNode.insertBefore(display, document.getElementById('phoneLink'));
+            
+            const link = document.getElementById('phoneLink');
+            link.href = `tel:${window.adPhone}`;
+            link.classList.remove('hidden');
+            link.innerText = ` Call ${window.adPhone}`;
+        }
+
+        // Social Share Functions
+        function shareAd(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(`Check out this ad: ${currentAdData.title}`);
+            
+            if (platform === 'whatsapp') window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+            if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied!");
+        }
+
+        // Review System
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('reviewFormContainer').classList.remove('hidden');
+                document.getElementById('loginToReviewBtn').classList.add('hidden');
             }
         });
 
-        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
+        // Star Rating Logic
+        document.querySelectorAll('#starContainer i').forEach(star => {
+            star.addEventListener('click', function() {
+                currentRating = parseInt(this.getAttribute('data-val'));
+                updateStars(currentRating);
+            });
+        });
 
-        function loadData() {
-            // Pending Ads
-            db.collection('ads').where('status', '==', 'pending').orderBy('createdAt', 'desc').onSnapshot(snap => {
-                document.getElementById('countPending').innerText = snap.size;
-                document.getElementById('pendingBadge').innerText = snap.size;
+        function updateStars(rating) {
+            document.querySelectorAll('#starContainer i').forEach((star, index) => {
+                if (index < rating) star.classList.add('text-yellow-400');
+                else star.classList.remove('text-yellow-400');
+            });
+        }
+
+        async function submitReview() {
+            const user = auth.currentUser;
+            if (!user) return alert("Please login first!");
+            if (currentRating === 0) return alert("Please select a rating!");
+            
+            const text = document.getElementById('reviewText').value;
+            if (!text) return alert("Please write a review!");
+
+            await db.collection('ads').doc(adId).collection('reviews').add({
+                userId: user.uid,
+                userName: user.email.split('@')[0],
+                rating: currentRating,
+                text: text,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            document.getElementById('reviewText').value = "";
+            currentRating = 0;
+            updateStars(0);
+            alert("Review submitted!");
+        }
+
+        function loadReviews(adId) {
+            db.collection('ads').doc(adId).collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snap => {
+                const list = document.getElementById('reviewsList');
+                let totalRating = 0;
                 
-                const tbody = document.getElementById('pendingTableBody');
                 if (snap.empty) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400">No pending ads. Great job!</td></tr>';
+                    list.innerHTML = '<p class="text-gray-400 text-sm">No reviews yet.</p>';
+                    document.getElementById('avgRating').innerText = "(0 reviews)";
                     return;
                 }
-                
-                tbody.innerHTML = snap.docs.map(doc => {
-                    const ad = doc.data();
+
+                list.innerHTML = snap.docs.map(doc => {
+                    const r = doc.data();
+                    totalRating += r.rating;
                     return `
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="${ad.images[0]}" class="w-12 h-12 rounded object-cover bg-gray-200">
-                                    <div>
-                                        <p class="font-bold text-gray-800">${ad.title}</p>
-                                        <p class="text-xs text-gray-500">${ad.category} • ${ad.location}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-4 text-gray-600">${ad.sellerEmail}</td>
-                            <td class="p-4 font-bold text-blue-600">Rs. ${Number(ad.price).toLocaleString()}</td>
-                            <td class="p-4">
-                                ${ad.isPremium ? '<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded font-bold">PREMIUM</span>' : '<span class="text-gray-400 text-xs">Free</span>'}
-                            </td>
-                            <td class="p-4 text-right space-x-2">
-                                <button onclick="approveAd('${doc.id}')" class="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-green-700">Approve</button>
-                                <button onclick="rejectAd('${doc.id}')" class="bg-red-100 text-red-600 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-200">Reject</button>
-                            </td>
-                        </tr>
+                        <div class="border-b pb-3 last:border-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sm text-gray-800">${r.userName}</span>
+                                <div class="text-yellow-400 text-xs">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                            </div>
+                            <p class="text-sm text-gray-600">${r.text}</p>
+                        </div>
                     `;
                 }).join('');
-            });
 
-            // Approved Ads Count & List
-            db.collection('ads').where('status', '==', 'approved').get().then(snap => {
-                document.getElementById('countApproved').innerText = snap.size;
-                const tbody = document.getElementById('approvedTableBody');
-                tbody.innerHTML = snap.docs.slice(0, 5).map(doc => {
-                    const ad = doc.data();
-                    return `
-                        <tr>
-                            <td class="p-4 font-medium text-gray-800">${ad.title}</td>
-                            <td class="p-4 text-gray-500">${ad.category}</td>
-                            <td class="p-4">${ad.isPremium ? 'Yes' : 'No'}</td>
-                            <td class="p-4 text-right">
-                                <button onclick="togglePremium('${doc.id}', ${!ad.isPremium})" class="text-blue-600 hover:underline text-xs font-bold">
-                                    ${ad.isPremium ? 'Remove Premium' : 'Make Premium'}
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            });
-
-            // Premium Count
-            db.collection('ads').where('isPremium', '==', true).get().then(snap => {
-                document.getElementById('countPremium').innerText = snap.size;
-            });
-
-            // Users Count
-            db.collection('users').get().then(snap => {
-                document.getElementById('countUsers').innerText = snap.size;
+                const avg = (totalRating / snap.size).toFixed(1);
+                document.getElementById('avgRating').innerText = `(${avg}/5 from ${snap.size} reviews)`;
             });
         }
 
-        async function approveAd(id) {
-            if(confirm("Approve this ad? It will be visible to public.")) {
-                await db.collection('ads').doc(id).update({ status: 'approved' });
-            }
+        // Message Seller Logic
+        function openChatModal() {
+            if (!auth.currentUser) return alert("Please login to message seller!");
+            document.getElementById('chatModal').classList.remove('hidden');
         }
 
-        async function rejectAd(id) {
-            if(confirm("Reject and delete this ad?")) {
-                await db.collection('ads').doc(id).delete();
-            }
-        }
+        async function sendMessageToSeller() {
+            const user = auth.currentUser;
+            const msg = document.getElementById('chatMessage').value;
+            if (!msg) return;
 
-        async function togglePremium(id, status) {
-            await db.collection('ads').doc(id).update({ isPremium: status });
+            // Create a conversation or add message to 'messages' collection
+            await db.collection('messages').add({
+                adId: adId,
+                sellerUid: currentAdData.sellerUid,
+                buyerUid: user.uid,
+                buyerEmail: user.email,
+                message: msg,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
+
+            alert("Message sent to seller!");
+            document.getElementById('chatModal').classList.add('hidden');
+            document.getElementById('chatMessage').value = "";
         }
     </script>
 </body>
