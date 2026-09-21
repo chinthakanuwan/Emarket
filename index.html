@@ -6,13 +6,13 @@
     
     <!-- SEO Meta Tags -->
     <title>Emarket - Sri Lanka's Best Classifieds | Buy & Sell Online</title>
-    <meta name="description" content="Buy and sell cars, land, houses, mobile phones, and electronics in Sri Lanka. Free ads on Emarket. Post your ad today!">
-    <meta name="keywords" content="classifieds sri lanka, buy sell lk, ikman alternative, cars for sale, land for sale, mobile phones">
+    <meta name="description" content="Buy and sell cars, land, houses, mobile phones, electronics, hotels, restaurants in Sri Lanka. Free ads on Emarket. Post your ad today!">
+    <meta name="keywords" content="classifieds sri lanka, buy sell lk, ikman alternative, cars for sale, land for sale, mobile phones, hotels, restaurants">
     <meta name="author" content="Emarket Team">
     
     <!-- Open Graph / Social Media Sharing -->
     <meta property="og:title" content="Emarket - Buy & Sell Anything in Sri Lanka">
-    <meta property="og:description" content="Find the best deals on vehicles, property, and electronics. Post free ads now!">
+    <meta property="og:description" content="Find the best deals on vehicles, property, electronics, hotels, and restaurants. Post free ads now!">
     <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=800">
     <meta property="og:url" content="https://chinthakanuwan.github.io/Emarket/">
     <meta property="og:type" content="website">
@@ -55,14 +55,17 @@
                 <h3 class="font-bold text-gray-800 mb-3 border-b pb-2">Categories</h3>
                 <ul class="space-y-2 text-sm">
                     <li><a href="#" onclick="filterCat('All')" class="flex items-center gap-2 text-blue-600 font-medium"><i class="fas fa-th-large w-5"></i> All Ads</a></li>
-                    <li><a href="#" onclick="filterCat('Vehicles')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-car w-5"></i> Vehicles</a></li>
-                    <li><a href="#" onclick="filterCat('Property')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-home w-5"></i> Property</a></li>
+                    <li><a href="#" onclick="filterCat('Vehicles')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-car w-5"></i> Vehicles (Cars/Bikes)</a></li>
+                    <li><a href="#" onclick="filterCat('Property')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-home w-5"></i> Property (House/Land/Rent)</a></li>
                     <li><a href="#" onclick="filterCat('Mobiles')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-mobile-alt w-5"></i> Mobile Phones</a></li>
                     <li><a href="#" onclick="filterCat('Electronics')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-laptop w-5"></i> Electronics</a></li>
+                    <li><a href="#" onclick="filterCat('Hotels')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-hotel w-5"></i> Hotels</a></li>
+                    <li><a href="#" onclick="filterCat('Restaurants')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-utensils w-5"></i> Restaurants</a></li>
+                    <li><a href="#" onclick="filterCat('Jobs')" class="flex items-center gap-2 text-gray-600 hover:text-blue-600"><i class="fas fa-briefcase w-5"></i> Jobs</a></li>
                 </ul>
             </div>
 
-            <!-- Side Ad Slot -->
+            <!-- Side Ad Slot 1 -->
             <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
                 Ad Slot (300x250)
             </div>
@@ -71,12 +74,20 @@
         <!-- Center Content -->
         <main class="lg:col-span-2 space-y-6">
             
-            <!-- Featured Ads -->
+            <!-- Featured Ads (Paid/Premium) -->
             <div>
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Premium Ads</h2>
+                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Sponsored</span>
                 </div>
-                <div id="featuredAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div id="featuredAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Paid Ads Load Here -->
+                </div>
+            </div>
+
+            <!-- Middle Ad Slot -->
+            <div class="bg-gray-200 h-24 w-full rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300 my-4">
+                Horizontal Ad Slot (728x90)
             </div>
 
             <!-- Latest Ads -->
@@ -88,18 +99,24 @@
             </div>
         </main>
 
-        <!-- Right Sidebar -->
+        <!-- Right Sidebar (Side Ad Slot 2) -->
         <aside class="hidden lg:block lg:col-span-1">
             <div class="sticky top-24 space-y-6">
                 <div class="bg-gray-200 h-[600px] rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
-                    Vertical Ad Slot
+                    Vertical Ad Slot (160x600)
                 </div>
             </div>
         </aside>
 
     </div>
 
+    <!-- Mobile FAB for Post Ad -->
+    <a href="post-ad.html" class="md:hidden fixed bottom-6 right-6 bg-orange-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg text-2xl z-50 hover:bg-orange-600">
+        <i class="fas fa-plus"></i>
+    </a>
+
     <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -112,7 +129,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Auth UI
+        // Auth UI Logic
         auth.onAuthStateChanged(user => {
             const section = document.getElementById('authSection');
             if (user) {
@@ -120,6 +137,7 @@
                     <div class="relative group">
                         <button class="flex items-center gap-2 text-gray-700 font-medium hover:text-blue-600">
                             <img src="https://ui-avatars.com/api/?name=${user.email}&background=random" class="w-8 h-8 rounded-full">
+                            <span class="hidden md:inline">${user.email.split('@')[0]}</span>
                         </button>
                         <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block border z-50">
                             <a href="my-ads.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Ads</a>
@@ -128,13 +146,14 @@
                         </div>
                     </div>
                 `;
+                // Check Admin
                 db.collection('users').doc(user.uid).get().then(doc => {
                     if(doc.exists && doc.data().userType === 'admin') {
                         document.getElementById('adminLink').classList.remove('hidden');
                     }
                 });
             } else {
-                section.innerHTML = `<a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>`;
+                section.innerHTML = `<a href="login.html" class="text-blue-600 font-bold hover:underline">Login / Sign Up</a>`;
             }
         });
 
