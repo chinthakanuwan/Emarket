@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emarket - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Admin Login Form (මුලින්ම පේනවා) -->
+    <div id="loginSection" class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+            <h1 class="text-3xl font-bold text-center text-red-600 mb-2">🔐 Admin Panel</h1>
+            <p class="text-center text-gray-500 mb-6 text-sm">පරිපාලක ගිණුමට පිවිසෙන්න</p>
+
+            <form id="adminLoginForm" class="space-y-4">
+                <div>
+                    <input type="email" id="adminEmail" class="w-full px-4 py-2 border rounded-lg" placeholder="Admin Email" required>
+                </div>
+                <div>
+                    <input type="password" id="adminPassword" class="w-full px-4 py-2 border rounded-lg" placeholder="මුරපදය" required>
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">Admin ලොග් වන්න</button>
+            </form>
+            <p id="loginMessage" class="text-center mt-4 text-sm text-red-600"></p>
+            <p class="text-center mt-4"><a href="index.html" class="text-blue-600">← ආපසු යන්න</a></p>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (ලොග් වුනාට පස්සේ පේනවා) -->
+    <div id="dashboardSection" class="hidden">
+        <!-- Header -->
+        <header class="bg-red-600 text-white p-4 shadow-lg">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Emarket Admin</h1>
+                <button id="logoutBtn" class="bg-white text-red-600 px-4 py-2 rounded-lg">Logout</button>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="container mx-auto p-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-gray-500 text-sm">සියලුම Users</h3>
+                    <p id="totalUsers" class="text-3xl font-bold text-blue-600">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-gray-500 text-sm">Products</h3>
+                    <p id="totalProducts" class="text-3xl font-bold text-green-600">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-gray-500 text-sm">Orders</h3>
+                    <p id="totalOrders" class="text-3xl font-bold text-purple-600">0</p>
+                </div>
+            </div>
+
+            <!-- Users List -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-bold mb-4">ලියාපදිංචි වූ පරිශීලකයින්</h2>
+                <div id="usersList" class="space-y-2">
+                    <p class="text-gray-500">පුරනය වෙමින්...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
+            authDomain: "emarket-e3421.firebaseapp.com",
+            projectId: "emarket-e3421",
+            storageBucket: "emarket-e3421.firebasestorage.app",
+            messagingSenderId: "1029527442178",
+            appId: "1:1029527442178:web:535443f333ce6e9deda81b",
+            measurementId: "G-LYM94LMHXC"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Admin Login
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const msg = document.getElementById('loginMessage');
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    // Check if user is admin
+                    return db.collection('users').doc(auth.currentUser.uid).get();
+                })
+                .then((doc) => {
+                    if (doc.exists && doc.data().userType === 'admin') {
+                        // Show dashboard
+                        document.getElementById('loginSection').classList.add('hidden');
+                        document.getElementById('dashboardSection').classList.remove('hidden');
+                        loadDashboardData();
+                    } else {
+                        // Not an admin
+                        auth.signOut();
+                        msg.innerText = "බට Admin ප්‍රවේශය නැත!";
+                    }
+                })
+                .catch((error) => {
+                    msg.innerText = "දෝෂයක්: " + error.message;
+                });
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                location.reload();
+            });
+        });
+
+        // Load Dashboard Data
+        function loadDashboardData() {
+            // Load Users
+            db.collection('users').onSnapshot((snapshot) => {
+                const users = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                document.getElementById('totalUsers').innerText = users.length;
+                
+                const usersList = document.getElementById('usersList');
+                usersList.innerHTML = users.map(user => `
+                    <div class="border-b p-3 flex justify-between items-center">
+                        <div>
+                            <p class="font-semibold">${user.fullName || 'N/A'}</p>
+                            <p class="text-sm text-gray-500">${user.email}</p>
+                        </div>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${user.userType || 'buyer'}</span>
+                    </div>
+                `).join('');
+            });
+
+            // Load Products (පස්සේ හදමු)
+            db.collection('products').onSnapshot((snapshot) => {
+                document.getElementById('totalProducts').innerText = snapshot.size;
+            });
+
+            // Load Orders (පස්සේ හදමු)
+            db.collection('orders').onSnapshot((snapshot) => {
+                document.getElementById('totalOrders').innerText = snapshot.size;
+            });
+        }
+    </script>
+</body>
+</html>
