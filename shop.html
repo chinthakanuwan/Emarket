@@ -5,38 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emarket - Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
-<body class="bg-gray-50 pb-10">
+<body class="bg-gray-50 pb-20">
 
     <!-- Navbar -->
-    <nav class="bg-blue-600 text-white p-4 sticky top-0 z-50 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-xl font-bold">Emarket 🛒</a>
+    <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-600">Emarket 🛒</a>
+            
             <div class="flex items-center gap-3">
-                <span id="userDisplay" class="text-xs bg-blue-700 px-2 py-1 rounded hidden">Hi, User</span>
-                <a href="login.html" id="loginLink" class="text-sm bg-white text-blue-600 px-3 py-1 rounded-full font-semibold">Login</a>
-                <button id="logoutBtn" class="text-sm bg-red-500 text-white px-3 py-1 rounded-full font-semibold hidden" onclick="logout()">Logout</button>
+                <!-- User Info (Hidden if not logged in) -->
+                <div id="userInfo" class="hidden flex items-center gap-2">
+                    <span id="userName" class="text-sm font-medium text-gray-700 hidden md:block">User</span>
+                    <button onclick="logout()" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold">Logout</button>
+                </div>
+                
+                <!-- Login Button (Visible if not logged in) -->
+                <a href="login.html" id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">
+                    Sign In
+                </a>
+                
+                <!-- Create Shop Button -->
+                <a href="create-shop.html" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition shadow-sm">
+                    + Create Shop
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Category Filter -->
-    <div class="container mx-auto p-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        <div class="flex gap-2">
-            <button onclick="filterProducts('All')" class="cat-btn bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">All</button>
-            <button onclick="filterProducts('Electronics')" class="cat-btn bg-white text-gray-600 px-4 py-2 rounded-full text-sm font-medium shadow-sm hover:bg-gray-100">Electronics</button>
-            <button onclick="filterProducts('Fashion')" class="cat-btn bg-white text-gray-600 px-4 py-2 rounded-full text-sm font-medium shadow-sm hover:bg-gray-100">Fashion</button>
-            <button onclick="filterProducts('Home')" class="cat-btn bg-white text-gray-600 px-4 py-2 rounded-full text-sm font-medium shadow-sm hover:bg-gray-100">Home</button>
-            <button onclick="filterProducts('Beauty')" class="cat-btn bg-white text-gray-600 px-4 py-2 rounded-full text-sm font-medium shadow-sm hover:bg-gray-100">Beauty</button>
+    <!-- Categories -->
+    <div class="container mx-auto px-4 py-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+        <div class="flex gap-2" id="categoryList">
+            <button onclick="filterProducts('All')" class="cat-btn bg-black text-white px-4 py-2 rounded-full text-sm font-medium">All</button>
+            <button onclick="filterProducts('Electronics')" class="cat-btn bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200">Electronics</button>
+            <button onclick="filterProducts('Fashion')" class="cat-btn bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200">Fashion</button>
+            <button onclick="filterProducts('Home')" class="cat-btn bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200">Home</button>
         </div>
     </div>
 
     <!-- Products Grid -->
-    <div class="container mx-auto p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="shopGrid">
-        <div class="col-span-full text-center py-20 text-gray-400">Loading amazing products...</div>
+    <div class="container mx-auto px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="shopGrid">
+        <div class="col-span-full text-center py-20 text-gray-400">Loading products...</div>
     </div>
 
     <script>
@@ -57,40 +70,35 @@
         // Auto Load Sample Data if Empty
         db.collection('products').get().then(snapshot => {
             if (snapshot.empty) {
-                console.log("No products found. Adding sample data automatically...");
+                console.log("Adding sample data...");
                 const samples = [
-                    { name: "iPhone 14 Pro Max", price: 385000, category: "Electronics", image: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=400&q=80", desc: "Deep Purple, 256GB" },
-                    { name: "Samsung 55\" 4K TV", price: 185000, category: "Electronics", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80", desc: "Crystal UHD Smart TV" },
-                    { name: "Nike Air Jordan", price: 28500, category: "Fashion", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", desc: "Red/White Classic" },
-                    { name: "Cotton T-Shirt", price: 2500, category: "Fashion", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80", desc: "Premium Cotton Black" },
-                    { name: "Philips Coffee Maker", price: 14500, category: "Home", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80", desc: "Automatic Drip Coffee" },
-                    { name: "Nivea Face Cream", price: 3200, category: "Beauty", image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&q=80", desc: "Soft Moisturizing 100ml" }
+                    { name: "iPhone 14 Pro", price: 350000, category: "Electronics", image: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=400", shopName: "Apple Store LK" },
+                    { name: "Nike Air Jordan", price: 28500, category: "Fashion", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", shopName: "Sneaker Hub" },
+                    { name: "Coffee Maker", price: 14500, category: "Home", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400", shopName: "Home Essentials" }
                 ];
                 samples.forEach(p => db.collection('products').add(p));
             }
         });
 
-        // Realtime Listener for Products
+        // Realtime Listener
         db.collection('products').onSnapshot(snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
             renderProducts(allProducts);
         });
 
-        // Auth State Listener for UI
+        // Auth State Listener (Update UI based on login status)
         auth.onAuthStateChanged(user => {
-            const userDisplay = document.getElementById('userDisplay');
-            const loginLink = document.getElementById('loginLink');
-            const logoutBtn = document.getElementById('logoutBtn');
-            
+            const userInfo = document.getElementById('userInfo');
+            const loginBtn = document.getElementById('loginBtn');
+            const userName = document.getElementById('userName');
+
             if (user) {
-                userDisplay.innerText = `Hi, ${user.email.split('@')[0]}`;
-                userDisplay.classList.remove('hidden');
-                loginLink.classList.add('hidden');
-                logoutBtn.classList.remove('hidden');
+                userInfo.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                userName.innerText = user.email.split('@')[0];
             } else {
-                userDisplay.classList.add('hidden');
-                loginLink.classList.remove('hidden');
-                logoutBtn.classList.add('hidden');
+                userInfo.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
             }
         });
 
@@ -101,53 +109,50 @@
         function renderProducts(list) {
             const grid = document.getElementById('shopGrid');
             if(list.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500">No products available yet.</div>';
+                grid.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500">No products found.</div>';
                 return;
             }
             grid.innerHTML = list.map(p => `
-                <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-3 flex flex-col h-full border border-gray-100">
-                    <div class="relative">
-                        <img src="${p.image}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'" class="w-full h-40 object-cover rounded-lg bg-gray-100 mb-3">
-                        <span class="absolute top-2 right-2 bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded-md text-gray-700 shadow-sm">${p.category}</span>
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 border border-gray-100 flex flex-col h-full">
+                    <img src="${p.image}" onerror="this.src='https://via.placeholder.com/300'" class="w-full h-40 object-cover rounded-lg mb-3 bg-gray-100">
+                    <div class="flex-grow">
+                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full mb-1 inline-block">${p.category}</span>
+                        <h3 class="font-bold text-gray-800 text-sm line-clamp-2 leading-tight mb-1">${p.name}</h3>
+                        <p class="text-xs text-gray-500 mb-2">Sold by: <span class="text-blue-600 font-medium">${p.shopName || 'Emarket'}</span></p>
                     </div>
-                    <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${p.name}</h3>
-                    <p class="text-xs text-gray-500 mb-3 line-clamp-1">${p.desc || ''}</p>
-                    <div class="mt-auto flex justify-between items-center pt-2 border-t border-gray-50">
-                        <span class="text-blue-600 font-extrabold text-lg">Rs. ${p.price.toLocaleString()}</span>
-                        <button onclick="addToCart('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-blue-700 transition font-medium active:scale-95">
-                            Add to Cart
+                    <div class="mt-auto pt-2 border-t border-gray-50 flex justify-between items-center">
+                        <span class="text-blue-700 font-extrabold text-lg">Rs. ${p.price.toLocaleString()}</span>
+                        <button onclick="checkAuthAndBuy('${p.name}')" class="bg-black text-white text-xs px-3 py-2 rounded-lg hover:bg-gray-800 transition font-bold active:scale-95">
+                            Buy Now
                         </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function filterProducts(cat) {
-            // Update active button style
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'All')) {
-                    btn.className = "cat-btn bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm";
-                } else {
-                    btn.className = "cat-btn bg-white text-gray-600 px-4 py-2 rounded-full text-sm font-medium shadow-sm hover:bg-gray-100";
-                }
-            });
-
-            if(cat === 'All') renderProducts(allProducts);
-            else renderProducts(allProducts.filter(p => p.category === cat));
-        }
-
-        // Cart Logic with Auth Check
-        function addToCart(id, name) {
+        // Check Auth before Buying
+        function checkAuthAndBuy(productName) {
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    alert(`✅ "${name}" successfully added to your cart!`);
-                    // Here you can add logic to save to 'carts' collection in Firestore
+                    alert(`✅ "${productName}" successfully added to cart!\n(User: ${user.email})`);
+                    // Here you can add logic to save order to Firestore
                 } else {
-                    if(confirm(" භාණ්ඩ මිලදී ගැනීමට පළමුව ලොග් වන්න හෝ ගිණුමක් සාදන්න.\n\nලොග් වීමට යන්නද?")) {
+                    if(confirm("🔒 භාණ්ඩ මිලදී ගැනීමට පළමුව ලොග් වන්න.\n\nලොග් වීමට යන්නද?")) {
                         window.location.href = "login.html";
                     }
                 }
             });
+        }
+
+        function filterProducts(cat) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if((cat === 'All' && btn.innerText === 'All') || btn.innerText === cat) {
+                    btn.className = "cat-btn bg-black text-white px-4 py-2 rounded-full text-sm font-medium";
+                } else {
+                    btn.className = "cat-btn bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-200";
+                }
+            });
+            renderProducts(cat === 'All' ? allProducts : allProducts.filter(p => p.category === cat));
         }
     </script>
 </body>
