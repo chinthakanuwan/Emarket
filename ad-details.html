@@ -18,187 +18,111 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-100 pb-20 font-sans">
+<body class="bg-gray-100 pb-20">
 
-    <!-- Navbar -->
     <nav class="bg-white shadow-sm p-4 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-xl font-bold text-blue-700 flex items-center gap-2">
-                <i class="fas fa-arrow-left"></i> Back to Ads
-            </a>
-            <div class="flex gap-4">
-                <button onclick="shareAd('whatsapp')" class="text-green-600 text-2xl hover:text-green-700 transition"><i class="fab fa-whatsapp"></i></button>
-                <button onclick="shareAd('facebook')" class="text-blue-600 text-2xl hover:text-blue-700 transition"><i class="fab fa-facebook"></i></button>
-                <button onclick="copyLink()" class="text-gray-600 text-2xl hover:text-gray-800 transition"><i class="fas fa-link"></i></button>
+            <a href="index.html" class="text-xl font-bold text-blue-700"><i class="fas fa-arrow-left mr-2"></i> Back</a>
+            <div class="flex gap-3">
+                <button onclick="shareAd('whatsapp')" class="text-green-600 text-xl"><i class="fab fa-whatsapp"></i></button>
+                <button onclick="shareAd('facebook')" class="text-blue-600 text-xl"><i class="fab fa-facebook"></i></button>
+                <button onclick="copyLink()" class="text-gray-600 text-xl"><i class="fas fa-link"></i></button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div id="loadingState" class="flex flex-col items-center justify-center h-[60vh] text-gray-500">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-        <p>Loading ad details...</p>
-    </div>
-
-    <div id="contentArea" class="hidden container mx-auto px-4 py-6 max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="container mx-auto px-4 py-6 max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Left Column: Images & Description -->
+        <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
-            
-            <!-- Image Gallery -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                <div class="relative h-64 md:h-96 bg-gray-100 group">
-                    <img id="mainImage" src="" alt="Ad Image" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                    <div class="absolute bottom-4 right-4 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
-                        <i class="fas fa-camera mr-1"></i> <span id="imgCount">1</span> Photos
-                    </div>
-                </div>
-                <div id="thumbGrid" class="flex gap-2 p-3 overflow-x-auto bg-gray-50 scrollbar-hide">
-                    <!-- Thumbnails loaded via JS -->
-                </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <img id="mainImage" src="" class="w-full h-64 md:h-96 object-cover bg-gray-200">
+                <div id="thumbGrid" class="flex gap-2 p-2 overflow-x-auto bg-gray-50"></div>
             </div>
 
-            <!-- Ad Info Card -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex justify-between items-start mb-4">
                     <div>
-                        <span id="adCategory" class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-2">Category</span>
-                        <h1 id="adTitle" class="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">Loading Title...</h1>
+                        <span id="adCategory" class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase"></span>
+                        <h1 id="adTitle" class="text-2xl font-bold text-gray-900 mt-2"></h1>
                     </div>
-                    <div class="text-right">
-                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Price</p>
-                        <p id="adPrice" class="text-3xl font-black text-blue-700">Rs. 0</p>
-                    </div>
+                    <p id="adPrice" class="text-2xl font-extrabold text-blue-700"></p>
                 </div>
                 
-                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100">
-                    <span class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg">
-                        <i class="fas fa-map-marker-alt text-red-500"></i> <span id="adLocation">Location</span>
-                    </span>
-                    <span class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg">
-                        <i class="far fa-clock text-blue-500"></i> <span id="adDate">Date</span>
-                    </span>
+                <div class="flex items-center gap-2 text-gray-500 text-sm mb-6 border-b pb-4">
+                    <i class="fas fa-map-marker-alt"></i> <span id="adLocation"></span>
+                    <span class="mx-2">•</span>
+                    <i class="far fa-clock"></i> <span id="adDate"></span>
                 </div>
 
-                <h3 class="font-bold text-gray-800 text-lg mb-3 flex items-center gap-2">
-                    <i class="fas fa-align-left text-gray-400"></i> Description
-                </h3>
-                <div id="adDesc" class="text-gray-600 leading-relaxed whitespace-pre-line text-base">
-                    Loading description...
-                </div>
+                <h3 class="font-bold text-gray-800 mb-2">Description</h3>
+                <p id="adDesc" class="text-gray-600 leading-relaxed whitespace-pre-line"></p>
             </div>
 
             <!-- Reviews Section -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-                        <i class="fas fa-star text-yellow-400"></i> Reviews & Ratings 
-                    </h3>
-                    <span id="avgRating" class="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">(0 reviews)</span>
-                </div>
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-star text-yellow-400"></i> Reviews & Ratings 
+                    <span id="avgRating" class="text-sm font-normal text-gray-500">(0 reviews)</span>
+                </h3>
                 
-                <!-- Add Review Form (Hidden if not logged in) -->
-                <div id="reviewFormContainer" class="mb-8 p-5 bg-blue-50 rounded-xl border border-blue-100 hidden">
-                    <p class="text-sm font-bold text-blue-800 mb-3">Write a review</p>
-                    <div class="flex gap-2 mb-3 text-2xl text-gray-300 cursor-pointer select-none" id="starContainer">
-                        <i class="fas fa-star hover:text-yellow-400 transition-colors" data-val="1"></i>
-                        <i class="fas fa-star hover:text-yellow-400 transition-colors" data-val="2"></i>
-                        <i class="fas fa-star hover:text-yellow-400 transition-colors" data-val="3"></i>
-                        <i class="fas fa-star hover:text-yellow-400 transition-colors" data-val="4"></i>
-                        <i class="fas fa-star hover:text-yellow-400 transition-colors" data-val="5"></i>
+                <!-- Add Review Form -->
+                <div id="reviewFormContainer" class="mb-6 p-4 bg-gray-50 rounded-lg hidden">
+                    <div class="flex gap-1 mb-2 text-2xl text-gray-300 cursor-pointer" id="starContainer">
+                        <i class="fas fa-star hover:text-yellow-400" data-val="1"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="2"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="3"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="4"></i>
+                        <i class="fas fa-star hover:text-yellow-400" data-val="5"></i>
                     </div>
-                    <textarea id="reviewText" rows="3" class="w-full p-3 border border-blue-200 rounded-lg mb-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="How was your experience with this seller?"></textarea>
-                    <button onclick="submitReview()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-sm">Submit Review</button>
+                    <textarea id="reviewText" rows="2" class="w-full p-2 border rounded mb-2 text-sm" placeholder="Write a review..."></textarea>
+                    <button onclick="submitReview()" class="bg-blue-600 text-white px-4 py-1.5 rounded text-sm font-bold">Submit Review</button>
                 </div>
-                
-                <button id="loginToReviewBtn" onclick="window.location.href='login.html'" class="w-full border-2 border-dashed border-gray-300 p-4 rounded-xl text-gray-500 text-sm font-medium mb-8 hover:border-blue-400 hover:text-blue-600 transition bg-gray-50">
-                    <i class="fas fa-lock mr-2"></i> Login to write a review
-                </button>
+                <button id="loginToReviewBtn" onclick="window.location.href='login.html'" class="w-full border border-dashed border-gray-300 p-3 rounded text-gray-500 text-sm mb-6">Login to write a review</button>
 
                 <!-- Reviews List -->
-                <div id="reviewsList" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                    <p class="text-gray-400 text-sm text-center py-4 italic">No reviews yet. Be the first!</p>
+                <div id="reviewsList" class="space-y-4">
+                    <p class="text-gray-400 text-sm">No reviews yet.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column: Seller Info & Actions -->
+        <!-- Sidebar -->
         <div class="space-y-6">
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
-                <h3 class="font-bold text-gray-800 mb-5 text-lg border-b pb-3">Seller Information</h3>
-                
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-md">
-                        <i class="fas fa-user"></i>
-                    </div>
+                <h3 class="font-bold text-gray-800 mb-4">Seller Information</h3>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl"><i class="fas fa-user"></i></div>
                     <div>
-                        <p class="font-bold text-gray-900 text-lg">Private Seller</p>
-                        <p class="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                            <i class="fas fa-check-circle text-green-500"></i> Verified Member
-                        </p>
+                        <p class="font-bold text-gray-800">Private Seller</p>
+                        <p class="text-xs text-gray-500">Member since 2024</p>
                     </div>
                 </div>
                 
-                <!-- Phone Reveal Logic -->
-                <div id="phoneSection" class="space-y-3">
-                    <button id="showPhoneBtn" onclick="revealPhone()" class="w-full bg-green-600 text-white py-3.5 rounded-xl font-bold hover:bg-green-700 transition shadow-md flex items-center justify-center gap-2 transform active:scale-95">
-                        <i class="fas fa-phone-alt"></i> Show Phone Number
-                    </button>
-                    
-                    <div id="phoneRevealedContent" class="hidden space-y-3">
-                        <a id="phoneLink" href="#" class="block w-full bg-gray-100 text-gray-800 py-3.5 rounded-xl font-bold text-center border border-gray-200 hover:bg-gray-200 transition">
-                            📞 Call Now
-                        </a>
-                        <p id="phoneDisplay" class="text-center text-xl font-black text-gray-800 tracking-widest py-2 bg-gray-50 rounded-lg border border-dashed border-gray-300"></p>
-                    </div>
-                </div>
-
-                <div class="my-6 border-t border-gray-100"></div>
-
+                <button id="showPhoneBtn" onclick="revealPhone()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2 mb-2">
+                    <i class="fas fa-phone-alt"></i> Show Phone Number
+                </button>
+                <a id="phoneLink" href="#" class="hidden w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-bold text-center border border-gray-200 hover:bg-gray-200 mb-2"></a>
+                
                 <!-- Message Seller Button -->
-                <button onclick="openChatModal()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow-md flex items-center justify-center gap-2 transform active:scale-95">
+                <button onclick="openChatModal()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center gap-2">
                     <i class="fas fa-comment-dots"></i> Message Seller
                 </button>
-
-                <!-- Safety Tips -->
-                <div class="mt-6 bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-                    <h4 class="font-bold text-yellow-800 text-xs uppercase tracking-wide mb-2 flex items-center gap-2">
-                        <i class="fas fa-shield-alt"></i> Safety Tips
-                    </h4>
-                    <ul class="text-xs text-yellow-700 space-y-1.5 list-disc pl-4 font-medium">
-                        <li>Meet in a safe public place.</li>
-                        <li>Check the item thoroughly before paying.</li>
-                        <li>Never send money in advance via bank transfer.</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
 
     <!-- Chat Modal -->
-    <div id="chatModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl transform scale-95 transition-transform duration-300" id="chatModalContent">
-            <button onclick="closeChatModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
-                <i class="fas fa-times text-lg"></i>
-            </button>
-            <div class="text-center mb-6">
-                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mx-auto mb-3">
-                    <i class="fas fa-paper-plane text-xl"></i>
-                </div>
-                <h3 class="font-bold text-xl text-gray-900">Message Seller</h3>
-                <p class="text-sm text-gray-500 mt-1">Ask about availability or negotiate price.</p>
-            </div>
-            
-            <textarea id="chatMessage" rows="4" class="w-full border border-gray-300 rounded-xl p-4 mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none text-gray-700 bg-gray-50" placeholder="Hi, is this still available? What is your best price?"></textarea>
-            
-            <button onclick="sendMessageToSeller()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2">
-                Send Message <i class="fas fa-arrow-right text-sm"></i>
-            </button>
+    <div id="chatModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 relative">
+            <button onclick="document.getElementById('chatModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            <h3 class="font-bold text-lg mb-4">Message Seller</h3>
+            <textarea id="chatMessage" rows="4" class="w-full border rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Hi, is this still available?"></textarea>
+            <button onclick="sendMessageToSeller()" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Send Message</button>
         </div>
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -211,124 +135,71 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Get ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
         let currentRating = 0;
         let currentAdData = null;
-        let defaultImage = "https://via.placeholder.com/600x400/e2e8f0/94a3b8?text=No+Image+Available";
 
-        // Initial Load
         if (adId) {
             db.collection('ads').doc(adId).get().then(doc => {
-                document.getElementById('loadingState').classList.add('hidden');
-                
-                if (!doc.exists) {
-                    document.body.innerHTML = `
-                        <div class='min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center'>
-                            <div class='text-6xl mb-4'>😕</div>
-                            <h1 class='text-2xl font-bold text-gray-800 mb-2'>Ad Not Found</h1>
-                            <p class='text-gray-500 mb-6'>This ad might have been deleted or the link is incorrect.</p>
-                            <a href='index.html' class='bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700'>Go Home</a>
-                        </div>
-                    `;
-                    return;
-                }
+                if (!doc.exists) { document.body.innerHTML = "<div class='p-10 text-center'>Ad not found.</div>"; return; }
                 
                 currentAdData = doc.data();
                 const ad = currentAdData;
                 
-                // Show Content
-                document.getElementById('contentArea').classList.remove('hidden');
-                
-                // Handle Images safely
-                const images = ad.images && ad.images.length > 0 ? ad.images : [defaultImage];
-                document.getElementById('mainImage').src = images[0];
-                document.getElementById('mainImage').onerror = function() { this.src = defaultImage; };
-                document.getElementById('imgCount').innerText = images.length;
+                // Populate UI
+                document.getElementById('mainImage').src = ad.images[0] || 'https://via.placeholder.com/600x400';
+                document.getElementById('adTitle').innerText = ad.title;
+                document.getElementById('adPrice').innerText = `Rs. ${Number(ad.price).toLocaleString()}`;
+                document.getElementById('adCategory').innerText = ad.category;
+                document.getElementById('adLocation').innerText = ad.location;
+                document.getElementById('adDesc').innerText = ad.desc;
+                document.getElementById('adDate').innerText = new Date(ad.createdAt.seconds * 1000).toLocaleDateString();
+                window.adPhone = ad.phone;
 
-                // Populate Text Data
-                document.getElementById('adTitle').innerText = ad.title || 'Untitled Ad';
-                document.getElementById('adPrice').innerText = `Rs. ${Number(ad.price || 0).toLocaleString()}`;
-                document.getElementById('adCategory').innerText = ad.category || 'General';
-                document.getElementById('adLocation').innerText = ad.location || 'Sri Lanka';
-                document.getElementById('adDesc').innerText = ad.desc || 'No description provided.';
-                
-                // Format Date
-                const dateObj = ad.createdAt ? new Date(ad.createdAt.seconds * 1000) : new Date();
-                document.getElementById('adDate').innerText = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                
-                window.adPhone = ad.phone || 'N/A';
-
-                // Generate Thumbnails
-                const thumbGrid = document.getElementById('thumbGrid');
-                thumbGrid.innerHTML = images.map((img, index) => 
-                    `<img src="${img}" onerror="this.src='${defaultImage}'" onclick="changeMainImage('${img}')" 
-                      class="w-20 h-20 object-cover rounded-lg cursor-pointer border-2 ${index === 0 ? 'border-blue-500' : 'border-transparent'} hover:border-blue-300 transition-all bg-gray-200">`
+                // Thumbnails
+                document.getElementById('thumbGrid').innerHTML = ad.images.map(img => 
+                    `<img src="${img}" onclick="document.getElementById('mainImage').src='${img}'" class="w-16 h-16 object-cover rounded cursor-pointer border hover:border-blue-500 transition">`
                 ).join('');
 
                 // Update SEO Meta Tags Dynamically
-                document.title = `${ad.title} - Rs. ${ad.price} | Emarket Classifieds`;
-                document.getElementById('pageDesc').content = (ad.desc || '').substring(0, 150);
+                document.title = `${ad.title} - Rs. ${ad.price} | Emarket`;
+                document.getElementById('pageDesc').content = ad.desc.substring(0, 150);
                 document.getElementById('ogTitle').content = ad.title;
-                document.getElementById('ogDesc').content = (ad.desc || '').substring(0, 150);
-                document.getElementById('ogImage').content = images[0];
+                document.getElementById('ogDesc').content = ad.desc.substring(0, 150);
+                document.getElementById('ogImage').content = ad.images[0];
                 document.getElementById('ogUrl').content = window.location.href;
 
                 // Load Reviews
                 loadReviews(adId);
-            }).catch(err => {
-                console.error("Error loading ad:", err);
-                document.getElementById('loadingState').innerHTML = `<p class="text-red-500">Error loading data. Please try again.</p>`;
-            });
-        } else {
-            document.getElementById('loadingState').innerHTML = `
-                <p class="text-gray-500 mb-4">No Ad ID specified in URL.</p>
-                <a href="index.html" class="text-blue-600 font-bold hover:underline">Browse Ads Instead</a>
-            `;
-        }
-
-        function changeMainImage(src) {
-            document.getElementById('mainImage').src = src;
-            // Update active border on thumbnails
-            document.querySelectorAll('#thumbGrid img').forEach(img => {
-                img.classList.remove('border-blue-500');
-                img.classList.add('border-transparent');
-                if(img.src === src) {
-                    img.classList.add('border-blue-500');
-                    img.classList.remove('border-transparent');
-                }
             });
         }
 
         function revealPhone() {
-            const btn = document.getElementById('showPhoneBtn');
-            const content = document.getElementById('phoneRevealedContent');
-            const display = document.getElementById('phoneDisplay');
-            const link = document.getElementById('phoneLink');
-            
-            btn.classList.add('hidden');
-            content.classList.remove('hidden');
-            
+            document.getElementById('showPhoneBtn').classList.add('hidden');
+            const display = document.createElement('p');
+            display.className = "text-center text-lg font-bold text-gray-800 mt-2 tracking-widest";
             display.innerText = window.adPhone;
+            document.getElementById('showPhoneBtn').parentNode.insertBefore(display, document.getElementById('phoneLink'));
+            
+            const link = document.getElementById('phoneLink');
             link.href = `tel:${window.adPhone}`;
-            link.innerHTML = `<i class="fas fa-phone mr-2"></i> Call ${window.adPhone}`;
+            link.classList.remove('hidden');
+            link.innerText = ` Call ${window.adPhone}`;
         }
 
         // Social Share Functions
         function shareAd(platform) {
-            if (!currentAdData) return;
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(`Check out this ad on Emarket: ${currentAdData.title}`);
+            const text = encodeURIComponent(`Check out this ad: ${currentAdData.title}`);
             
             if (platform === 'whatsapp') window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
             if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
         }
 
         function copyLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("Link copied to clipboard!");
-            });
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied!");
         }
 
         // Review System
@@ -345,54 +216,35 @@
                 currentRating = parseInt(this.getAttribute('data-val'));
                 updateStars(currentRating);
             });
-            // Hover effect logic could be added here for better UX
         });
 
         function updateStars(rating) {
             document.querySelectorAll('#starContainer i').forEach((star, index) => {
-                if (index < rating) {
-                    star.classList.add('text-yellow-400');
-                    star.classList.remove('text-gray-300');
-                } else {
-                    star.classList.remove('text-yellow-400');
-                    star.classList.add('text-gray-300');
-                }
+                if (index < rating) star.classList.add('text-yellow-400');
+                else star.classList.remove('text-yellow-400');
             });
         }
 
         async function submitReview() {
             const user = auth.currentUser;
             if (!user) return alert("Please login first!");
-            if (currentRating === 0) return alert("Please select a star rating!");
+            if (currentRating === 0) return alert("Please select a rating!");
             
-            const text = document.getElementById('reviewText').value.trim();
-            if (!text) return alert("Please write a review comment!");
+            const text = document.getElementById('reviewText').value;
+            if (!text) return alert("Please write a review!");
 
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Submitting...";
-            btn.disabled = true;
+            await db.collection('ads').doc(adId).collection('reviews').add({
+                userId: user.uid,
+                userName: user.email.split('@')[0],
+                rating: currentRating,
+                text: text,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
 
-            try {
-                await db.collection('ads').doc(adId).collection('reviews').add({
-                    userId: user.uid,
-                    userName: user.email.split('@')[0],
-                    userPhoto: user.photoURL || '',
-                    rating: currentRating,
-                    text: text,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                document.getElementById('reviewText').value = "";
-                currentRating = 0;
-                updateStars(0);
-                alert("✅ Review submitted successfully!");
-            } catch (err) {
-                alert("Error submitting review: " + err.message);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
+            document.getElementById('reviewText').value = "";
+            currentRating = 0;
+            updateStars(0);
+            alert("Review submitted!");
         }
 
         function loadReviews(adId) {
@@ -401,7 +253,7 @@
                 let totalRating = 0;
                 
                 if (snap.empty) {
-                    list.innerHTML = '<p class="text-gray-400 text-sm text-center py-4 italic">No reviews yet. Be the first!</p>';
+                    list.innerHTML = '<p class="text-gray-400 text-sm">No reviews yet.</p>';
                     document.getElementById('avgRating').innerText = "(0 reviews)";
                     return;
                 }
@@ -409,20 +261,13 @@
                 list.innerHTML = snap.docs.map(doc => {
                     const r = doc.data();
                     totalRating += r.rating;
-                    const date = r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString() : '';
                     return `
-                        <div class="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-600">
-                                        ${r.userName.charAt(0).toUpperCase()}
-                                    </div>
-                                    <span class="font-bold text-sm text-gray-800">${r.userName}</span>
-                                </div>
-                                <div class="text-yellow-400 text-xs tracking-widest">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                        <div class="border-b pb-3 last:border-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sm text-gray-800">${r.userName}</span>
+                                <div class="text-yellow-400 text-xs">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
                             </div>
-                            <p class="text-sm text-gray-600 leading-relaxed">${r.text}</p>
-                            <p class="text-[10px] text-gray-400 mt-2">${date}</p>
+                            <p class="text-sm text-gray-600">${r.text}</p>
                         </div>
                     `;
                 }).join('');
@@ -434,64 +279,29 @@
 
         // Message Seller Logic
         function openChatModal() {
-            if (!auth.currentUser) {
-                if(confirm("Please login to message the seller.\n\nGo to login page?")) {
-                    window.location.href = "login.html";
-                }
-                return;
-            }
-            const modal = document.getElementById('chatModal');
-            const content = document.getElementById('chatModalContent');
-            modal.classList.remove('hidden');
-            // Small animation delay
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeChatModal() {
-            const modal = document.getElementById('chatModal');
-            const content = document.getElementById('chatModalContent');
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200);
+            if (!auth.currentUser) return alert("Please login to message seller!");
+            document.getElementById('chatModal').classList.remove('hidden');
         }
 
         async function sendMessageToSeller() {
             const user = auth.currentUser;
-            const msgInput = document.getElementById('chatMessage');
-            const msg = msgInput.value.trim();
-            if (!msg) return alert("Please type a message!");
+            const msg = document.getElementById('chatMessage').value;
+            if (!msg) return;
 
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            btn.disabled = true;
+            // Create a conversation or add message to 'messages' collection
+            await db.collection('messages').add({
+                adId: adId,
+                sellerUid: currentAdData.sellerUid,
+                buyerUid: user.uid,
+                buyerEmail: user.email,
+                message: msg,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
 
-            try {
-                await db.collection('messages').add({
-                    adId: adId,
-                    adTitle: currentAdData.title,
-                    sellerUid: currentAdData.sellerUid,
-                    buyerUid: user.uid,
-                    buyerEmail: user.email,
-                    message: msg,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    read: false
-                });
-
-                alert("✅ Message sent to seller!");
-                closeChatModal();
-                msgInput.value = "";
-            } catch (err) {
-                alert("Error sending message: " + err.message);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+            alert("Message sent to seller!");
+            document.getElementById('chatModal').classList.add('hidden');
+            document.getElementById('chatMessage').value = "";
         }
     </script>
 </body>
