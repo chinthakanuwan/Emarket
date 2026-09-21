@@ -3,44 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emarket - Home</title>
+    <title>Emarket - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen font-sans">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <!-- Navbar -->
-    <nav class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wide">Emarket 🛒</h1>
-            <div class="space-x-3 text-sm font-medium">
-                <a href="shop.html" class="hover:text-blue-200 transition">Shop</a>
-                <a href="login.html" class="bg-white text-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-50 transition shadow-sm">Login / Sign Up</a>
-            </div>
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm border border-gray-100">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-2">Emarket</h1>
+        <p class="text-center text-gray-500 mb-6 text-sm">ඔබේ ගිණුමට පිවිසෙන්න</p>
+        
+        <!-- Tabs -->
+        <div class="flex mb-6 bg-gray-100 p-1 rounded-lg">
+            <button id="tabLogin" class="w-1/2 py-2 rounded-md bg-white text-blue-600 font-bold shadow-sm transition-all" onclick="switchTab('login')">ලොග් වන්න</button>
+            <button id="tabSignup" class="w-1/2 py-2 rounded-md text-gray-500 font-medium transition-all" onclick="switchTab('signup')">ලියාපදිංචි වන්න</button>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <main class="flex-grow flex items-center justify-center p-6 text-center">
-        <div class="max-w-xl">
-            <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-xs font-bold mb-4">🇱🇰 Sri Lanka's Best Marketplace</span>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">බේ අවශ්‍ය සියල්ල <br><span class="text-blue-600">එක තැනින්!</span></h2>
-            <p class="text-gray-600 mb-8 text-lg">Electronics, Fashion, Home Appliances සහ තවත් බොහෝ දේවල් හොඳම මිලට, විශ්වාසවන්තව මිලදී ගන්න.</p>
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                <input type="email" id="lEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="example@email.com" required>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">මුරපදය</label>
+                <input type="password" id="lPass" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-md">ලොග් වන්න</button>
+        </form>
+
+        <!-- Signup Form (Hidden by default) -->
+        <form id="signupForm" class="space-y-4 hidden">
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">බේ නම</label>
+                <input type="text" id="sName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="Chinthaka Anuwan" required>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                <input type="email" id="sEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="example@email.com" required>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">මුරපදය (අකුරු 6+)</label>
+                <input type="password" id="sPass" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="w-full bg-green-600 text-white p-3 rounded-lg font-bold hover:bg-green-700 transition shadow-md">ගිණුම සාදන්න</button>
+        </form>
+
+        <p id="msg" class="text-center mt-4 text-sm font-medium min-h-[20px]"></p>
+        <a href="index.html" class="block text-center mt-6 text-blue-500 text-sm hover:underline">← Home Page එකට යන්න</a>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
+            authDomain: "emarket-e3421.firebaseapp.com",
+            projectId: "emarket-e3421",
+            storageBucket: "emarket-e3421.firebasestorage.app",
+            messagingSenderId: "1029527442178",
+            appId: "1:1029527442178:web:535443f333ce6e9deda81b"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabSignup = document.getElementById('tabSignup');
+            const msg = document.getElementById('msg');
+            msg.innerText = "";
+
+            if(tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                
+                tabLogin.className = "w-1/2 py-2 rounded-md bg-white text-blue-600 font-bold shadow-sm transition-all";
+                tabSignup.className = "w-1/2 py-2 rounded-md text-gray-500 font-medium transition-all";
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                
+                tabSignup.className = "w-1/2 py-2 rounded-md bg-white text-green-600 font-bold shadow-sm transition-all";
+                tabLogin.className = "w-1/2 py-2 rounded-md text-gray-500 font-medium transition-all";
+            }
+        }
+
+        // Login Logic
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('lEmail').value;
+            const pass = document.getElementById('lPass').value;
+            const msg = document.getElementById('msg');
             
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="shop.html" class="bg-blue-600 text-white px-8 py-3.5 rounded-xl text-lg font-bold hover:bg-blue-700 transition shadow-lg transform hover:-translate-y-1">
-                    🛍️ දැන්ම Shopping යන්න
-                </a>
-                <a href="login.html" class="bg-white text-gray-700 border border-gray-300 px-8 py-3.5 rounded-xl text-lg font-bold hover:bg-gray-50 transition">
-                    👤 ගිණුමක් සාදන්න
-                </a>
-            </div>
-        </div>
-    </main>
+            msg.innerText = "ලොග් වෙමින්...";
+            msg.className = "text-center mt-4 text-sm text-blue-600";
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 text-center p-6 mt-auto text-sm">
-        <p>&copy; 2024 Emarket. All rights reserved. | Designed for You</p>
-    </footer>
+            auth.signInWithEmailAndPassword(email, pass)
+                .then(() => { 
+                    msg.innerText = "සාර්ථකයි! Home එකට යමු...";
+                    setTimeout(() => window.location.href = "index.html", 1000);
+                })
+                .catch(err => { 
+                    msg.innerText = "වැරදි Email හෝ මුරපදයකි."; 
+                    msg.className = "text-center mt-4 text-sm text-red-600"; 
+                });
+        });
 
+        // Signup Logic
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('sName').value;
+            const email = document.getElementById('sEmail').value;
+            const pass = document.getElementById('sPass').value;
+            const msg = document.getElementById('msg');
+
+            msg.innerText = "ගිණුම සාදමින්...";
+            msg.className = "text-center mt-4 text-sm text-blue-600";
+            
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                await db.collection('users').doc(cred.user.uid).set({
+                    fullName: name, 
+                    email: email, 
+                    userType: 'customer',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                msg.innerText = "ගිණුම සාර්ථකව සාදන ලදී!";
+                msg.className = "text-center mt-4 text-sm text-green-600";
+                setTimeout(() => window.location.href = "index.html", 1500);
+            } catch(err) {
+                msg.innerText = err.message;
+                msg.className = "text-center mt-4 text-sm text-red-600";
+            }
+        });
+    </script>
 </body>
 </html>
