@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emarket - Admin Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100 p-4">
+
+    <!-- Header -->
+    <div class="max-w-4xl mx-auto bg-white p-4 rounded-lg shadow mb-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-600">📦 භාණ්ඩ කළමනාකරණය</h1>
+        <a href="admin.html" class="text-sm text-gray-500 hover:text-blue-600">← Dashboard</a>
+    </div>
+
+    <!-- Add Product Form -->
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mb-6">
+        <h2 class="text-xl font-bold mb-4">නව භාණ්ඩයක් එක් කරන්න</h2>
+        <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="pName" placeholder="භාණ්ඩයේ නම" class="border p-2 rounded" required>
+            <input type="number" id="pPrice" placeholder="මිල (Rs.)" class="border p-2 rounded" required>
+            
+            <select id="pCategory" class="border p-2 rounded" required>
+                <option value="">Category තෝරන්න</option>
+                <option value="Electronics">Electronics (ඉලෙක්ට්‍රොනික්ස්)</option>
+                <option value="Fashion">Fashion (ඇඳුම් පැළඳුම්)</option>
+                <option value="Home">Home & Living (ගෘහ භාණ්ඩ)</option>
+                <option value="Beauty">Beauty (රූපලාවන්‍ය)</option>
+            </select>
+            
+            <input type="text" id="pImage" placeholder="Image URL (Link එක)" class="border p-2 rounded">
+            <textarea id="pDesc" placeholder="කෙටි විස්තරය" class="border p-2 rounded md:col-span-2"></textarea>
+            
+            <button type="submit" class="bg-blue-600 text-white p-2 rounded md:col-span-2 hover:bg-blue-700">💾 ාණ්ඩය Save කරන්න</button>
+        </form>
+    </div>
+
+    <!-- Product List -->
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-bold mb-4">ලැයිස්තුව</h2>
+        <div id="productList" class="space-y-4">
+            <p class="text-gray-500">Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config (ඔයාගේම config එක දාන්න)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
+            authDomain: "emarket-e3421.firebaseapp.com",
+            projectId: "emarket-e3421",
+            storageBucket: "emarket-e3421.firebasestorage.app",
+            messagingSenderId: "1029527442178",
+            appId: "1:1029527442178:web:535443f333ce6e9deda81b"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Add Product
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const category = document.getElementById('pCategory').value;
+            const image = document.getElementById('pImage').value || 'https://via.placeholder.com/150';
+            const desc = document.getElementById('pDesc').value;
+
+            await db.collection('products').add({
+                name, price: Number(price), category, image, desc,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            alert("භාණ්ඩය එකතු විය!");
+            e.target.reset();
+        });
+
+        // Load & Delete Products
+        db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+            
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                list.innerHTML += `
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <h3 class="font-bold">${p.name}</h3>
+                            <p class="text-sm text-gray-500">${p.category} | Rs. ${p.price}</p>
+                        </div>
+                        <button onclick="deleteProduct('${doc.id}')" class="text-red-500 text-sm hover:underline">Delete</button>
+                    </div>
+                `;
+            });
+        });
+
+        async function deleteProduct(id) {
+            if(confirm('මකා දැමීමට අවශ්‍යද?')) {
+                await db.collection('products').doc(id).delete();
+            }
+        }
+    </script>
+</body>
+</html>
