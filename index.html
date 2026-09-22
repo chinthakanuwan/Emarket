@@ -51,7 +51,6 @@
                 <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
                     <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-sm">Categories</h3>
                     <ul class="space-y-1 text-xs" id="categoryList">
-                        <!-- Main Categories -->
                         <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-2 py-1.5 rounded">
                             <i class="fas fa-th-large w-4"></i> All Ads
                         </button></li>
@@ -73,21 +72,40 @@
                         <li><button onclick="filterCategory('Jobs')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
                             <i class="fas fa-briefcase w-4"></i> Jobs
                         </button></li>
-                        
-                        <!-- More Categories Button -->
                         <li class="pt-2 mt-2 border-t">
                             <button onclick="showMoreCategories()" class="w-full text-left flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded text-xs font-medium">
                                 <i class="fas fa-ellipsis-h"></i> More Categories
                             </button>
                         </li>
                     </ul>
+
+                    <!-- Ad Slot 1 (300x250) - Left Sidebar -->
+                    <div class="mt-6">
+                        <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                            <!-- මෙතනට ඔයාගේ Ad Code එක දාන්න -->
+                            <!-- දාහරණය: Google Ads හෝ Image Ad -->
+                            <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
+                                Ad Slot (300x250)<br>
+                                <span class="text-[10px]">Place your ad code here</span>
+                            </div>
+                            <!--
+                            Google Ads සඳහා:
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-XXXXXXXX"
+                                 data-ad-slot="XXXXXXXXXX"
+                                 data-ad-format="auto"></ins>
+                            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                            -->
+                        </div>
+                    </div>
                 </div>
             </aside>
 
             <!-- Main Content Area -->
             <main class="lg:col-span-10 space-y-6">
                 
-                <!-- Premium Ads Section (Section 1 & 2) -->
+                <!-- Premium Ads Section -->
                 <div>
                     <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <i class="fas fa-star text-yellow-500"></i> Premium Ads
@@ -100,7 +118,29 @@
                     </div>
                 </div>
 
-                <!-- Latest Ads Section (Section 3, 4, 5) -->
+                <!-- Horizontal Ad Slot (728x90) - Middle -->
+                <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                    <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
+                        Ad Slot (728x90) - Place your horizontal ad here
+                    </div>
+                    <!--
+                    Google Ads හෝ Custom Ad:
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-XXXXXXXX"
+                         data-ad-slot="XXXXXXXXXX"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    
+                    හෝ Image Ad:
+                    <a href="YOUR_LINK_HERE" target="_blank">
+                        <img src="YOUR_IMAGE_URL" alt="Advertisement" class="w-full h-24 object-cover">
+                    </a>
+                    -->
+                </div>
+
+                <!-- Latest Ads Section -->
                 <div>
                     <h2 class="text-lg font-bold text-gray-800 mb-3">Latest Ads</h2>
                     <div id="latestAdsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -112,6 +152,34 @@
                 </div>
 
             </main>
+
+            <!-- Right Sidebar - Vertical Ad Slot (160x600) -->
+            <aside class="hidden xl:block xl:col-span-2">
+                <div class="sticky top-20">
+                    <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                        <div class="h-[600px] flex items-center justify-center text-gray-400 text-xs text-center p-4" style="writing-mode: vertical-rl; transform: rotate(180deg);">
+                            Ad Slot (160x600)<br>
+                            <span class="text-[10px]">Place your vertical ad here</span>
+                        </div>
+                        <!--
+                        Google Ads හෝ Custom Ad:
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXX"
+                             data-ad-slot="XXXXXXXXXX"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                        
+                        හෝ Image Ad:
+                        <a href="YOUR_LINK_HERE" target="_blank">
+                            <img src="YOUR_IMAGE_URL" alt="Advertisement" class="w-full h-[600px] object-cover">
+                        </a>
+                        -->
+                    </div>
+                </div>
+            </aside>
+
         </div>
     </div>
 
@@ -220,7 +288,7 @@
                     renderAds('latestAdsGrid', latestAds, false);
                 })
                 .catch(error => {
-                    console.error("❌ Error:", error);
+                    console.error(" Error:", error);
                     document.getElementById('latestAdsGrid').innerHTML = `
                         <div class="col-span-full text-center py-10">
                             <p class="text-red-500 font-bold mb-2">Error loading ads</p>
