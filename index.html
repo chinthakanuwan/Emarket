@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emarket - Sri Lanka's Best Classifieds</title>
-    <meta name="description" content="Buy and sell cars, land, houses, mobile phones in Sri Lanka. Free ads on Emarket.">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -15,7 +13,7 @@
 <body class="bg-gray-50">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
@@ -48,7 +46,7 @@
     <div class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             
-            <!-- Left Sidebar - Categories -->
+            <!-- Left Sidebar -->
             <aside class="lg:col-span-1">
                 <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
                     <h3 class="font-bold text-gray-800 mb-3 border-b pb-2">Categories</h3>
@@ -57,10 +55,10 @@
                             <i class="fas fa-th-large w-5"></i> All Ads
                         </button></li>
                         <li><button onclick="filterCategory('Vehicles')" id="cat-Vehicles" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-car w-5"></i> Vehicles (Cars/Bikes)
+                            <i class="fas fa-car w-5"></i> Vehicles
                         </button></li>
                         <li><button onclick="filterCategory('Property')" id="cat-Property" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-home w-5"></i> Property (House/Land/Rent)
+                            <i class="fas fa-home w-5"></i> Property
                         </button></li>
                         <li><button onclick="filterCategory('Mobiles')" id="cat-Mobiles" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
                             <i class="fas fa-mobile-alt w-5"></i> Mobile Phones
@@ -78,66 +76,48 @@
                             <i class="fas fa-briefcase w-5"></i> Jobs
                         </button></li>
                     </ul>
-
-                    <!-- Ad Slot 300x250 -->
-                    <div class="mt-6 bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
+                    <div class="mt-6 bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-400 text-xs border-2 border-dashed border-gray-300">
                         Ad Slot (300x250)
                     </div>
                 </div>
             </aside>
 
-            <!-- Main Content Area -->
+            <!-- Main Content -->
             <main class="lg:col-span-2 space-y-6">
-                
-                <!-- Premium Ads Section -->
+                <!-- Premium Ads -->
                 <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <i class="fas fa-star text-yellow-500"></i> Premium Ads
-                        </h2>
-                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Sponsored</span>
-                    </div>
+                    <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <i class="fas fa-star text-yellow-500"></i> Premium Ads
+                    </h2>
                     <div id="premiumAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="col-span-2 text-center py-10 text-gray-400">
-                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                            <p>Loading premium ads...</p>
-                        </div>
+                        <div class="col-span-2 text-center py-10 text-gray-400">Loading...</div>
                     </div>
                 </div>
 
-                <!-- Horizontal Ad Slot -->
-                <div class="bg-gray-200 h-24 rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
-                    Horizontal Ad Slot (728x90)
+                <!-- Ad Slot -->
+                <div class="bg-gray-200 h-24 rounded-lg flex items-center justify-center text-gray-400 text-xs border-2 border-dashed border-gray-300">
+                    Ad Slot (728x90)
                 </div>
 
-                <!-- Latest Ads Section -->
+                <!-- Latest Ads -->
                 <div>
                     <h2 class="text-lg font-bold text-gray-800 mb-3">Latest Ads</h2>
                     <div id="latestAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="col-span-2 text-center py-10 text-gray-400">
-                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                            <p>Loading ads...</p>
-                        </div>
+                        <div class="col-span-2 text-center py-10 text-gray-400">Loading...</div>
                     </div>
                 </div>
             </main>
 
-            <!-- Right Sidebar - Ad Slot -->
+            <!-- Right Sidebar -->
             <aside class="hidden lg:block lg:col-span-1">
                 <div class="sticky top-20">
-                    <div class="bg-gray-200 h-[600px] rounded-lg flex items-center justify-center text-gray-400 text-sm border-2 border-dashed border-gray-300">
-                        Vertical Ad Slot (160x600)
+                    <div class="bg-gray-200 h-[600px] rounded-lg flex items-center justify-center text-gray-400 text-xs border-2 border-dashed border-gray-300">
+                        Ad Slot (160x600)
                     </div>
                 </div>
             </aside>
-
         </div>
     </div>
-
-    <!-- Mobile FAB -->
-    <a href="post-ad.html" class="md:hidden fixed bottom-6 right-6 bg-orange-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg text-2xl z-50 hover:bg-orange-600">
-        <i class="fas fa-plus"></i>
-    </a>
 
     <script>
         // Firebase Config
@@ -149,116 +129,127 @@
             messagingSenderId: "1029527442178",
             appId: "1:1029527442178:web:535443f333ce6e9deda81b"
         };
+        
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.firestore();
-
+        const auth = firebase.auth();
         let currentCategory = 'All';
 
-        // Auth UI
+        // Auth State
         auth.onAuthStateChanged(user => {
             const authSection = document.getElementById('authSection');
             if (user) {
                 authSection.innerHTML = `
-                    <div class="relative group">
-                        <button class="flex items-center gap-2 text-gray-700 font-medium hover:text-blue-600">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">
-                                ${user.email.charAt(0).toUpperCase()}
-                            </div>
-                            <span class="hidden md:inline">${user.email.split('@')[0]}</span>
-                        </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block border z-50">
-                            <a href="my-ads.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Ads</a>
-                            <a href="admin.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Panel</a>
-                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            ${user.email.charAt(0).toUpperCase()}
                         </div>
+                        <span class="hidden md:inline text-sm font-medium">${user.email.split('@')[0]}</span>
                     </div>
                 `;
-            } else {
-                authSection.innerHTML = `<a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>`;
             }
         });
 
-        function logout() {
-            auth.signOut().then(() => window.location.reload());
-        }
-
-        // Load Ads from Firestore (Fixed - No Index Required)
+        // Load Ads - Using simple query
         function loadAds() {
-            // Load ALL approved ads first
-            db.collection('ads')
-                .where('status', '==', 'approved')
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    const allApprovedAds = snapshot.docs.map(doc => ({
+            console.log("🔄 Loading ads...");
+            
+            // First, let's test if we can access Firestore
+            db.collection('ads').limit(1).get()
+                .then(testSnapshot => {
+                    console.log("✅ Firestore connection successful!");
+                    
+                    // Now load approved ads
+                    return db.collection('ads')
+                        .where('status', '==', 'approved')
+                        .orderBy('createdAt', 'desc')
+                        .get();
+                })
+                .then(snapshot => {
+                    console.log("✅ Found", snapshot.size, "approved ads");
+                    
+                    if (snapshot.empty) {
+                        document.getElementById('premiumAdsGrid').innerHTML = 
+                            '<div class="col-span-2 text-center py-10 text-gray-400">No ads yet</div>';
+                        document.getElementById('latestAdsGrid').innerHTML = 
+                            '<div class="col-span-2 text-center py-10 text-gray-400">No ads available</div>';
+                        return;
+                    }
+                    
+                    const allAds = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
                     }));
                     
-                    // Client-side filtering for Premium
-                    const premiumAds = allApprovedAds.filter(ad => ad.isPremium === true).slice(0, 4);
+                    console.log("📊 Ads loaded:", allAds);
                     
-                    // Client-side filtering for Category
+                    // Filter Premium
+                    const premiumAds = allAds.filter(ad => ad.isPremium === true).slice(0, 4);
+                    
+                    // Filter by Category
                     let latestAds = currentCategory === 'All' 
-                        ? allApprovedAds.slice(0, 10)
-                        : allApprovedAds.filter(ad => ad.category === currentCategory).slice(0, 10);
+                        ? allAds.slice(0, 10)
+                        : allAds.filter(ad => ad.category === currentCategory).slice(0, 10);
                     
-                    // Render Premium Ads
-                    const premiumGrid = document.getElementById('premiumAdsGrid');
-                    if (premiumAds.length === 0) {
-                        premiumGrid.innerHTML = '<div class="col-span-2 text-center py-8 text-gray-400">No premium ads available</div>';
-                    } else {
-                        premiumGrid.innerHTML = premiumAds.map(ad => createAdCard(ad)).join('');
-                    }
-                    
-                    // Render Latest Ads
-                    const latestGrid = document.getElementById('latestAdsGrid');
-                    if (latestAds.length === 0) {
-                        latestGrid.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found in this category</div>';
-                    } else {
-                        latestGrid.innerHTML = latestAds.map(ad => createAdCard(ad)).join('');
-                    }
-                }, error => {
-                    console.error("Error loading ads:", error);
-                    document.getElementById('latestAdsGrid').innerHTML = 
-                        '<div class="col-span-2 text-center py-10 text-red-500">Error loading ads. Check console for details.</div>';
+                    // Render
+                    renderAds('premiumAdsGrid', premiumAds);
+                    renderAds('latestAdsGrid', latestAds);
+                })
+                .catch(error => {
+                    console.error("❌ Error:", error);
+                    document.getElementById('latestAdsGrid').innerHTML = `
+                        <div class="col-span-2 text-center py-10">
+                            <p class="text-red-500 font-bold mb-2">Error loading ads</p>
+                            <p class="text-sm text-gray-600">${error.message}</p>
+                            <p class="text-xs text-gray-500 mt-2">Check console for details</p>
+                        </div>
+                    `;
                 });
         }
 
-        // Create Ad Card HTML
-        function createAdCard(ad) {
-            const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
+        // Render Ads
+        function renderAds(containerId, ads) {
+            const container = document.getElementById(containerId);
             
-            return `
-                <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer" 
-                         onclick="window.location.href='ad-details.html?id=${ad.id}'">
-                    <div class="relative h-48 bg-gray-100">
-                        <img src="${imageUrl}" 
-                             onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
-                             alt="${ad.title}" 
-                             class="w-full h-full object-cover">
-                        ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
-                        <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">${ad.category}</span>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title}</h3>
-                        <p class="text-blue-700 font-extrabold text-lg">Rs. ${Number(ad.price).toLocaleString()}</p>
-                        <p class="text-xs text-gray-500 mt-1 truncate">
-                            <i class="fas fa-map-marker-alt mr-1"></i>${ad.location || 'Sri Lanka'}
-                        </p>
-                        <p class="text-xs text-gray-400 mt-2">
-                            ${ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently'}
-                        </p>
-                    </div>
-                </article>
-            `;
+            if (ads.length === 0) {
+                container.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found</div>';
+                return;
+            }
+            
+            container.innerHTML = ads.map(ad => {
+                const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
+                const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
+                const location = ad.location || 'Sri Lanka';
+                const date = ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
+                
+                return `
+                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer" 
+                             onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                        <div class="relative h-48 bg-gray-100">
+                            <img src="${imageUrl}" 
+                                 onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
+                                 alt="${ad.title}" 
+                                 class="w-full h-full object-cover">
+                            ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
+                            <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">${ad.category || 'General'}</span>
+                        </div>
+                        <div class="p-3">
+                            <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title || 'Untitled'}</h3>
+                            <p class="text-blue-700 font-extrabold text-lg">${price}</p>
+                            <p class="text-xs text-gray-500 mt-1 truncate">
+                                <i class="fas fa-map-marker-alt mr-1"></i>${location}
+                            </p>
+                            <p class="text-xs text-gray-400 mt-2">${date}</p>
+                        </div>
+                    </article>
+                `;
+            }).join('');
         }
 
-        // Filter by Category
+        // Filter Category
         function filterCategory(category) {
             currentCategory = category;
             
-            // Update active category button
             document.querySelectorAll('[id^="cat-"]').forEach(btn => {
                 btn.classList.remove('text-blue-600', 'font-medium', 'bg-blue-50');
                 btn.classList.add('text-gray-600');
@@ -270,44 +261,35 @@
                 activeBtn.classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
             }
             
-            // Reload ads
             loadAds();
         }
 
-        // Search Function
+        // Search
         function searchAds() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            if (!searchTerm) {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            if (!term) {
                 loadAds();
                 return;
             }
             
-            // Reload all ads and filter client-side
             db.collection('ads')
                 .where('status', '==', 'approved')
                 .get()
                 .then(snapshot => {
-                    const allAds = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
+                    const filtered = snapshot.docs
+                        .map(doc => ({id: doc.id, ...doc.data()}))
+                        .filter(ad => 
+                            (ad.title && ad.title.toLowerCase().includes(term)) ||
+                            (ad.desc && ad.desc.toLowerCase().includes(term))
+                        );
                     
-                    const filteredAds = allAds.filter(ad => 
-                        ad.title.toLowerCase().includes(searchTerm) ||
-                        (ad.desc && ad.desc.toLowerCase().includes(searchTerm))
-                    );
-                    
-                    const grid = document.getElementById('latestAdsGrid');
-                    if (filteredAds.length === 0) {
-                        grid.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found matching your search</div>';
-                    } else {
-                        grid.innerHTML = filteredAds.map(ad => createAdCard(ad)).join('');
-                    }
+                    renderAds('latestAdsGrid', filtered);
                 });
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("🚀 Emarket initialized");
             filterCategory('All');
             loadAds();
         });
