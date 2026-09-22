@@ -21,7 +21,7 @@
     </div>
 
     <!-- Hero Slider -->
-    <div class="bg-gray-900 text-white py-12">
+    <div class="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">Buy & Sell Anything in Sri Lanka</h1>
@@ -94,7 +94,7 @@
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-6">
         
-        <!-- Premium Ads Section (Moved to top of main content) -->
+        <!-- Premium Ads Section -->
         <div class="mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="fas fa-star text-yellow-500"></i> Premium Ads
@@ -107,16 +107,16 @@
             </div>
         </div>
 
-        <!-- Horizontal Ad Slot -->
-        <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200 mb-8">
+        <!-- Middle Horizontal Ad Slot (728x90) -->
+        <div id="middleHorizontalAd" class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200 mb-8">
             <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
-                Ad Slot (728x90) - Place your horizontal ad here
+                <i class="fas fa-spinner fa-spin mr-2"></i> Loading ad...
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Left Sidebar - Categories -->
+            <!-- Left Sidebar - Categories + Ad Slot -->
             <aside class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm p-4 sticky top-32">
                     <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-sm">Categories</h3>
@@ -142,12 +142,18 @@
                         <li><button onclick="filterCategory('Jobs')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
                             <i class="fas fa-briefcase w-4"></i> Jobs
                         </button></li>
+                        <li class="pt-2 mt-2 border-t">
+                            <button onclick="showMoreCategories()" class="w-full text-left flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded text-xs font-medium">
+                                <i class="fas fa-ellipsis-h"></i> More Categories
+                            </button>
+                        </li>
                     </ul>
 
-                    <!-- Ad Slot (300x250) -->
-                    <div class="mt-6 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                    <!-- Left Sidebar Ad Slot (300x250) -->
+                    <div id="leftSidebarAd" class="mt-6 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
                         <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                            Ad Slot (300x250)
+                            <i class="fas fa-spinner fa-spin mb-2 block"></i>
+                            <p>Loading ad...</p>
                         </div>
                     </div>
                 </div>
@@ -167,8 +173,16 @@
                     </div>
                 </div>
 
-                <!-- Subcategories Section (Moved below ads) -->
-                <div class="mt-12 bg-white rounded-lg shadow-sm p-6">
+                <!-- Bottom Ad Slot -->
+                <div id="bottomAdSlot" class="mt-8 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                    <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
+                        <i class="fas fa-spinner fa-spin mb-2 block"></i>
+                        <p>Loading ad...</p>
+                    </div>
+                </div>
+
+                <!-- Subcategories Section -->
+                <div class="mt-8 bg-white rounded-lg shadow-sm p-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">Explore by Category</h3>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         <button onclick="filterCategory('Vehicles')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
@@ -197,19 +211,10 @@
                         </button>
                     </div>
                     
-                    <!-- More Categories Button -->
                     <div class="mt-6 text-center">
                         <button onclick="showMoreCategories()" class="text-blue-600 hover:text-blue-700 font-medium">
                             <i class="fas fa-ellipsis-h mr-2"></i>More Categories
                         </button>
-                    </div>
-                </div>
-
-                <!-- Right Sidebar Ad Slot (Moved to bottom) -->
-                <div class="mt-8 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                    <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                        Ad Slot<br>
-                        <span class="text-[10px]">Place your ad code here</span>
                     </div>
                 </div>
             </main>
@@ -280,7 +285,97 @@
             }
         });
 
-        // Load Ads
+        // ===== AD SLOTS LOADING =====
+        function loadAdSlots() {
+            // Left Sidebar Ad (300x250)
+            db.collection('adSlots').doc('sidebar-left').onSnapshot(doc => {
+                const container = document.getElementById('leftSidebarAd');
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.image && data.image.trim() !== '') {
+                        container.innerHTML = `
+                            <a href="${data.link || '#'}" target="_blank" class="block">
+                                <img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover">
+                            </a>
+                        `;
+                    } else if (data.googleCode) {
+                        container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
+                    } else {
+                        container.innerHTML = `
+                            <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
+                                Ad Slot (300x250)
+                            </div>
+                        `;
+                    }
+                } else {
+                    container.innerHTML = `
+                        <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
+                            Ad Slot (300x250)
+                        </div>
+                    `;
+                }
+            });
+
+            // Middle Horizontal Ad (728x90)
+            db.collection('adSlots').doc('middle-horizontal').onSnapshot(doc => {
+                const container = document.getElementById('middleHorizontalAd');
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.image && data.image.trim() !== '') {
+                        container.innerHTML = `
+                            <a href="${data.link || '#'}" target="_blank" class="block">
+                                <img src="${data.image}" alt="Advertisement" class="w-full h-24 object-cover">
+                            </a>
+                        `;
+                    } else if (data.googleCode) {
+                        container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
+                    } else {
+                        container.innerHTML = `
+                            <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
+                                Ad Slot (728x90)
+                            </div>
+                        `;
+                    }
+                } else {
+                    container.innerHTML = `
+                        <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
+                            Ad Slot (728x90)
+                        </div>
+                    `;
+                }
+            });
+
+            // Bottom Ad Slot (use sidebar-right as bottom)
+            db.collection('adSlots').doc('sidebar-right').onSnapshot(doc => {
+                const container = document.getElementById('bottomAdSlot');
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.image && data.image.trim() !== '') {
+                        container.innerHTML = `
+                            <a href="${data.link || '#'}" target="_blank" class="block">
+                                <img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover">
+                            </a>
+                        `;
+                    } else if (data.googleCode) {
+                        container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
+                    } else {
+                        container.innerHTML = `
+                            <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
+                                Ad Slot
+                            </div>
+                        `;
+                    }
+                } else {
+                    container.innerHTML = `
+                        <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
+                            Ad Slot
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // ===== ADS LOADING =====
         function loadAds() {
             db.collection('ads').get()
                 .then(snapshot => {
@@ -322,7 +417,7 @@
                 });
         }
 
-        // Render Ads - 4 per row
+        // Render Ads
         function renderAds(containerId, ads, isPremium) {
             const container = document.getElementById(containerId);
             
@@ -331,7 +426,6 @@
                 return;
             }
             
-            // Grid: 4 per row on large screens, 2 on medium, 2 on small
             const gridClass = isPremium ? 'grid grid-cols-2 md:grid-cols-4 gap-4' : 'grid grid-cols-2 md:grid-cols-4 gap-4';
             container.className = gridClass;
             
@@ -371,8 +465,13 @@
                 btn.classList.add('text-gray-600');
             });
             
-            event.target.closest('button').classList.remove('text-gray-600');
-            event.target.closest('button').classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
+            if (event && event.target) {
+                const btn = event.target.closest('button');
+                if (btn) {
+                    btn.classList.remove('text-gray-600');
+                    btn.classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
+                }
+            }
             
             loadAds();
             closeMoreCategories();
@@ -409,6 +508,8 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("🚀 Emarket initialized");
+            loadAdSlots();
             loadAds();
         });
 
