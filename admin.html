@@ -458,6 +458,9 @@
                         </td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-1">
+                                <button onclick="editAd('${ad.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
                                 ${ad.status !== 'approved' ? `<button onclick="approveAd('${ad.id}')" class="p-2 text-green-600 hover:bg-green-50 rounded" title="Approve"><i class="fas fa-check"></i></button>` : ''}
                                 ${ad.status !== 'rejected' ? `<button onclick="rejectAd('${ad.id}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded" title="Reject"><i class="fas fa-times"></i></button>` : ''}
                                 <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 rounded" title="Toggle Premium">
@@ -471,6 +474,37 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        // Edit Ad Function
+        function editAd(adId) {
+            const ad = allAds.find(a => a.id === adId);
+            if (!ad) return;
+            
+            const newTitle = prompt('Edit Title:', ad.title);
+            if (newTitle === null) return;
+            
+            const newPrice = prompt('Edit Price:', ad.price);
+            if (newPrice === null) return;
+            
+            const newDesc = prompt('Edit Description:', ad.desc || '');
+            if (newDesc === null) return;
+            
+            const newLocation = prompt('Edit Location:', ad.location || '');
+            if (newLocation === null) return;
+            
+            db.collection('ads').doc(adId).update({
+                title: newTitle,
+                price: Number(newPrice),
+                desc: newDesc,
+                location: newLocation,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                showToast('Ad updated successfully!', 'success');
+                loadAds();
+            }).catch(err => {
+                showToast('Error: ' + err.message, 'error');
+            });
         }
 
         // Load Users
