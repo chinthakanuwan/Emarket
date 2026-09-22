@@ -301,18 +301,10 @@
                     } else if (data.googleCode) {
                         container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
                     } else {
-                        container.innerHTML = `
-                            <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                                Ad Slot (300x250)
-                            </div>
-                        `;
+                        container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot (300x250)</div>`;
                     }
                 } else {
-                    container.innerHTML = `
-                        <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                            Ad Slot (300x250)
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot (300x250)</div>`;
                 }
             });
 
@@ -330,22 +322,14 @@
                     } else if (data.googleCode) {
                         container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
                     } else {
-                        container.innerHTML = `
-                            <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
-                                Ad Slot (728x90)
-                            </div>
-                        `;
+                        container.innerHTML = `<div class="h-24 flex items-center justify-center text-gray-400 text-xs">Ad Slot (728x90)</div>`;
                     }
                 } else {
-                    container.innerHTML = `
-                        <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
-                            Ad Slot (728x90)
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="h-24 flex items-center justify-center text-gray-400 text-xs">Ad Slot (728x90)</div>`;
                 }
             });
 
-            // Bottom Ad Slot (use sidebar-right as bottom)
+            // Bottom Ad Slot
             db.collection('adSlots').doc('sidebar-right').onSnapshot(doc => {
                 const container = document.getElementById('bottomAdSlot');
                 if (doc.exists) {
@@ -359,26 +343,22 @@
                     } else if (data.googleCode) {
                         container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
                     } else {
-                        container.innerHTML = `
-                            <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                                Ad Slot
-                            </div>
-                        `;
+                        container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot</div>`;
                     }
                 } else {
-                    container.innerHTML = `
-                        <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                            Ad Slot
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot</div>`;
                 }
             });
         }
 
         // ===== ADS LOADING =====
         function loadAds() {
+            console.log("🔄 Loading ads for category:", currentCategory);
+            
             db.collection('ads').get()
                 .then(snapshot => {
+                    console.log("✅ Found", snapshot.size, "total ads");
+                    
                     if (snapshot.empty) {
                         document.getElementById('premiumAdsGrid').innerHTML = 
                             '<div class="col-span-full text-center py-10 text-gray-400">No premium ads</div>';
@@ -392,28 +372,52 @@
                         ...doc.data()
                     }));
                     
-                    let approvedAds = allAds.filter(ad => ad.status === 'approved');
+                    console.log(" All ads:", allAds);
                     
+                    // Filter: ONLY approved ads
+                    let approvedAds = allAds.filter(ad => {
+                        const isApproved = ad.status === 'approved';
+                        console.log(`Ad: ${ad.title}, Status: ${ad.status}, Approved: ${isApproved}`);
+                        return isApproved;
+                    });
+                    
+                    console.log("✅ Approved ads:", approvedAds.length);
+                    
+                    // Filter by category if needed
                     if (currentCategory !== 'All') {
                         approvedAds = approvedAds.filter(ad => ad.category === currentCategory);
+                        console.log("📁 Category filtered:", approvedAds.length);
                     }
                     
+                    // Sort by createdAt (newest first)
                     approvedAds.sort((a, b) => {
                         const dateA = a.createdAt ? a.createdAt.seconds : 0;
                         const dateB = b.createdAt ? b.createdAt.seconds : 0;
                         return dateB - dateA;
                     });
                     
+                    // Filter Premium ads
                     const premiumAds = approvedAds.filter(ad => ad.isPremium === true).slice(0, 4);
-                    const latestAds = approvedAds.filter(ad => !ad.isPremium).slice(0, 8);
                     
-                    document.getElementById('adsCount').textContent = `${latestAds.length} ads found`;
+                    // Latest ads
+                    const latestAds = approvedAds.slice(0, 8);
                     
+                    console.log("⭐ Premium:", premiumAds.length, "Latest:", latestAds.length);
+                    
+                    // Update count
+                    document.getElementById('adsCount').textContent = `${approvedAds.length} ads found`;
+                    
+                    // Render
                     renderAds('premiumAdsGrid', premiumAds, true);
                     renderAds('latestAdsGrid', latestAds, false);
                 })
                 .catch(error => {
-                    console.error("❌ Error:", error);
+                    console.error("❌ Error loading ads:", error);
+                    document.getElementById('latestAdsGrid').innerHTML = 
+                        `<div class="col-span-full text-center py-10 text-red-500">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                            <p>Error: ${error.message}</p>
+                        </div>`;
                 });
         }
 
