@@ -3,214 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emarket - Sri Lanka's Best Classifieds</title>
+    <title>Emarket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
-                    <i class="fas fa-layer-group"></i> Emarket
-                </a>
-                
-                <div class="flex-1 max-w-2xl">
-                    <div class="flex gap-2">
-                        <input type="text" id="searchInput" placeholder="Search ads..." 
-                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                        <button onclick="searchAds()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600">
-                        <i class="fas fa-plus mr-2"></i>Post Free Ad
-                    </a>
-                    <div id="authSection">
-                        <a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>
-                    </div>
-                </div>
-            </div>
+    <nav class="bg-white shadow-sm p-4">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold text-blue-600">Emarket</h1>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- Left Sidebar - Categories -->
-            <aside class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
-                    <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-sm">Categories</h3>
-                    <ul class="space-y-1 text-xs" id="categoryList">
-                        <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-th-large w-4"></i> All Ads
-                        </button></li>
-                        <li><button onclick="filterCategory('Vehicles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-car w-4"></i> Vehicles
-                        </button></li>
-                        <li><button onclick="filterCategory('Property')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-home w-4"></i> Property
-                        </button></li>
-                        <li><button onclick="filterCategory('Mobiles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-mobile-alt w-4"></i> Mobile Phones
-                        </button></li>
-                        <li><button onclick="filterCategory('Electronics')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-laptop w-4"></i> Electronics
-                        </button></li>
-                        <li><button onclick="filterCategory('Fashion')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-tshirt w-4"></i> Fashion
-                        </button></li>
-                        <li><button onclick="filterCategory('Jobs')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-briefcase w-4"></i> Jobs
-                        </button></li>
-                        <li class="pt-2 mt-2 border-t">
-                            <button onclick="showMoreCategories()" class="w-full text-left flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded text-xs font-medium">
-                                <i class="fas fa-ellipsis-h"></i> More Categories
-                            </button>
-                        </li>
-                    </ul>
-
-                    <!-- Ad Slot 1 (300x250) - Left Sidebar -->
-                    <div class="mt-6">
-                        <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                            <!-- මෙතනට ඔයාගේ Ad Code එක දාන්න -->
-                            <!-- දාහරණය: Google Ads හෝ Image Ad -->
-                            <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                                Ad Slot (300x250)<br>
-                                <span class="text-[10px]">Place your ad code here</span>
-                            </div>
-                            <!--
-                            Google Ads සඳහා:
-                            <ins class="adsbygoogle"
-                                 style="display:block"
-                                 data-ad-client="ca-pub-XXXXXXXX"
-                                 data-ad-slot="XXXXXXXXXX"
-                                 data-ad-format="auto"></ins>
-                            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                            -->
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Main Content Area -->
-            <main class="lg:col-span-10 space-y-6">
-                
-                <!-- Premium Ads Section -->
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                        <i class="fas fa-star text-yellow-500"></i> Premium Ads
-                    </h2>
-                    <div id="premiumAdsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="col-span-2 text-center py-10 text-gray-400">
-                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                            <p>Loading premium ads...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Horizontal Ad Slot (728x90) - Middle -->
-                <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                    <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
-                        Ad Slot (728x90) - Place your horizontal ad here
-                    </div>
-                    <!--
-                    Google Ads හෝ Custom Ad:
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-XXXXXXXX"
-                         data-ad-slot="XXXXXXXXXX"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                    
-                    හෝ Image Ad:
-                    <a href="YOUR_LINK_HERE" target="_blank">
-                        <img src="YOUR_IMAGE_URL" alt="Advertisement" class="w-full h-24 object-cover">
-                    </a>
-                    -->
-                </div>
-
-                <!-- Latest Ads Section -->
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800 mb-3">Latest Ads</h2>
-                    <div id="latestAdsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="col-span-full text-center py-10 text-gray-400">
-                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                            <p>Loading ads...</p>
-                        </div>
-                    </div>
-                </div>
-
-            </main>
-
-            <!-- Right Sidebar - Vertical Ad Slot (160x600) -->
-            <aside class="hidden xl:block xl:col-span-2">
-                <div class="sticky top-20">
-                    <div class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                        <div class="h-[600px] flex items-center justify-center text-gray-400 text-xs text-center p-4" style="writing-mode: vertical-rl; transform: rotate(180deg);">
-                            Ad Slot (160x600)<br>
-                            <span class="text-[10px]">Place your vertical ad here</span>
-                        </div>
-                        <!--
-                        Google Ads හෝ Custom Ad:
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-XXXXXXXX"
-                             data-ad-slot="XXXXXXXXXX"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                        
-                        හෝ Image Ad:
-                        <a href="YOUR_LINK_HERE" target="_blank">
-                            <img src="YOUR_IMAGE_URL" alt="Advertisement" class="w-full h-[600px] object-cover">
-                        </a>
-                        -->
-                    </div>
-                </div>
-            </aside>
-
+        <!-- Status Message -->
+        <div id="statusMessage" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p class="text-blue-800">Initializing...</p>
         </div>
-    </div>
 
-    <!-- More Categories Modal -->
-    <div id="moreCategoriesModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-md w-full p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">All Categories</h3>
-                <button onclick="closeMoreCategories()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
+        <!-- Premium Ads -->
+        <div class="mb-6">
+            <h2 class="text-xl font-bold mb-3">Premium Ads</h2>
+            <div id="premiumAds" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p class="text-gray-400">Loading...</p>
             </div>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="filterCategory('Hotels')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-hotel mr-2"></i> Hotels
-                </button>
-                <button onclick="filterCategory('Restaurants')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-utensils mr-2"></i> Restaurants
-                </button>
-                <button onclick="filterCategory('Services')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-tools mr-2"></i> Services
-                </button>
-                <button onclick="filterCategory('Pets')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-paw mr-2"></i> Pets
-                </button>
-                <button onclick="filterCategory('Sports')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-football-ball mr-2"></i> Sports
-                </button>
-                <button onclick="filterCategory('Books')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-book mr-2"></i> Books
-                </button>
+        </div>
+
+        <!-- Latest Ads -->
+        <div>
+            <h2 class="text-xl font-bold mb-3">Latest Ads</h2>
+            <div id="latestAds" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <p class="text-gray-400">Loading...</p>
             </div>
         </div>
     </div>
@@ -228,180 +53,122 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
-        let currentCategory = 'All';
+        
+        const statusDiv = document.getElementById('statusMessage');
+        
+        function updateStatus(message, type = 'info') {
+            const colors = {
+                info: 'bg-blue-50 border-blue-200 text-blue-800',
+                success: 'bg-green-50 border-green-200 text-green-800',
+                error: 'bg-red-50 border-red-200 text-red-800'
+            };
+            statusDiv.className = `${colors[type]} border rounded-lg p-4 mb-6`;
+            statusDiv.innerHTML = `<p>${message}</p>`;
+        }
 
-        // Auth State
-        auth.onAuthStateChanged(user => {
-            const authSection = document.getElementById('authSection');
-            if (user) {
-                authSection.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            ${user.email.charAt(0).toUpperCase()}
-                        </div>
-                        <span class="hidden md:inline text-sm font-medium">${user.email.split('@')[0]}</span>
-                    </div>
-                `;
+        // Test Firestore Connection
+        async function testFirestore() {
+            try {
+                updateStatus("🔄 Testing Firestore connection...");
+                console.log("Testing Firestore...");
+                
+                const testSnapshot = await db.collection('ads').limit(1).get();
+                console.log("✅ Firestore works! Found", testSnapshot.size, "docs");
+                
+                updateStatus("✅ Firestore connected successfully!", "success");
+                loadAllAds();
+                
+            } catch (error) {
+                console.error("❌ Firestore error:", error);
+                let errorMsg = error.message;
+                
+                if (error.code === 'permission-denied') {
+                    errorMsg = "❌ Permission Denied! Check Firestore Rules. Go to Firebase Console > Firestore Database > Rules and set: allow read, write: if true;";
+                } else if (error.code === 'failed-precondition') {
+                    errorMsg = "❌ Index Required! Check console for index creation link.";
+                }
+                
+                updateStatus(errorMsg, "error");
+                document.getElementById('premiumAds').innerHTML = `<p class="text-red-500">${errorMsg}</p>`;
+                document.getElementById('latestAds').innerHTML = `<p class="text-red-500">${errorMsg}</p>`;
             }
-        });
+        }
 
-        // Load Ads
-        function loadAds() {
-            console.log("🔄 Loading ads for category:", currentCategory);
-            
-            let query = db.collection('ads')
-                .where('status', '==', 'approved')
-                .orderBy('createdAt', 'desc');
-            
-            if (currentCategory !== 'All') {
-                query = query.where('category', '==', currentCategory);
+        // Load All Ads
+        async function loadAllAds() {
+            try {
+                updateStatus("🔄 Loading approved ads from database...");
+                
+                const snapshot = await db.collection('ads')
+                    .where('status', '==', 'approved')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                console.log("✅ Found", snapshot.size, "approved ads");
+                
+                if (snapshot.empty) {
+                    updateStatus("⚠️ No approved ads found in database. Admin needs to approve ads first.", "error");
+                    document.getElementById('premiumAds').innerHTML = 
+                        '<p class="text-gray-400">No premium ads. Admin needs to approve ads first.</p>';
+                    document.getElementById('latestAds').innerHTML = 
+                        '<p class="text-gray-400">No ads available. Please check back later.</p>';
+                    return;
+                }
+                
+                updateStatus(`✅ Successfully loaded ${snapshot.size} ads!`, "success");
+                
+                const allAds = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                console.log("Ads data:", allAds);
+                
+                // Premium Ads
+                const premiumAds = allAds.filter(ad => ad.isPremium === true).slice(0, 4);
+                renderAds('premiumAds', premiumAds);
+                
+                // Latest Ads
+                const latestAds = allAds.slice(0, 6);
+                renderAds('latestAds', latestAds);
+                
+            } catch (error) {
+                console.error("❌ Error loading ads:", error);
+                updateStatus("❌ Error: " + error.message, "error");
             }
-            
-            query.get()
-                .then(snapshot => {
-                    console.log("✅ Found", snapshot.size, "ads");
-                    
-                    if (snapshot.empty) {
-                        document.getElementById('premiumAdsGrid').innerHTML = 
-                            '<div class="col-span-2 text-center py-10 text-gray-400">No premium ads</div>';
-                        document.getElementById('latestAdsGrid').innerHTML = 
-                            '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
-                        return;
-                    }
-                    
-                    const allAds = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                    
-                    // Filter Premium
-                    const premiumAds = allAds.filter(ad => ad.isPremium === true).slice(0, 4);
-                    
-                    // Latest Ads (non-premium or all)
-                    const latestAds = allAds.filter(ad => !ad.isPremium).slice(0, 6);
-                    
-                    console.log(" Premium:", premiumAds.length, "Latest:", latestAds.length);
-                    
-                    // Render
-                    renderAds('premiumAdsGrid', premiumAds, true);
-                    renderAds('latestAdsGrid', latestAds, false);
-                })
-                .catch(error => {
-                    console.error(" Error:", error);
-                    document.getElementById('latestAdsGrid').innerHTML = `
-                        <div class="col-span-full text-center py-10">
-                            <p class="text-red-500 font-bold mb-2">Error loading ads</p>
-                            <p class="text-sm text-gray-600">${error.message}</p>
-                        </div>
-                    `;
-                });
         }
 
         // Render Ads
-        function renderAds(containerId, ads, isPremium) {
+        function renderAds(containerId, ads) {
             const container = document.getElementById(containerId);
             
             if (ads.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
+                container.innerHTML = '<p class="text-gray-400">No ads found</p>';
                 return;
             }
             
-            const gridClass = isPremium ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4';
-            
-            container.className = gridClass;
-            
             container.innerHTML = ads.map(ad => {
-                const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
+                const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/300x200?text=No+Image';
                 const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
+                const title = ad.title || 'Untitled Ad';
                 const location = ad.location || 'Sri Lanka';
-                const date = ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
                 
                 return `
-                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer group" 
-                             onclick="window.location.href='ad-details.html?id=${ad.id}'">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="${imageUrl}" 
-                                 onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
-                                 alt="${ad.title}" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
-                            <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">${ad.category || 'General'}</span>
-                        </div>
-                        <div class="p-3">
-                            <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title || 'Untitled'}</h3>
-                            <p class="text-blue-700 font-extrabold text-lg">${price}</p>
-                            <p class="text-xs text-gray-500 mt-1 truncate">
-                                <i class="fas fa-map-marker-alt mr-1"></i>${location}
-                            </p>
-                            <p class="text-xs text-gray-400 mt-2">${date}</p>
-                        </div>
-                    </article>
+                    <div class="bg-white rounded-lg shadow p-4 border">
+                        <img src="${img}" onerror="this.src='https://via.placeholder.com/300x200?text=Error'" 
+                             class="w-full h-40 object-cover rounded mb-3">
+                        <h3 class="font-bold text-gray-800">${title}</h3>
+                        <p class="text-blue-600 font-bold mt-1">${price}</p>
+                        <p class="text-sm text-gray-500"><i class="fas fa-map-marker-alt"></i> ${location}</p>
+                        ${ad.isPremium ? '<span class="inline-block mt-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">PREMIUM</span>' : ''}
+                    </div>
                 `;
             }).join('');
         }
 
-        // Filter Category
-        function filterCategory(category) {
-            currentCategory = category;
-            
-            // Update UI
-            document.querySelectorAll('#categoryList button').forEach(btn => {
-                btn.classList.remove('text-blue-600', 'font-medium', 'bg-blue-50');
-                btn.classList.add('text-gray-600');
-            });
-            
-            event.target.closest('button').classList.remove('text-gray-600');
-            event.target.closest('button').classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
-            
-            loadAds();
-        }
-
-        // Show More Categories Modal
-        function showMoreCategories() {
-            document.getElementById('moreCategoriesModal').classList.remove('hidden');
-        }
-
-        function closeMoreCategories() {
-            document.getElementById('moreCategoriesModal').classList.add('hidden');
-        }
-
-        // Search
-        function searchAds() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            if (!term) {
-                loadAds();
-                return;
-            }
-            
-            db.collection('ads')
-                .where('status', '==', 'approved')
-                .get()
-                .then(snapshot => {
-                    const filtered = snapshot.docs
-                        .map(doc => ({id: doc.id, ...doc.data()}))
-                        .filter(ad => 
-                            (ad.title && ad.title.toLowerCase().includes(term)) ||
-                            (ad.desc && ad.desc.toLowerCase().includes(term))
-                        );
-                    
-                    renderAds('latestAdsGrid', filtered, false);
-                });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("🚀 Emarket initialized");
-            filterCategory('All');
-            loadAds();
-        });
-
-        // Close modal on outside click
-        document.getElementById('moreCategoriesModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeMoreCategories();
-            }
-        });
+        // Run on page load
+        console.log("Page loaded, testing Firestore...");
+        testFirestore();
     </script>
 </body>
 </html>
