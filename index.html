@@ -44,78 +44,106 @@
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Left Sidebar -->
-            <aside class="lg:col-span-1">
+            <!-- Left Sidebar - Categories -->
+            <aside class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
-                    <h3 class="font-bold text-gray-800 mb-3 border-b pb-2">Categories</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><button onclick="filterCategory('All')" id="cat-All" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-2 py-1 rounded">
-                            <i class="fas fa-th-large w-5"></i> All Ads
+                    <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-sm">Categories</h3>
+                    <ul class="space-y-1 text-xs" id="categoryList">
+                        <!-- Main Categories -->
+                        <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-th-large w-4"></i> All Ads
                         </button></li>
-                        <li><button onclick="filterCategory('Vehicles')" id="cat-Vehicles" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-car w-5"></i> Vehicles
+                        <li><button onclick="filterCategory('Vehicles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-car w-4"></i> Vehicles
                         </button></li>
-                        <li><button onclick="filterCategory('Property')" id="cat-Property" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-home w-5"></i> Property
+                        <li><button onclick="filterCategory('Property')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-home w-4"></i> Property
                         </button></li>
-                        <li><button onclick="filterCategory('Mobiles')" id="cat-Mobiles" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-mobile-alt w-5"></i> Mobile Phones
+                        <li><button onclick="filterCategory('Mobiles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-mobile-alt w-4"></i> Mobile Phones
                         </button></li>
-                        <li><button onclick="filterCategory('Electronics')" id="cat-Electronics" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-laptop w-5"></i> Electronics
+                        <li><button onclick="filterCategory('Electronics')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-laptop w-4"></i> Electronics
                         </button></li>
-                        <li><button onclick="filterCategory('Hotels')" id="cat-Hotels" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-hotel w-5"></i> Hotels
+                        <li><button onclick="filterCategory('Fashion')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-tshirt w-4"></i> Fashion
                         </button></li>
-                        <li><button onclick="filterCategory('Restaurants')" id="cat-Restaurants" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-utensils w-5"></i> Restaurants
+                        <li><button onclick="filterCategory('Jobs')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
+                            <i class="fas fa-briefcase w-4"></i> Jobs
                         </button></li>
-                        <li><button onclick="filterCategory('Jobs')" id="cat-Jobs" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1 rounded">
-                            <i class="fas fa-briefcase w-5"></i> Jobs
-                        </button></li>
+                        
+                        <!-- More Categories Button -->
+                        <li class="pt-2 mt-2 border-t">
+                            <button onclick="showMoreCategories()" class="w-full text-left flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded text-xs font-medium">
+                                <i class="fas fa-ellipsis-h"></i> More Categories
+                            </button>
+                        </li>
                     </ul>
-                    <div class="mt-6 bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-400 text-xs border-2 border-dashed border-gray-300">
-                        Ad Slot (300x250)
-                    </div>
                 </div>
             </aside>
 
-            <!-- Main Content -->
-            <main class="lg:col-span-2 space-y-6">
-                <!-- Premium Ads -->
+            <!-- Main Content Area -->
+            <main class="lg:col-span-10 space-y-6">
+                
+                <!-- Premium Ads Section (Section 1 & 2) -->
                 <div>
                     <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <i class="fas fa-star text-yellow-500"></i> Premium Ads
                     </h2>
-                    <div id="premiumAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="col-span-2 text-center py-10 text-gray-400">Loading...</div>
+                    <div id="premiumAdsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-2 text-center py-10 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>Loading premium ads...</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Ad Slot -->
-                <div class="bg-gray-200 h-24 rounded-lg flex items-center justify-center text-gray-400 text-xs border-2 border-dashed border-gray-300">
-                    Ad Slot (728x90)
-                </div>
-
-                <!-- Latest Ads -->
+                <!-- Latest Ads Section (Section 3, 4, 5) -->
                 <div>
                     <h2 class="text-lg font-bold text-gray-800 mb-3">Latest Ads</h2>
-                    <div id="latestAdsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="col-span-2 text-center py-10 text-gray-400">Loading...</div>
+                    <div id="latestAdsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="col-span-full text-center py-10 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>Loading ads...</p>
+                        </div>
                     </div>
                 </div>
-            </main>
 
-            <!-- Right Sidebar -->
-            <aside class="hidden lg:block lg:col-span-1">
-                <div class="sticky top-20">
-                    <div class="bg-gray-200 h-[600px] rounded-lg flex items-center justify-center text-gray-400 text-xs border-2 border-dashed border-gray-300">
-                        Ad Slot (160x600)
-                    </div>
-                </div>
-            </aside>
+            </main>
+        </div>
+    </div>
+
+    <!-- More Categories Modal -->
+    <div id="moreCategoriesModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">All Categories</h3>
+                <button onclick="closeMoreCategories()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="filterCategory('Hotels')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
+                    <i class="fas fa-hotel mr-2"></i> Hotels
+                </button>
+                <button onclick="filterCategory('Restaurants')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
+                    <i class="fas fa-utensils mr-2"></i> Restaurants
+                </button>
+                <button onclick="filterCategory('Services')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
+                    <i class="fas fa-tools mr-2"></i> Services
+                </button>
+                <button onclick="filterCategory('Pets')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
+                    <i class="fas fa-paw mr-2"></i> Pets
+                </button>
+                <button onclick="filterCategory('Sports')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
+                    <i class="fas fa-football-ball mr-2"></i> Sports
+                </button>
+                <button onclick="filterCategory('Books')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
+                    <i class="fas fa-book mr-2"></i> Books
+                </button>
+            </div>
         </div>
     </div>
 
@@ -150,29 +178,27 @@
             }
         });
 
-        // Load Ads - Using simple query
+        // Load Ads
         function loadAds() {
-            console.log("🔄 Loading ads...");
+            console.log("🔄 Loading ads for category:", currentCategory);
             
-            // First, let's test if we can access Firestore
-            db.collection('ads').limit(1).get()
-                .then(testSnapshot => {
-                    console.log("✅ Firestore connection successful!");
-                    
-                    // Now load approved ads
-                    return db.collection('ads')
-                        .where('status', '==', 'approved')
-                        .orderBy('createdAt', 'desc')
-                        .get();
-                })
+            let query = db.collection('ads')
+                .where('status', '==', 'approved')
+                .orderBy('createdAt', 'desc');
+            
+            if (currentCategory !== 'All') {
+                query = query.where('category', '==', currentCategory);
+            }
+            
+            query.get()
                 .then(snapshot => {
-                    console.log("✅ Found", snapshot.size, "approved ads");
+                    console.log("✅ Found", snapshot.size, "ads");
                     
                     if (snapshot.empty) {
                         document.getElementById('premiumAdsGrid').innerHTML = 
-                            '<div class="col-span-2 text-center py-10 text-gray-400">No ads yet</div>';
+                            '<div class="col-span-2 text-center py-10 text-gray-400">No premium ads</div>';
                         document.getElementById('latestAdsGrid').innerHTML = 
-                            '<div class="col-span-2 text-center py-10 text-gray-400">No ads available</div>';
+                            '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
                         return;
                     }
                     
@@ -181,40 +207,41 @@
                         ...doc.data()
                     }));
                     
-                    console.log("📊 Ads loaded:", allAds);
-                    
                     // Filter Premium
                     const premiumAds = allAds.filter(ad => ad.isPremium === true).slice(0, 4);
                     
-                    // Filter by Category
-                    let latestAds = currentCategory === 'All' 
-                        ? allAds.slice(0, 10)
-                        : allAds.filter(ad => ad.category === currentCategory).slice(0, 10);
+                    // Latest Ads (non-premium or all)
+                    const latestAds = allAds.filter(ad => !ad.isPremium).slice(0, 6);
+                    
+                    console.log(" Premium:", premiumAds.length, "Latest:", latestAds.length);
                     
                     // Render
-                    renderAds('premiumAdsGrid', premiumAds);
-                    renderAds('latestAdsGrid', latestAds);
+                    renderAds('premiumAdsGrid', premiumAds, true);
+                    renderAds('latestAdsGrid', latestAds, false);
                 })
                 .catch(error => {
                     console.error("❌ Error:", error);
                     document.getElementById('latestAdsGrid').innerHTML = `
-                        <div class="col-span-2 text-center py-10">
+                        <div class="col-span-full text-center py-10">
                             <p class="text-red-500 font-bold mb-2">Error loading ads</p>
                             <p class="text-sm text-gray-600">${error.message}</p>
-                            <p class="text-xs text-gray-500 mt-2">Check console for details</p>
                         </div>
                     `;
                 });
         }
 
         // Render Ads
-        function renderAds(containerId, ads) {
+        function renderAds(containerId, ads, isPremium) {
             const container = document.getElementById(containerId);
             
             if (ads.length === 0) {
-                container.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found</div>';
+                container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
                 return;
             }
+            
+            const gridClass = isPremium ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4';
+            
+            container.className = gridClass;
             
             container.innerHTML = ads.map(ad => {
                 const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
@@ -223,13 +250,13 @@
                 const date = ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
                 
                 return `
-                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer" 
+                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer group" 
                              onclick="window.location.href='ad-details.html?id=${ad.id}'">
-                        <div class="relative h-48 bg-gray-100">
+                        <div class="relative h-48 bg-gray-100 overflow-hidden">
                             <img src="${imageUrl}" 
                                  onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
                                  alt="${ad.title}" 
-                                 class="w-full h-full object-cover">
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
                             <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">${ad.category || 'General'}</span>
                         </div>
@@ -250,18 +277,25 @@
         function filterCategory(category) {
             currentCategory = category;
             
-            document.querySelectorAll('[id^="cat-"]').forEach(btn => {
+            // Update UI
+            document.querySelectorAll('#categoryList button').forEach(btn => {
                 btn.classList.remove('text-blue-600', 'font-medium', 'bg-blue-50');
                 btn.classList.add('text-gray-600');
             });
             
-            const activeBtn = document.getElementById(`cat-${category}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-gray-600');
-                activeBtn.classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
-            }
+            event.target.closest('button').classList.remove('text-gray-600');
+            event.target.closest('button').classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
             
             loadAds();
+        }
+
+        // Show More Categories Modal
+        function showMoreCategories() {
+            document.getElementById('moreCategoriesModal').classList.remove('hidden');
+        }
+
+        function closeMoreCategories() {
+            document.getElementById('moreCategoriesModal').classList.add('hidden');
         }
 
         // Search
@@ -283,7 +317,7 @@
                             (ad.desc && ad.desc.toLowerCase().includes(term))
                         );
                     
-                    renderAds('latestAdsGrid', filtered);
+                    renderAds('latestAdsGrid', filtered, false);
                 });
         }
 
@@ -292,6 +326,13 @@
             console.log("🚀 Emarket initialized");
             filterCategory('All');
             loadAds();
+        });
+
+        // Close modal on outside click
+        document.getElementById('moreCategoriesModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMoreCategories();
+            }
         });
     </script>
 </body>
