@@ -12,89 +12,101 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <header class="bg-gray-900 text-white p-4 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold"><i class="fas fa-shield-alt mr-2"></i> Admin Dashboard</h1>
-            <div class="flex gap-3">
-                <button onclick="generateSampleData()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-sm font-bold flex items-center gap-2">
-                    <i class="fas fa-magic"></i> Generate 10 Sample Ads
+    <!-- Login Screen -->
+    <div id="loginScreen" class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm">
+            <h1 class="text-3xl font-bold text-center text-blue-600 mb-2">🔐 Admin Panel</h1>
+            <p class="text-center text-gray-500 mb-6 text-sm">Emarket Admin Login</p>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="loginEmail" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="chinthaka36@gmail.com" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="loginPassword" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                    Admin Login
                 </button>
-                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold">Logout</button>
+            </form>
+            
+            <div id="loginError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm hidden"></div>
+            
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <p class="text-xs text-gray-500 font-bold mb-2">🔍 Debug Info:</p>
+                <p class="text-xs text-gray-600" id="debugInfo">Waiting for login...</p>
             </div>
+            
+            <a href="index.html" class="block text-center mt-4 text-blue-500 text-sm hover:underline">← Back to Home</a>
         </div>
-    </header>
+    </div>
 
-    <div class="container mx-auto p-6 max-w-6xl">
-        
-        <!-- Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Pending Ads</p>
-                <p class="text-2xl font-bold text-gray-800" id="countPending">0</p>
+    <!-- Admin Dashboard -->
+    <div id="dashboard" class="hidden">
+        <header class="bg-gray-900 text-white p-4 shadow-lg sticky top-0 z-50">
+            <div class="container mx-auto flex justify-between items-center flex-wrap gap-2">
+                <div>
+                    <h1 class="text-xl font-bold"><i class="fas fa-shield-alt mr-2"></i>Admin Dashboard</h1>
+                    <p class="text-xs text-gray-400" id="adminEmailDisplay"></p>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="generateSampleData()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-sm font-bold flex items-center gap-2">
+                        <i class="fas fa-magic"></i> Generate 10 Sample Ads
+                    </button>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold">Logout</button>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Approved Ads</p>
-                <p class="text-2xl font-bold text-gray-800" id="countApproved">0</p>
+        </header>
+
+        <div class="container mx-auto p-4 md:p-6 max-w-6xl">
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
+                    <p class="text-gray-500 text-xs uppercase font-bold">Pending</p>
+                    <p class="text-2xl font-bold text-gray-800" id="countPending">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
+                    <p class="text-gray-500 text-xs uppercase font-bold">Approved</p>
+                    <p class="text-2xl font-bold text-gray-800" id="countApproved">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
+                    <p class="text-gray-500 text-xs uppercase font-bold">Premium</p>
+                    <p class="text-2xl font-bold text-gray-800" id="countPremium">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                    <p class="text-gray-500 text-xs uppercase font-bold">Users</p>
+                    <p class="text-2xl font-bold text-gray-800" id="countUsers">0</p>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Premium Ads</p>
-                <p class="text-2xl font-bold text-gray-800" id="countPremium">0</p>
+
+            <!-- Pending Approvals -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+                <div class="p-4 bg-yellow-50 border-b border-yellow-100">
+                    <h2 class="font-bold text-gray-800"><i class="fas fa-clock text-yellow-600 mr-2"></i>Pending Approvals</h2>
+                </div>
+                <div id="pendingList" class="p-4">
+                    <p class="text-gray-400 text-center">Loading...</p>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                <p class="text-gray-500 text-xs uppercase font-bold">Total Users</p>
-                <p class="text-2xl font-bold text-gray-800" id="countUsers">0</p>
+
+            <!-- All Ads -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-4 bg-blue-50 border-b border-blue-100">
+                    <h2 class="font-bold text-gray-800"><i class="fas fa-list text-blue-600 mr-2"></i>All Ads</h2>
+                </div>
+                <div id="allAdsList" class="p-4">
+                    <p class="text-gray-400 text-center">Loading...</p>
+                </div>
             </div>
+
         </div>
-
-        <!-- Pending Approvals Section -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-            <div class="p-4 bg-yellow-50 border-b border-yellow-100 flex justify-between items-center">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-clock text-yellow-600"></i> Pending Approvals</h2>
-                <span class="bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold" id="pendingBadge">0</span>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th class="p-4">Ad Details</th>
-                            <th class="p-4">Seller</th>
-                            <th class="p-4">Price</th>
-                            <th class="p-4">Type</th>
-                            <th class="p-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pendingTableBody" class="divide-y divide-gray-100 text-sm">
-                        <tr><td colspan="5" class="p-8 text-center text-gray-400">Checking for pending ads...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Recent Approved Ads -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="p-4 bg-green-50 border-b border-green-100">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-check-circle text-green-600"></i> Recently Approved Ads</h2>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th class="p-4">Title</th>
-                            <th class="p-4">Category</th>
-                            <th class="p-4">Premium</th>
-                            <th class="p-4 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="approvedTableBody" class="divide-y divide-gray-100 text-sm">
-                        <!-- Loaded via JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
 
     <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -107,118 +119,170 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Security Check
-        auth.onAuthStateChanged(async user => {
-            if (!user) { window.location.href = "login.html"; return; }
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (!doc.exists || doc.data().userType !== 'admin') {
-                alert("Access Denied!");
-                window.location.href = "index.html";
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginError = document.getElementById('loginError');
+        const debugInfo = document.getElementById('debugInfo');
+
+        // Check if already logged in
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                debugInfo.innerHTML = `Logged in: ${user.email}<br>UID: ${user.uid}`;
+                
+                try {
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    
+                    if (doc.exists) {
+                        const data = doc.data();
+                        debugInfo.innerHTML += `<br>userType: "${data.userType}"`;
+                        
+                        if (data.userType === 'admin') {
+                            showDashboard(user);
+                        } else {
+                            loginError.textContent = `❌ Access Denied! Your userType is "${data.userType}", not "admin".`;
+                            loginError.classList.remove('hidden');
+                        }
+                    } else {
+                        loginError.textContent = `❌ No user document found in Firestore for UID: ${user.uid}. Please create it in Firebase Console.`;
+                        loginError.classList.remove('hidden');
+                        debugInfo.innerHTML += `<br>❌ Document NOT found in users collection`;
+                    }
+                } catch (error) {
+                    loginError.textContent = `❌ Error: ${error.message}`;
+                    loginError.classList.remove('hidden');
+                }
             } else {
-                loadData();
+                debugInfo.innerHTML = 'Not logged in. Please login below.';
             }
         });
 
-        function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
-
-        // Generate Sample Data Function (Expanded Categories)
-        async function generateSampleData() {
-            if(!confirm("Generate 10 sample ads across all categories?")) return;
-            
-            const samples = [
-                { title: "Toyota Prius 2012 Hybrid", price: 8500000, category: "Vehicles", location: "Colombo", phone: "0771234567", desc: "Well maintained, low mileage.", images: ["https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400"], isPremium: true },
-                { title: "Land for Sale in Kandy", price: 15000000, category: "Property", location: "Kandy", phone: "0712345678", desc: "20 perches, road access.", images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400"], isPremium: false },
-                { title: "iPhone 13 Pro Max 256GB", price: 280000, category: "Mobiles", location: "Gampaha", phone: "0761234567", desc: "Used, battery health 90%.", images: ["https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400"], isPremium: true },
-                { title: "Honda Dio Scooter 2020", price: 450000, category: "Vehicles", location: "Negombo", phone: "0721234567", desc: "First owner, excellent condition.", images: ["https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400"], isPremium: false },
-                { title: "Samsung 55 inch 4K TV", price: 120000, category: "Electronics", location: "Dehiwala", phone: "0751234567", desc: "Smart TV with warranty.", images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400"], isPremium: false },
-                { title: "Luxury Apartment for Rent", price: 85000, category: "Property", location: "Colombo 03", phone: "0779876543", desc: "3 Bedrooms, fully furnished.", images: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400"], isPremium: true },
-                { title: "Cinnamon Grand Stay Package", price: 35000, category: "Hotels", location: "Colombo", phone: "0112345678", desc: "2 Nights including breakfast.", images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400"], isPremium: false },
-                { title: "Best Kottu in Town", price: 650, category: "Restaurants", location: "Havelock", phone: "0719876543", desc: "Special Chicken Kottu.", images: ["https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"], isPremium: false },
-                { title: "Software Engineer Job", price: 150000, category: "Jobs", location: "Remote", phone: "0770000000", desc: "Full stack developer needed.", images: ["https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400"], isPremium: true },
-                { title: "Designer Handbag", price: 15000, category: "Fashion", location: "Pettah", phone: "0720000000", desc: "Original imported bag.", images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400"], isPremium: false }
-            ];
-
-            const batch = db.batch();
-            samples.forEach(sample => {
-                const ref = db.collection('ads').doc();
-                batch.set(ref, {
-                    ...sample,
-                    status: 'approved',
-                    sellerUid: 'admin-sample',
-                    sellerEmail: 'sample@emarket.com',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    views: Math.floor(Math.random() * 100)
-                });
-            });
-            
-            await batch.commit();
-            alert("✅ 10 Sample Ads Generated Successfully across all categories!");
-            loadData(); // Refresh UI
+        function showDashboard(user) {
+            loginScreen.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            document.getElementById('adminEmailDisplay').textContent = user.email;
+            loadDashboardData();
         }
 
-        function loadData() {
-            // Pending Ads
-            db.collection('ads').where('status', '==', 'pending').orderBy('createdAt', 'desc').onSnapshot(snap => {
-                document.getElementById('countPending').innerText = snap.size;
-                document.getElementById('pendingBadge').innerText = snap.size;
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            loginError.classList.add('hidden');
+            debugInfo.innerHTML = 'Attempting login...';
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                debugInfo.innerHTML = `Login successful! Checking admin status...`;
+            } catch (error) {
+                loginError.textContent = `❌ Login failed: ${error.message}`;
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        function logout() {
+            auth.signOut().then(() => {
+                dashboard.classList.add('hidden');
+                loginScreen.classList.remove('hidden');
+                loginError.classList.add('hidden');
+            });
+        }
+
+        // Generate Sample Data
+        async function generateSampleData() {
+            if(!confirm("Generate 10 sample ads?")) return;
+            
+            const samples = [
+                { title: "Toyota Prius 2012", price: 8500000, category: "Vehicles", location: "Colombo", phone: "0771234567", desc: "Well maintained.", images: ["https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400"], isPremium: true },
+                { title: "Land for Sale", price: 15000000, category: "Property", location: "Kandy", phone: "0712345678", desc: "20 perches.", images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400"], isPremium: false },
+                { title: "iPhone 13 Pro", price: 280000, category: "Mobiles", location: "Gampaha", phone: "0761234567", desc: "Used, good condition.", images: ["https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400"], isPremium: true },
+                { title: "Honda Dio 2020", price: 450000, category: "Vehicles", location: "Negombo", phone: "0721234567", desc: "First owner.", images: ["https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400"], isPremium: false },
+                { title: "Samsung 55\" TV", price: 120000, category: "Electronics", location: "Dehiwala", phone: "0751234567", desc: "Smart TV.", images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400"], isPremium: false },
+                { title: "Apartment for Rent", price: 85000, category: "Property", location: "Colombo 03", phone: "0779876543", desc: "3 Bedrooms.", images: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400"], isPremium: true },
+                { title: "Hotel Stay Package", price: 35000, category: "Hotels", location: "Colombo", phone: "0112345678", desc: "2 Nights.", images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400"], isPremium: false },
+                { title: "Best Kottu", price: 650, category: "Restaurants", location: "Havelock", phone: "0719876543", desc: "Chicken Kottu.", images: ["https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"], isPremium: false },
+                { title: "Software Engineer Job", price: 150000, category: "Jobs", location: "Remote", phone: "0770000000", desc: "Full stack.", images: ["https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400"], isPremium: true },
+                { title: "Designer Handbag", price: 15000, category: "Fashion", location: "Pettah", phone: "0720000000", desc: "Imported.", images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400"], isPremium: false }
+            ];
+
+            try {
+                const batch = db.batch();
+                samples.forEach(sample => {
+                    const ref = db.collection('ads').doc();
+                    batch.set(ref, {
+                        ...sample,
+                        status: 'approved',
+                        sellerUid: auth.currentUser.uid,
+                        sellerEmail: auth.currentUser.email,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        views: Math.floor(Math.random() * 100)
+                    });
+                });
                 
-                const tbody = document.getElementById('pendingTableBody');
+                await batch.commit();
+                alert("✅ 10 Sample Ads Generated!");
+                loadDashboardData();
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        function loadDashboardData() {
+            // Pending Ads
+            db.collection('ads').where('status', '==', 'pending').onSnapshot(snap => {
+                document.getElementById('countPending').innerText = snap.size;
+                const list = document.getElementById('pendingList');
+                
                 if (snap.empty) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400">No pending ads. Great job!</td></tr>';
+                    list.innerHTML = '<p class="text-gray-400 text-center py-4">No pending ads</p>';
                     return;
                 }
                 
-                tbody.innerHTML = snap.docs.map(doc => {
+                list.innerHTML = '<div class="space-y-2">' + snap.docs.map(doc => {
                     const ad = doc.data();
                     return `
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="${ad.images[0]}" class="w-12 h-12 rounded object-cover bg-gray-200">
-                                    <div>
-                                        <p class="font-bold text-gray-800">${ad.title}</p>
-                                        <p class="text-xs text-gray-500">${ad.category} • ${ad.location}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-4 text-gray-600">${ad.sellerEmail}</td>
-                            <td class="p-4 font-bold text-blue-600">Rs. ${Number(ad.price).toLocaleString()}</td>
-                            <td class="p-4">
-                                ${ad.isPremium ? '<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded font-bold">PREMIUM</span>' : '<span class="text-gray-400 text-xs">Free</span>'}
-                            </td>
-                            <td class="p-4 text-right space-x-2">
-                                <button onclick="approveAd('${doc.id}')" class="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-green-700">Approve</button>
-                                <button onclick="rejectAd('${doc.id}')" class="bg-red-100 text-red-600 px-3 py-1.5 rounded text-xs font-bold hover:bg-red-200">Reject</button>
-                            </td>
-                        </tr>
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">${ad.title}</p>
+                                <p class="text-xs text-gray-500">${ad.category} • Rs. ${ad.price.toLocaleString()}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="approveAd('${doc.id}')" class="bg-green-600 text-white px-3 py-1 rounded text-xs">Approve</button>
+                                <button onclick="deleteAd('${doc.id}')" class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs">Reject</button>
+                            </div>
+                        </div>
                     `;
-                }).join('');
+                }).join('') + '</div>';
             });
 
-            // Approved Ads Count & List
-            db.collection('ads').where('status', '==', 'approved').get().then(snap => {
-                document.getElementById('countApproved').innerText = snap.size;
-                const tbody = document.getElementById('approvedTableBody');
-                tbody.innerHTML = snap.docs.slice(0, 5).map(doc => {
+            // All Ads
+            db.collection('ads').orderBy('createdAt', 'desc').limit(20).onSnapshot(snap => {
+                document.getElementById('countApproved').innerText = snap.docs.filter(d => d.data().status === 'approved').length;
+                document.getElementById('countPremium').innerText = snap.docs.filter(d => d.data().isPremium).length;
+                
+                const list = document.getElementById('allAdsList');
+                
+                if (snap.empty) {
+                    list.innerHTML = '<p class="text-gray-400 text-center py-4">No ads yet. Click "Generate 10 Sample Ads" to add sample data.</p>';
+                    return;
+                }
+                
+                list.innerHTML = '<div class="space-y-2">' + snap.docs.map(doc => {
                     const ad = doc.data();
                     return `
-                        <tr>
-                            <td class="p-4 font-medium text-gray-800">${ad.title}</td>
-                            <td class="p-4 text-gray-500">${ad.category}</td>
-                            <td class="p-4">${ad.isPremium ? 'Yes' : 'No'}</td>
-                            <td class="p-4 text-right">
-                                <button onclick="togglePremium('${doc.id}', ${!ad.isPremium})" class="text-blue-600 hover:underline text-xs font-bold">
-                                    ${ad.isPremium ? 'Remove Premium' : 'Make Premium'}
-                                </button>
-                            </td>
-                        </tr>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">${ad.title}</p>
+                                <p class="text-xs text-gray-500">${ad.category} • ${ad.status} ${ad.isPremium ? '⭐' : ''}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="togglePremium('${doc.id}', ${!ad.isPremium})" class="text-purple-600 text-xs">${ad.isPremium ? 'Remove Premium' : 'Make Premium'}</button>
+                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs">Delete</button>
+                            </div>
+                        </div>
                     `;
-                }).join('');
-            });
-
-            // Premium Count
-            db.collection('ads').where('isPremium', '==', true).get().then(snap => {
-                document.getElementById('countPremium').innerText = snap.size;
+                }).join('') + '</div>';
             });
 
             // Users Count
@@ -228,13 +292,13 @@
         }
 
         async function approveAd(id) {
-            if(confirm("Approve this ad? It will be visible to public.")) {
+            if(confirm("Approve this ad?")) {
                 await db.collection('ads').doc(id).update({ status: 'approved' });
             }
         }
 
-        async function rejectAd(id) {
-            if(confirm("Reject and delete this ad?")) {
+        async function deleteAd(id) {
+            if(confirm("Delete this ad?")) {
                 await db.collection('ads').doc(id).delete();
             }
         }
