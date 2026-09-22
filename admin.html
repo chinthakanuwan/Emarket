@@ -6,101 +6,33 @@
     <title>Admin Dashboard - Emarket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        secondary: '#6366f1',
-                        success: '#10b981',
-                        warning: '#f59e0b',
-                        danger: '#ef4444',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .sidebar-link {
-            transition: all 0.3s;
-        }
-        .sidebar-link:hover, .sidebar-link.active {
-            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
-            color: white;
-            transform: translateX(5px);
-        }
-        .card-hover {
-            transition: all 0.3s;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .toast {
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        .modal-backdrop {
-            backdrop-filter: blur(5px);
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-    </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+<body class="bg-gray-100">
 
     <!-- Login Screen -->
     <div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-700 p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-shield-alt text-white text-2xl"></i>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Admin Panel</h1>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Emarket Management System</p>
+                <h1 class="text-3xl font-bold text-gray-800">Admin Panel</h1>
+                <p class="text-gray-500 mt-2">Emarket Management System</p>
             </div>
             
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        <i class="fas fa-envelope mr-1"></i> Email
-                    </label>
-                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:text-white" placeholder="admin@emarket.com" required>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@emarket.com" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        <i class="fas fa-lock mr-1"></i> Password
-                    </label>
-                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:text-white" placeholder="••••••••" required>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition transform hover:scale-105">
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition">
                     <i class="fas fa-sign-in-alt mr-2"></i> Login
                 </button>
             </form>
@@ -114,58 +46,48 @@
         <div class="flex h-screen overflow-hidden">
             
             <!-- Sidebar -->
-            <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 shadow-lg flex-shrink-0 transition-all duration-300">
-                <div class="p-6 border-b dark:border-gray-700">
+            <aside class="w-64 bg-white shadow-lg flex-shrink-0">
+                <div class="p-6 border-b">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                             <i class="fas fa-layer-group text-white"></i>
                         </div>
                         <div>
-                            <h2 class="font-bold text-gray-800 dark:text-white">Emarket</h2>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Admin Panel</p>
+                            <h2 class="font-bold text-gray-800">Emarket</h2>
+                            <p class="text-xs text-gray-500">Admin Panel</p>
                         </div>
                     </div>
                 </div>
                 
-                <nav class="p-4 space-y-1 overflow-y-auto" style="max-height: calc(100vh - 200px);">
-                    <button onclick="showSection('dashboard')" class="sidebar-link active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="dashboard">
+                <nav class="p-4 space-y-1">
+                    <button onclick="showSection('dashboard')" class="sidebar-link active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="dashboard">
                         <i class="fas fa-tachometer-alt w-5"></i> Dashboard
                     </button>
-                    <button onclick="showSection('ads')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="ads">
+                    <button onclick="showSection('ads')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="ads">
                         <i class="fas fa-ad w-5"></i> Ads Management
-                        <span id="pendingBadge" class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
                     </button>
-                    <button onclick="showSection('users')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="users">
+                    <button onclick="showSection('users')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="users">
                         <i class="fas fa-users w-5"></i> Users
                     </button>
-                    <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="premium">
+                    <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="premium">
                         <i class="fas fa-crown w-5"></i> Premium Ads
                     </button>
-                    <button onclick="showSection('payments')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="payments">
-                        <i class="fas fa-money-bill-wave w-5"></i> Payments
-                    </button>
-                    <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="notifications">
+                    <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="notifications">
                         <i class="fas fa-bell w-5"></i> Notifications
                     </button>
-                    <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="categories">
+                    <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="categories">
                         <i class="fas fa-folder w-5"></i> Categories
                     </button>
-                    <button onclick="showSection('adslots')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="adslots">
+                    <button onclick="showSection('adslots')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="adslots">
                         <i class="fas fa-image w-5"></i> Ad Slots
                     </button>
-                    <button onclick="showSection('analytics')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="analytics">
-                        <i class="fas fa-chart-line w-5"></i> Analytics
-                    </button>
-                    <button onclick="showSection('settings')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300" data-section="settings">
+                    <button onclick="showSection('settings')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="settings">
                         <i class="fas fa-cog w-5"></i> Settings
                     </button>
                 </nav>
                 
-                <div class="p-4 border-t dark:border-gray-700">
-                    <button onclick="toggleDarkMode()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <i class="fas fa-moon w-5" id="darkModeIcon"></i> <span id="darkModeText">Dark Mode</span>
-                    </button>
-                    <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 mt-2">
+                <div class="p-4 border-t mt-auto">
+                    <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50">
                         <i class="fas fa-sign-out-alt w-5"></i> Logout
                     </button>
                 </div>
@@ -175,28 +97,16 @@
             <div class="flex-1 flex flex-col overflow-hidden">
                 
                 <!-- Top Header -->
-                <header class="bg-white dark:bg-gray-800 shadow-sm px-6 py-4 flex items-center justify-between">
+                <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+                    <h1 id="pageTitle" class="text-xl font-bold text-gray-800">Dashboard</h1>
                     <div class="flex items-center gap-4">
-                        <button onclick="toggleSidebar()" class="lg:hidden text-gray-600 dark:text-gray-300">
-                            <i class="fas fa-bars text-xl"></i>
-                        </button>
-                        <h1 id="pageTitle" class="text-xl font-bold text-gray-800 dark:text-white">Dashboard</h1>
-                    </div>
-                    
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <button onclick="toggleNotifications()" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 relative">
-                                <i class="fas fa-bell text-xl"></i>
-                                <span id="notifCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
-                            </button>
-                        </div>
                         <div class="flex items-center gap-2">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                                 <i class="fas fa-user"></i>
                             </div>
-                            <div class="hidden md:block">
-                                <p class="text-sm font-bold text-gray-800 dark:text-white" id="adminName">Admin</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400" id="adminEmail">admin@emarket.com</p>
+                            <div>
+                                <p class="text-sm font-bold text-gray-800" id="adminName">Admin</p>
+                                <p class="text-xs text-gray-500" id="adminEmail">admin@emarket.com</p>
                             </div>
                         </div>
                     </div>
@@ -206,124 +116,72 @@
                 <main class="flex-1 overflow-y-auto p-6">
                     
                     <!-- Dashboard Section -->
-                    <section id="section-dashboard" class="section fade-in">
-                        <!-- Stats Cards -->
+                    <section id="section-dashboard" class="section">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                            <div class="card-hover bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border-l-4 border-blue-500">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Total Ads</p>
-                                        <p class="text-3xl font-bold text-gray-800 dark:text-white" id="statTotalAds">0</p>
-                                    </div>
-                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-ad text-blue-600 text-xl"></i>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-green-600 mt-2"><i class="fas fa-arrow-up"></i> Active listings</p>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-blue-500">
+                                <p class="text-sm text-gray-500">Total Ads</p>
+                                <p class="text-3xl font-bold text-gray-800" id="statTotalAds">0</p>
                             </div>
-                            
-                            <div class="card-hover bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border-l-4 border-yellow-500">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Pending</p>
-                                        <p class="text-3xl font-bold text-gray-800 dark:text-white" id="statPending">0</p>
-                                    </div>
-                                    <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-yellow-600 mt-2"><i class="fas fa-exclamation-circle"></i> Needs approval</p>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-yellow-500">
+                                <p class="text-sm text-gray-500">Pending</p>
+                                <p class="text-3xl font-bold text-gray-800" id="statPending">0</p>
                             </div>
-                            
-                            <div class="card-hover bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border-l-4 border-purple-500">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Premium Ads</p>
-                                        <p class="text-3xl font-bold text-gray-800 dark:text-white" id="statPremium">0</p>
-                                    </div>
-                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-crown text-purple-600 text-xl"></i>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-purple-600 mt-2"><i class="fas fa-star"></i> Featured listings</p>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-purple-500">
+                                <p class="text-sm text-gray-500">Premium Ads</p>
+                                <p class="text-3xl font-bold text-gray-800" id="statPremium">0</p>
                             </div>
-                            
-                            <div class="card-hover bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border-l-4 border-green-500">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Total Users</p>
-                                        <p class="text-3xl font-bold text-gray-800 dark:text-white" id="statUsers">0</p>
-                                    </div>
-                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-users text-green-600 text-xl"></i>
-                                    </div>
-                                </div>
-                                <p class="text-xs text-green-600 mt-2"><i class="fas fa-user-plus"></i> Registered users</p>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-green-500">
+                                <p class="text-sm text-gray-500">Total Users</p>
+                                <p class="text-3xl font-bold text-gray-800" id="statUsers">0</p>
                             </div>
                         </div>
 
-                        <!-- Quick Actions -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                            <button onclick="generateSampleData()" class="card-hover bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-6 shadow-lg text-left">
+                            <button onclick="generateSampleData()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-6 shadow-lg text-left">
                                 <i class="fas fa-magic text-3xl mb-3"></i>
                                 <h3 class="font-bold text-lg">Generate Sample Ads</h3>
-                                <p class="text-sm opacity-90">Add 10 sample ads to test</p>
+                                <p class="text-sm opacity-90">Add 10 sample ads</p>
                             </button>
-                            
-                            <button onclick="showSection('ads')" class="card-hover bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl p-6 shadow-lg text-left">
+                            <button onclick="showSection('ads')" class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl p-6 shadow-lg text-left">
                                 <i class="fas fa-check-double text-3xl mb-3"></i>
                                 <h3 class="font-bold text-lg">Approve Pending Ads</h3>
-                                <p class="text-sm opacity-90">Review and approve new ads</p>
+                                <p class="text-sm opacity-90">Review new ads</p>
                             </button>
-                            
-                            <button onclick="showSection('notifications')" class="card-hover bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-6 shadow-lg text-left">
+                            <button onclick="showSection('notifications')" class="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-6 shadow-lg text-left">
                                 <i class="fas fa-paper-plane text-3xl mb-3"></i>
                                 <h3 class="font-bold text-lg">Send Notification</h3>
                                 <p class="text-sm opacity-90">Notify all users</p>
                             </button>
                         </div>
-
-                        <!-- Recent Activity -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <h3 class="font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                                <i class="fas fa-history text-blue-600"></i> Recent Activity
-                            </h3>
-                            <div id="recentActivity" class="space-y-3">
-                                <p class="text-gray-400 text-center py-4">Loading activity...</p>
-                            </div>
-                        </div>
                     </section>
 
                     <!-- Ads Management Section -->
-                    <section id="section-ads" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Ads Management</h2>
-                                <div class="flex gap-2 flex-wrap">
-                                    <select id="adsFilter" onchange="loadAds()" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <section id="section-ads" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800">Ads Management</h2>
+                                <div class="flex gap-2">
+                                    <select id="adsFilter" onchange="loadAds()" class="px-4 py-2 border border-gray-300 rounded-lg">
                                         <option value="all">All Ads</option>
                                         <option value="pending">Pending</option>
                                         <option value="approved">Approved</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
-                                    <input type="text" id="adsSearch" onkeyup="loadAds()" placeholder="Search ads..." class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                                 </div>
                             </div>
-                            
                             <div class="overflow-x-auto">
                                 <table class="w-full">
-                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <thead class="bg-gray-50">
                                         <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Ad</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Category</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Price</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Status</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Seller</th>
-                                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Ad</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Category</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Price</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Status</th>
+                                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="adsTableBody" class="divide-y dark:divide-gray-700">
-                                        <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
+                                    <tbody id="adsTableBody" class="divide-y">
+                                        <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -331,27 +189,21 @@
                     </section>
 
                     <!-- Users Section -->
-                    <section id="section-users" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">User Management</h2>
-                                <input type="text" id="usersSearch" onkeyup="loadUsers()" placeholder="Search users..." class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            
+                    <section id="section-users" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">User Management</h2>
                             <div class="overflow-x-auto">
                                 <table class="w-full">
-                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <thead class="bg-gray-50">
                                         <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">User</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Email</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Role</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Status</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Joined</th>
-                                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">User</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Email</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Role</th>
+                                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="usersTableBody" class="divide-y dark:divide-gray-700">
-                                        <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
+                                    <tbody id="usersTableBody" class="divide-y">
+                                        <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -359,76 +211,33 @@
                     </section>
 
                     <!-- Premium Ads Section -->
-                    <section id="section-premium" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Premium Ads Management</h2>
-                                <div class="flex gap-2">
-                                    <button onclick="generateSampleData()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-                                        <i class="fas fa-plus mr-2"></i>Generate Samples
-                                    </button>
-                                </div>
-                            </div>
+                    <section id="section-premium" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Premium Ads</h2>
                             <div id="premiumAdsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <p class="col-span-2 text-center text-gray-400 py-8">Loading...</p>
                             </div>
                         </div>
                     </section>
 
-                    <!-- Payments Section -->
-                    <section id="section-payments" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Payments & Revenue</h2>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                    <p class="text-sm text-green-600 dark:text-green-400">Total Revenue</p>
-                                    <p class="text-2xl font-bold text-green-700 dark:text-green-300" id="totalRevenue">Rs. 0</p>
-                                </div>
-                                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                                    <p class="text-sm text-blue-600 dark:text-blue-400">Pending Payments</p>
-                                    <p class="text-2xl font-bold text-blue-700 dark:text-blue-300" id="pendingPayments">0</p>
-                                </div>
-                                <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                    <p class="text-sm text-purple-600 dark:text-purple-400">Completed</p>
-                                    <p class="text-2xl font-bold text-purple-700 dark:text-purple-300" id="completedPayments">0</p>
-                                </div>
-                            </div>
-                            
-                            <div id="paymentsList" class="space-y-3">
-                                <p class="text-center text-gray-400 py-8">No payments yet</p>
-                            </div>
-                        </div>
-                    </section>
-
                     <!-- Notifications Section -->
-                    <section id="section-notifications" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Send Notification</h2>
-                            
+                    <section id="section-notifications" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Send Notification</h2>
                             <div class="space-y-4 mb-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-                                    <input type="text" id="notifTitle" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Notification title">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                    <input type="text" id="notifTitle" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Notification title">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
-                                    <textarea id="notifMessage" rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Notification message"></textarea>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Send To</label>
-                                    <select id="notifTarget" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                        <option value="all">All Users</option>
-                                        <option value="sellers">All Sellers</option>
-                                        <option value="premium">Premium Users</option>
-                                    </select>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <textarea id="notifMessage" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Notification message"></textarea>
                                 </div>
                                 <button onclick="sendNotification()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                                     <i class="fas fa-paper-plane mr-2"></i>Send Notification
                                 </button>
                             </div>
-                            
-                            <h3 class="font-bold text-gray-800 dark:text-white mb-3">Sent Notifications</h3>
+                            <h3 class="font-bold text-gray-800 mb-3">Sent Notifications</h3>
                             <div id="notificationsList" class="space-y-3">
                                 <p class="text-center text-gray-400 py-4">No notifications sent yet</p>
                             </div>
@@ -436,11 +245,11 @@
                     </section>
 
                     <!-- Categories Section -->
-                    <section id="section-categories" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+                    <section id="section-categories" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
                             <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Categories</h2>
-                                <button onclick="showAddCategoryModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                <h2 class="text-xl font-bold text-gray-800">Categories</h2>
+                                <button onclick="addCategory()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
                                     <i class="fas fa-plus mr-2"></i>Add Category
                                 </button>
                             </div>
@@ -451,55 +260,29 @@
                     </section>
 
                     <!-- Ad Slots Section -->
-                    <section id="section-adslots" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Ad Slots Management</h2>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">Manage advertisement slots on your website. You can add Google Ads or custom image ads.</p>
+                    <section id="section-adslots" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Ad Slots Management</h2>
+                            <p class="text-gray-600 mb-6">Manage advertisement slots on your website. Add Google Ads or custom image ads.</p>
                             
-                            <div class="space-y-4" id="adSlotsList">
+                            <div id="adSlotsList" class="space-y-6">
                                 <!-- Ad slots will be loaded here -->
                             </div>
                         </div>
                     </section>
 
-                    <!-- Analytics Section -->
-                    <section id="section-analytics" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Analytics & Reports</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h3 class="font-bold text-gray-700 dark:text-gray-300 mb-3">Ads by Category</h3>
-                                    <canvas id="categoryChart"></canvas>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-700 dark:text-gray-300 mb-3">User Growth</h3>
-                                    <canvas id="userChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
                     <!-- Settings Section -->
-                    <section id="section-settings" class="section hidden fade-in">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Site Settings</h2>
-                            
+                    <section id="section-settings" class="section hidden">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Site Settings</h2>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Site Name</label>
-                                    <input type="text" id="settingSiteName" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" value="Emarket">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
+                                    <input type="text" id="settingSiteName" class="w-full px-4 py-2 border border-gray-300 rounded-lg" value="Emarket">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Email</label>
-                                    <input type="email" id="settingContactEmail" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" value="admin@emarket.com">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Currency</label>
-                                    <select id="settingCurrency" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                        <option value="Rs.">Rs. (Sri Lankan Rupee)</option>
-                                        <option value="$">$ (USD)</option>
-                                        <option value="€">€ (Euro)</option>
-                                    </select>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+                                    <input type="email" id="settingContactEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg" value="admin@emarket.com">
                                 </div>
                                 <button onclick="saveSettings()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                                     <i class="fas fa-save mr-2"></i>Save Settings
@@ -509,107 +292,6 @@
                     </section>
 
                 </main>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit User Modal -->
-    <div id="editUserModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Edit User</h3>
-                <button onclick="closeModal('editUserModal')" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <div class="space-y-4">
-                <input type="hidden" id="editUserId">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                    <input type="text" id="editUserName" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                    <input type="email" id="editUserEmail" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">User Type</label>
-                    <select id="editUserType" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        <option value="customer">Customer</option>
-                        <option value="admin">Admin</option>
-                        <option value="seller">Seller</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-                    <select id="editUserStatus" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        <option value="active">Active</option>
-                        <option value="banned">Banned</option>
-                    </select>
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button onclick="saveUser()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
-                    <button onclick="resetUserPassword()" class="flex-1 bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700">Reset Password</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Ad Modal -->
-    <div id="editAdModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Edit Ad</h3>
-                <button onclick="closeModal('editAdModal')" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <div class="space-y-4">
-                <input type="hidden" id="editAdId">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-                    <input type="text" id="editAdTitle" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
-                        <input type="number" id="editAdPrice" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-                        <select id="editAdCategory" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            <option value="Vehicles">Vehicles</option>
-                            <option value="Property">Property</option>
-                            <option value="Mobiles">Mobiles</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Fashion">Fashion</option>
-                            <option value="Jobs">Jobs</option>
-                            <option value="Hotels">Hotels</option>
-                            <option value="Restaurants">Restaurants</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
-                    <input type="text" id="editAdLocation" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-                    <textarea id="editAdDesc" rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-                    <select id="editAdStatus" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" id="editAdPremium" class="w-5 h-5">
-                    <label for="editAdPremium" class="text-sm text-gray-700 dark:text-gray-300">Premium Ad</label>
-                </div>
-                <button onclick="saveAd()" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save Changes</button>
             </div>
         </div>
     </div>
@@ -633,7 +315,6 @@
 
         let currentUser = null;
         let allAds = [];
-        let allUsers = [];
 
         // Auth State
         auth.onAuthStateChanged(async user => {
@@ -687,32 +368,30 @@
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`section-${sectionName}`).classList.remove('hidden');
             
-            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active', 'bg-blue-50', 'text-blue-600'));
+            const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active', 'bg-blue-50', 'text-blue-600');
+            }
             
             const titles = {
                 dashboard: 'Dashboard',
                 ads: 'Ads Management',
                 users: 'User Management',
                 premium: 'Premium Ads',
-                payments: 'Payments',
                 notifications: 'Notifications',
                 categories: 'Categories',
                 adslots: 'Ad Slots',
-                analytics: 'Analytics',
                 settings: 'Settings'
             };
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
             
-            // Load section data
             if (sectionName === 'ads') loadAds();
             if (sectionName === 'users') loadUsers();
             if (sectionName === 'premium') loadPremiumAds();
-            if (sectionName === 'payments') loadPayments();
             if (sectionName === 'notifications') loadNotifications();
             if (sectionName === 'categories') loadCategories();
             if (sectionName === 'adslots') loadAdSlots();
-            if (sectionName === 'analytics') loadAnalytics();
         }
 
         // Load Dashboard Data
@@ -722,54 +401,22 @@
                 document.getElementById('statTotalAds').textContent = ads.length;
                 document.getElementById('statPending').textContent = ads.filter(a => a.status === 'pending').length;
                 document.getElementById('statPremium').textContent = ads.filter(a => a.isPremium).length;
-                
-                const pendingCount = ads.filter(a => a.status === 'pending').length;
-                const badge = document.getElementById('pendingBadge');
-                if (pendingCount > 0) {
-                    badge.textContent = pendingCount;
-                    badge.classList.remove('hidden');
-                }
             });
             
             db.collection('users').get().then(snap => {
                 document.getElementById('statUsers').textContent = snap.size;
-            });
-            
-            // Recent activity
-            db.collection('ads').orderBy('createdAt', 'desc').limit(5).get().then(snap => {
-                const list = document.getElementById('recentActivity');
-                if (snap.empty) {
-                    list.innerHTML = '<p class="text-gray-400 text-center py-4">No recent activity</p>';
-                    return;
-                }
-                list.innerHTML = snap.docs.map(doc => {
-                    const ad = doc.data();
-                    return `
-                        <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-ad text-blue-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-800 dark:text-white text-sm">${ad.title}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">${ad.category} • ${ad.status}</p>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
             });
         }
 
         // Load Ads
         function loadAds() {
             const filter = document.getElementById('adsFilter').value;
-            const search = document.getElementById('adsSearch').value.toLowerCase();
             
-            db.collection('ads').orderBy('createdAt', 'desc').get().then(snap => {
+            db.collection('ads').get().then(snap => {
                 allAds = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 
                 let filtered = allAds;
                 if (filter !== 'all') filtered = filtered.filter(a => a.status === filter);
-                if (search) filtered = filtered.filter(a => a.title.toLowerCase().includes(search));
                 
                 renderAdsTable(filtered);
             });
@@ -778,49 +425,45 @@
         function renderAdsTable(ads) {
             const tbody = document.getElementById('adsTableBody');
             if (ads.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">No ads found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">No ads found</td></tr>';
                 return;
             }
             
             tbody.innerHTML = ads.map(ad => {
                 const statusColors = {
-                    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-                    approved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-                    rejected: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                    pending: 'bg-yellow-100 text-yellow-800',
+                    approved: 'bg-green-100 text-green-800',
+                    rejected: 'bg-red-100 text-red-800'
                 };
                 const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/100';
                 
                 return `
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <img src="${img}" class="w-12 h-12 rounded object-cover">
                                 <div>
-                                    <p class="font-medium text-gray-800 dark:text-white text-sm">${ad.title}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">${ad.location || 'N/A'}</p>
+                                    <p class="font-medium text-gray-800 text-sm">${ad.title}</p>
+                                    <p class="text-xs text-gray-500">${ad.location || 'N/A'}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">${ad.category}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600">${ad.category}</td>
                         <td class="px-4 py-3 text-sm font-bold text-blue-600">Rs. ${Number(ad.price).toLocaleString()}</td>
                         <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[ad.status] || 'bg-gray-100 text-gray-800'}">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[ad.status] || 'bg-gray-100'}">
                                 ${ad.status}
                             </span>
                             ${ad.isPremium ? '<span class="ml-1 px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">⭐ Premium</span>' : ''}
                         </td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">${ad.sellerEmail || 'N/A'}</td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-1">
-                                <button onclick="editAd('${ad.id}')" class="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                ${ad.status !== 'approved' ? `<button onclick="approveAd('${ad.id}')" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded" title="Approve"><i class="fas fa-check"></i></button>` : ''}
-                                ${ad.status !== 'rejected' ? `<button onclick="rejectAd('${ad.id}')" class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded" title="Reject"><i class="fas fa-times"></i></button>` : ''}
-                                <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded" title="Toggle Premium">
+                                ${ad.status !== 'approved' ? `<button onclick="approveAd('${ad.id}')" class="p-2 text-green-600 hover:bg-green-50 rounded" title="Approve"><i class="fas fa-check"></i></button>` : ''}
+                                ${ad.status !== 'rejected' ? `<button onclick="rejectAd('${ad.id}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded" title="Reject"><i class="fas fa-times"></i></button>` : ''}
+                                <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 rounded" title="Toggle Premium">
                                     <i class="fas fa-crown"></i>
                                 </button>
-                                <button onclick="deleteAd('${ad.id}')" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded" title="Delete">
+                                <button onclick="deleteAd('${ad.id}')" class="p-2 text-red-600 hover:bg-red-50 rounded" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -832,231 +475,51 @@
 
         // Load Users
         function loadUsers() {
-            const search = document.getElementById('usersSearch').value.toLowerCase();
-            
             db.collection('users').get().then(snap => {
-                allUsers = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                const users = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                const tbody = document.getElementById('usersTableBody');
                 
-                let filtered = allUsers;
-                if (search) filtered = filtered.filter(u => (u.fullName || '').toLowerCase().includes(search) || (u.email || '').toLowerCase().includes(search));
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">No users found</td></tr>';
+                    return;
+                }
                 
-                renderUsersTable(filtered);
-            });
-        }
-
-        function renderUsersTable(users) {
-            const tbody = document.getElementById('usersTableBody');
-            if (users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">No users found</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = users.map(user => {
-                const roleColors = {
-                    admin: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-                    seller: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-                    customer: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-                };
-                const statusColors = {
-                    active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-                    banned: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                };
-                
-                return `
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <td class="px-4 py-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                                    ${(user.fullName || user.email || 'U').charAt(0).toUpperCase()}
+                tbody.innerHTML = users.map(user => {
+                    const roleColors = {
+                        admin: 'bg-purple-100 text-purple-800',
+                        customer: 'bg-gray-100 text-gray-800'
+                    };
+                    
+                    return `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                        ${(user.fullName || user.email || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <p class="font-medium text-gray-800 text-sm">${user.fullName || 'N/A'}</p>
                                 </div>
-                                <p class="font-medium text-gray-800 dark:text-white text-sm">${user.fullName || 'N/A'}</p>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">${user.email}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium ${roleColors[user.userType] || roleColors.customer}">
-                                ${user.userType || 'customer'}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[user.status] || statusColors.active}">
-                                ${user.status || 'active'}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
-                            ${user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <div class="flex justify-end gap-1">
-                                <button onclick="editUser('${user.id}')" class="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="resetUserPasswordDirect('${user.email}')" class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded" title="Reset Password">
-                                    <i class="fas fa-key"></i>
-                                </button>
-                                <button onclick="toggleUserBan('${user.id}', '${user.status || 'active'}')" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded" title="Ban/Unban">
-                                    <i class="fas fa-ban"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // Edit User
-        function editUser(userId) {
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return;
-            
-            document.getElementById('editUserId').value = userId;
-            document.getElementById('editUserName').value = user.fullName || '';
-            document.getElementById('editUserEmail').value = user.email || '';
-            document.getElementById('editUserType').value = user.userType || 'customer';
-            document.getElementById('editUserStatus').value = user.status || 'active';
-            
-            document.getElementById('editUserModal').classList.remove('hidden');
-        }
-
-        async function saveUser() {
-            const userId = document.getElementById('editUserId').value;
-            const data = {
-                fullName: document.getElementById('editUserName').value,
-                email: document.getElementById('editUserEmail').value,
-                userType: document.getElementById('editUserType').value,
-                status: document.getElementById('editUserStatus').value
-            };
-            
-            try {
-                await db.collection('users').doc(userId).update(data);
-                showToast('User updated successfully!', 'success');
-                closeModal('editUserModal');
-                loadUsers();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function resetUserPassword() {
-            const email = document.getElementById('editUserEmail').value;
-            if (!email) return showToast('Email required', 'error');
-            
-            try {
-                await auth.sendPasswordResetEmail(email);
-                showToast('Password reset email sent to ' + email, 'success');
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function resetUserPasswordDirect(email) {
-            if (!confirm(`Send password reset email to ${email}?`)) return;
-            try {
-                await auth.sendPasswordResetEmail(email);
-                showToast('Password reset email sent!', 'success');
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function toggleUserBan(userId, currentStatus) {
-            const newStatus = currentStatus === 'banned' ? 'active' : 'banned';
-            const action = newStatus === 'banned' ? 'ban' : 'unban';
-            
-            if (!confirm(`${action} this user?`)) return;
-            
-            try {
-                await db.collection('users').doc(userId).update({ status: newStatus });
-                showToast(`User ${action}ned successfully!`, 'success');
-                loadUsers();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        // Edit Ad
-        function editAd(adId) {
-            const ad = allAds.find(a => a.id === adId);
-            if (!ad) return;
-            
-            document.getElementById('editAdId').value = adId;
-            document.getElementById('editAdTitle').value = ad.title || '';
-            document.getElementById('editAdPrice').value = ad.price || 0;
-            document.getElementById('editAdCategory').value = ad.category || 'Vehicles';
-            document.getElementById('editAdLocation').value = ad.location || '';
-            document.getElementById('editAdDesc').value = ad.desc || '';
-            document.getElementById('editAdStatus').value = ad.status || 'pending';
-            document.getElementById('editAdPremium').checked = ad.isPremium || false;
-            
-            document.getElementById('editAdModal').classList.remove('hidden');
-        }
-
-        async function saveAd() {
-            const adId = document.getElementById('editAdId').value;
-            const data = {
-                title: document.getElementById('editAdTitle').value,
-                price: Number(document.getElementById('editAdPrice').value),
-                category: document.getElementById('editAdCategory').value,
-                location: document.getElementById('editAdLocation').value,
-                desc: document.getElementById('editAdDesc').value,
-                status: document.getElementById('editAdStatus').value,
-                isPremium: document.getElementById('editAdPremium').checked
-            };
-            
-            try {
-                await db.collection('ads').doc(adId).update(data);
-                showToast('Ad updated successfully!', 'success');
-                closeModal('editAdModal');
-                loadAds();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function approveAd(id) {
-            if (!confirm('Approve this ad?')) return;
-            try {
-                await db.collection('ads').doc(id).update({ status: 'approved' });
-                showToast('Ad approved!', 'success');
-                loadAds();
-                loadDashboardData();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function rejectAd(id) {
-            if (!confirm('Reject this ad?')) return;
-            try {
-                await db.collection('ads').doc(id).update({ status: 'rejected' });
-                showToast('Ad rejected', 'warning');
-                loadAds();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function deleteAd(id) {
-            if (!confirm('Delete this ad permanently?')) return;
-            try {
-                await db.collection('ads').doc(id).delete();
-                showToast('Ad deleted!', 'success');
-                loadAds();
-                loadDashboardData();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        async function togglePremium(id, status) {
-            try {
-                await db.collection('ads').doc(id).update({ isPremium: status });
-                showToast(status ? 'Ad marked as Premium!' : 'Premium removed', 'success');
-                loadAds();
-                loadDashboardData();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600">${user.email}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${roleColors[user.userType] || roleColors.customer}">
+                                    ${user.userType || 'customer'}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex justify-end gap-1">
+                                    <button onclick="resetUserPassword('${user.email}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded" title="Reset Password">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded" title="Change Role">
+                                        <i class="fas fa-user-edit"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            });
         }
 
         // Premium Ads
@@ -1072,10 +535,10 @@
                     const ad = doc.data();
                     const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/300';
                     return `
-                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
                             <img src="${img}" class="w-full h-32 object-cover rounded-lg mb-3">
-                            <h4 class="font-bold text-gray-800 dark:text-white">${ad.title}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">${ad.category} • Rs. ${Number(ad.price).toLocaleString()}</p>
+                            <h4 class="font-bold text-gray-800">${ad.title}</h4>
+                            <p class="text-sm text-gray-600">${ad.category} • Rs. ${Number(ad.price).toLocaleString()}</p>
                             <div class="flex gap-2 mt-3">
                                 <button onclick="togglePremium('${doc.id}', false)" class="flex-1 bg-yellow-500 text-white py-1 rounded text-sm hover:bg-yellow-600">Remove Premium</button>
                                 <button onclick="deleteAd('${doc.id}'); loadPremiumAds();" class="flex-1 bg-red-500 text-white py-1 rounded text-sm hover:bg-red-600">Delete</button>
@@ -1086,50 +549,16 @@
             });
         }
 
-        // Payments
-        function loadPayments() {
-            db.collection('payments').orderBy('createdAt', 'desc').get().then(snap => {
-                const payments = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                const total = payments.filter(p => p.status === 'completed').reduce((sum, p) => sum + (p.amount || 0), 0);
-                const pending = payments.filter(p => p.status === 'pending').length;
-                const completed = payments.filter(p => p.status === 'completed').length;
-                
-                document.getElementById('totalRevenue').textContent = 'Rs. ' + total.toLocaleString();
-                document.getElementById('pendingPayments').textContent = pending;
-                document.getElementById('completedPayments').textContent = completed;
-                
-                const list = document.getElementById('paymentsList');
-                if (payments.length === 0) {
-                    list.innerHTML = '<p class="text-center text-gray-400 py-8">No payments yet. Premium ads payments will appear here.</p>';
-                    return;
-                }
-                
-                list.innerHTML = payments.map(p => `
-                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div>
-                            <p class="font-medium text-gray-800 dark:text-white">${p.adTitle || 'Premium Ad'}</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">${p.userEmail} • ${p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-green-600">Rs. ${Number(p.amount).toLocaleString()}</p>
-                            <span class="text-xs px-2 py-1 rounded-full ${p.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${p.status}</span>
-                        </div>
-                    </div>
-                `).join('');
-            });
-        }
-
         // Notifications
         async function sendNotification() {
             const title = document.getElementById('notifTitle').value;
             const message = document.getElementById('notifMessage').value;
-            const target = document.getElementById('notifTarget').value;
             
             if (!title || !message) return showToast('Title and message required', 'error');
             
             try {
                 await db.collection('notifications').add({
-                    title, message, target,
+                    title, message,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     sentBy: currentUser.email
                 });
@@ -1152,12 +581,12 @@
                 list.innerHTML = snap.docs.map(doc => {
                     const n = doc.data();
                     return `
-                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
+                        <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="font-bold text-gray-800 dark:text-white">${n.title}</h4>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${n.message}</p>
-                                    <p class="text-xs text-gray-500 mt-2">To: ${n.target} • By: ${n.sentBy}</p>
+                                    <h4 class="font-bold text-gray-800">${n.title}</h4>
+                                    <p class="text-sm text-gray-600 mt-1">${n.message}</p>
+                                    <p class="text-xs text-gray-500 mt-2">By: ${n.sentBy}</p>
                                 </div>
                                 <button onclick="deleteNotification('${doc.id}')" class="text-red-500 hover:text-red-700">
                                     <i class="fas fa-trash"></i>
@@ -1177,152 +606,208 @@
         }
 
         // Categories
-        const defaultCategories = [
-            { name: 'Vehicles', icon: 'fa-car', color: 'blue' },
-            { name: 'Property', icon: 'fa-home', color: 'green' },
-            { name: 'Mobiles', icon: 'fa-mobile-alt', color: 'purple' },
-            { name: 'Electronics', icon: 'fa-laptop', color: 'indigo' },
-            { name: 'Fashion', icon: 'fa-tshirt', color: 'pink' },
-            { name: 'Jobs', icon: 'fa-briefcase', color: 'yellow' },
-            { name: 'Hotels', icon: 'fa-hotel', color: 'red' },
-            { name: 'Restaurants', icon: 'fa-utensils', color: 'orange' }
-        ];
-
         function loadCategories() {
-            db.collection('categories').get().then(snap => {
-                const list = document.getElementById('categoriesList');
-                let categories = defaultCategories;
-                
-                if (!snap.empty) {
-                    categories = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                }
-                
-                list.innerHTML = categories.map(cat => `
-                    <div class="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-${cat.color || 'blue'}-100 dark:bg-${cat.color || 'blue'}-900/30 rounded-lg flex items-center justify-center">
-                                <i class="fas ${cat.icon || 'fa-folder'} text-${cat.color || 'blue'}-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800 dark:text-white">${cat.name}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">${cat.count || 0} ads</p>
-                            </div>
-                        </div>
-                        <button onclick="deleteCategory('${cat.id || cat.name}')" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `).join('');
-            });
-        }
-
-        function showAddCategoryModal() {
-            const name = prompt('Category name:');
-            if (!name) return;
-            const icon = prompt('Icon class (e.g., fa-car):', 'fa-folder');
-            
-            db.collection('categories').add({
-                name, icon: icon || 'fa-folder', color: 'blue', count: 0
-            }).then(() => {
-                showToast('Category added!', 'success');
-                loadCategories();
-            });
-        }
-
-        async function deleteCategory(id) {
-            if (!confirm('Delete this category?')) return;
-            await db.collection('categories').doc(id).delete();
-            showToast('Category deleted', 'success');
-            loadCategories();
-        }
-
-        // Ad Slots
-        function loadAdSlots() {
-            const slots = [
-                { id: 'sidebar-left', name: 'Left Sidebar (300x250)', type: 'image' },
-                { id: 'middle-horizontal', name: 'Middle Horizontal (728x90)', type: 'image' },
-                { id: 'sidebar-right', name: 'Right Sidebar (160x600)', type: 'image' }
+            const defaultCategories = [
+                { name: 'Vehicles', icon: 'fa-car', color: 'blue' },
+                { name: 'Property', icon: 'fa-home', color: 'green' },
+                { name: 'Mobiles', icon: 'fa-mobile-alt', color: 'purple' },
+                { name: 'Electronics', icon: 'fa-laptop', color: 'indigo' },
+                { name: 'Fashion', icon: 'fa-tshirt', color: 'pink' },
+                { name: 'Jobs', icon: 'fa-briefcase', color: 'yellow' }
             ];
             
-            document.getElementById('adSlotsList').innerHTML = slots.map(slot => `
-                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="font-bold text-gray-800 dark:text-white">${slot.name}</h4>
-                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${slot.type}</span>
-                    </div>
-                    <div class="space-y-2">
-                        <input type="text" id="slot-${slot.id}-image" placeholder="Image URL" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-600 dark:text-white text-sm">
-                        <input type="text" id="slot-${slot.id}-link" placeholder="Click URL" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-600 dark:text-white text-sm">
-                        <textarea id="slot-${slot.id}-google" placeholder="Or paste Google Ads code here" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-600 dark:text-white text-sm font-mono"></textarea>
-                        <button onclick="saveAdSlot('${slot.id}')" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
-                            <i class="fas fa-save mr-1"></i>Save Slot
-                        </button>
+            const list = document.getElementById('categoriesList');
+            list.innerHTML = defaultCategories.map(cat => `
+                <div class="bg-white rounded-lg p-4 border border-gray-200 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-${cat.color}-100 rounded-lg flex items-center justify-center">
+                            <i class="fas ${cat.icon} text-${cat.color}-600 text-xl"></i>
+                        </div>
+                        <p class="font-bold text-gray-800">${cat.name}</p>
                     </div>
                 </div>
             `).join('');
         }
 
-        function saveAdSlot(slotId) {
-            const data = {
-                image: document.getElementById(`slot-${slotId}-image`).value,
-                link: document.getElementById(`slot-${slotId}-link`).value,
-                googleCode: document.getElementById(`slot-${slotId}-google`).value
-            };
-            
-            db.collection('adSlots').doc(slotId).set(data).then(() => {
-                showToast('Ad slot saved!', 'success');
-            }).catch(err => showToast('Error: ' + err.message, 'error'));
+        function addCategory() {
+            const name = prompt('Category name:');
+            if (!name) return;
+            showToast('Category added: ' + name, 'success');
         }
 
-        // Analytics
-        function loadAnalytics() {
-            db.collection('ads').get().then(snap => {
-                const ads = snap.docs.map(d => d.data());
-                const categories = {};
-                ads.forEach(ad => {
-                    categories[ad.category] = (categories[ad.category] || 0) + 1;
-                });
-                
-                // Category Chart
-                new Chart(document.getElementById('categoryChart'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(categories),
-                        datasets: [{
-                            data: Object.values(categories),
-                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
-                        }]
-                    }
-                });
-                
-                // User Chart
-                new Chart(document.getElementById('userChart'), {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{
-                            label: 'Users',
-                            data: [10, 25, 40, 60, 80, 100],
-                            borderColor: '#3b82f6',
-                            fill: true,
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)'
-                        }]
+        // ===== AD SLOTS MANAGEMENT =====
+        function loadAdSlots() {
+            const slots = [
+                { id: 'sidebar-left', name: 'Left Sidebar (300x250)', width: 300, height: 250 },
+                { id: 'middle-horizontal', name: 'Middle Horizontal (728x90)', width: 728, height: 90 },
+                { id: 'sidebar-right', name: 'Right Sidebar / Bottom (160x600)', width: 160, height: 600 }
+            ];
+
+            const container = document.getElementById('adSlotsList');
+            container.innerHTML = slots.map(slot => `
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-800">${slot.name}</h4>
+                            <p class="text-sm text-gray-500">Size: ${slot.width}x${slot.height}px</p>
+                        </div>
+                        <button onclick="editAdSlot('${slot.id}', '${slot.name}')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                            <i class="fas fa-edit mr-2"></i>Edit Slot
+                        </button>
+                    </div>
+                    <div id="slot-preview-${slot.id}" class="bg-white rounded-lg p-4 border border-gray-200">
+                        <p class="text-gray-400 text-sm text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Load each slot data
+            slots.forEach(slot => {
+                db.collection('adSlots').doc(slot.id).onSnapshot(doc => {
+                    const preview = document.getElementById(`slot-preview-${slot.id}`);
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.image && data.image.trim() !== '') {
+                            preview.innerHTML = `
+                                <div class="flex items-center gap-4">
+                                    <img src="${data.image}" class="w-32 h-20 object-cover rounded border" onerror="this.src='https://via.placeholder.com/128x80?text=Error'">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800">Image Ad</p>
+                                        <p class="text-sm text-gray-500">Link: ${data.link || 'None'}</p>
+                                        <p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i>Active</p>
+                                    </div>
+                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700" title="Clear">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+                        } else if (data.googleCode) {
+                            preview.innerHTML = `
+                                <div class="bg-yellow-50 border border-yellow-200 rounded p-3">
+                                    <p class="text-sm text-yellow-800"><i class="fas fa-code mr-1"></i> Google Ads code configured</p>
+                                    <p class="text-xs text-yellow-600 mt-1">Code length: ${data.googleCode.length} characters</p>
+                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 text-xs mt-2">
+                                        <i class="fas fa-trash mr-1"></i>Clear
+                                    </button>
+                                </div>
+                            `;
+                        } else {
+                            preview.innerHTML = '<p class="text-gray-400 text-center text-sm">No ad configured</p>';
+                        }
+                    } else {
+                        preview.innerHTML = '<p class="text-gray-400 text-center text-sm">No ad configured - Click "Edit Slot" to add</p>';
                     }
                 });
             });
         }
 
-        // Settings
-        function saveSettings() {
-            const settings = {
-                siteName: document.getElementById('settingSiteName').value,
-                contactEmail: document.getElementById('settingContactEmail').value,
-                currency: document.getElementById('settingCurrency').value
-            };
+        function editAdSlot(slotId, slotName) {
+            const choice = prompt(`Edit ${slotName}\n\nType "image" for Image Ad\nType "google" for Google Ads\nType "clear" to remove ad`, 'image');
             
-            db.collection('settings').doc('site').set(settings).then(() => {
-                showToast('Settings saved!', 'success');
-            }).catch(err => showToast('Error: ' + err.message, 'error'));
+            if (!choice || choice.toLowerCase() === 'clear') {
+                if (choice && choice.toLowerCase() === 'clear') {
+                    clearAdSlot(slotId);
+                }
+                return;
+            }
+            
+            if (choice.toLowerCase() === 'image') {
+                const image = prompt('Enter Image URL:');
+                if (image === null || image.trim() === '') return;
+                
+                const link = prompt('Enter Click URL (optional, press Enter to skip):', '');
+                
+                db.collection('adSlots').doc(slotId).set({
+                    image: image.trim(),
+                    link: link ? link.trim() : '',
+                    googleCode: null,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }).then(() => {
+                    showToast(`✅ ${slotName} updated successfully!`, 'success');
+                }).catch(err => {
+                    showToast('❌ Error: ' + err.message, 'error');
+                });
+            } else if (choice.toLowerCase() === 'google') {
+                const googleCode = prompt('Paste your Google Ads code:');
+                if (googleCode === null || googleCode.trim() === '') return;
+                
+                db.collection('adSlots').doc(slotId).set({
+                    image: null,
+                    link: null,
+                    googleCode: googleCode,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }).then(() => {
+                    showToast(`✅ ${slotName} Google Ads updated!`, 'success');
+                }).catch(err => {
+                    showToast('❌ Error: ' + err.message, 'error');
+                });
+            } else {
+                showToast('Invalid choice. Type "image", "google", or "clear"', 'error');
+            }
+        }
+
+        function clearAdSlot(slotId) {
+            if (!confirm('Clear this ad slot?')) return;
+            
+            db.collection('adSlots').doc(slotId).set({
+                image: null,
+                link: null,
+                googleCode: null,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).then(() => {
+                showToast('Ad slot cleared', 'success');
+            }).catch(err => {
+                showToast('Error: ' + err.message, 'error');
+            });
+        }
+
+        // Actions
+        async function approveAd(id) {
+            if (!confirm('Approve this ad?')) return;
+            await db.collection('ads').doc(id).update({ status: 'approved' });
+            showToast('Ad approved!', 'success');
+            loadAds();
+            loadDashboardData();
+        }
+
+        async function rejectAd(id) {
+            if (!confirm('Reject this ad?')) return;
+            await db.collection('ads').doc(id).update({ status: 'rejected' });
+            showToast('Ad rejected', 'warning');
+            loadAds();
+        }
+
+        async function deleteAd(id) {
+            if (!confirm('Delete this ad permanently?')) return;
+            await db.collection('ads').doc(id).delete();
+            showToast('Ad deleted!', 'success');
+            loadAds();
+            loadDashboardData();
+        }
+
+        async function togglePremium(id, status) {
+            await db.collection('ads').doc(id).update({ isPremium: status });
+            showToast(status ? 'Ad marked as Premium!' : 'Premium removed', 'success');
+            loadAds();
+            loadDashboardData();
+        }
+
+        async function resetUserPassword(email) {
+            if (!confirm(`Send password reset email to ${email}?`)) return;
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showToast('Password reset email sent!', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function toggleUserRole(userId, currentRole) {
+            const newRole = currentRole === 'admin' ? 'customer' : 'admin';
+            if (!confirm(`Change role to ${newRole}?`)) return;
+            await db.collection('users').doc(userId).update({ userType: newRole });
+            showToast(`Role changed to ${newRole}`, 'success');
+            loadUsers();
         }
 
         // Generate Sample Data
@@ -1334,7 +819,7 @@
                 { title: "Land for Sale", price: 15000000, category: "Property", location: "Kandy", phone: "0712345678", desc: "20 perches.", images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400"], isPremium: false },
                 { title: "iPhone 13 Pro", price: 280000, category: "Mobiles", location: "Gampaha", phone: "0761234567", desc: "Used, good condition.", images: ["https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400"], isPremium: true },
                 { title: "Honda Dio 2020", price: 450000, category: "Vehicles", location: "Negombo", phone: "0721234567", desc: "First owner.", images: ["https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400"], isPremium: false },
-                { title: "Samsung 55\" TV", price: 120000, category: "Electronics", location: "Dehiwala", phone: "0751234567", desc: "Smart TV.", images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400"], isPremium: false },
+                { title: "Samsung 55 TV", price: 120000, category: "Electronics", location: "Dehiwala", phone: "0751234567", desc: "Smart TV.", images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400"], isPremium: false },
                 { title: "Apartment for Rent", price: 85000, category: "Property", location: "Colombo 03", phone: "0779876543", desc: "3 Bedrooms.", images: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400"], isPremium: true },
                 { title: "Hotel Stay Package", price: 35000, category: "Hotels", location: "Colombo", phone: "0112345678", desc: "2 Nights.", images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400"], isPremium: false },
                 { title: "Best Kottu", price: 650, category: "Restaurants", location: "Havelock", phone: "0719876543", desc: "Chicken Kottu.", images: ["https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400"], isPremium: false },
@@ -1363,28 +848,19 @@
             }
         }
 
-        // UI Helpers
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
+        // Settings
+        function saveSettings() {
+            const settings = {
+                siteName: document.getElementById('settingSiteName').value,
+                contactEmail: document.getElementById('settingContactEmail').value
+            };
+            
+            db.collection('settings').doc('site').set(settings, { merge: true }).then(() => {
+                showToast('Settings saved!', 'success');
+            }).catch(err => showToast('Error: ' + err.message, 'error'));
         }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('darkModeIcon').className = isDark ? 'fas fa-sun w-5' : 'fas fa-moon w-5';
-            document.getElementById('darkModeText').textContent = isDark ? 'Light Mode' : 'Dark Mode';
-            localStorage.setItem('darkMode', isDark);
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
-        }
-
-        function toggleNotifications() {
-            showToast('Notifications feature coming soon!', 'info');
-        }
-
+        // Toast Notification
         function showToast(message, type = 'info') {
             const colors = {
                 success: 'bg-green-500',
@@ -1400,18 +876,11 @@
             };
             
             const toast = document.createElement('div');
-            toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 min-w-[250px]`;
+            toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 min-w-[250px]`;
             toast.innerHTML = `<i class="fas ${icons[type]}"></i> <span>${message}</span>`;
             
             document.getElementById('toastContainer').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Init
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark');
-            document.getElementById('darkModeIcon').className = 'fas fa-sun w-5';
-            document.getElementById('darkModeText').textContent = 'Light Mode';
         }
     </script>
 </body>
