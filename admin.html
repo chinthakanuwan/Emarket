@@ -33,12 +33,6 @@
             </form>
             
             <div id="loginError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm hidden"></div>
-            
-            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <p class="text-xs text-gray-500 font-bold mb-2">🔍 Debug Info:</p>
-                <p class="text-xs text-gray-600" id="debugInfo">Waiting for login...</p>
-            </div>
-            
             <a href="index.html" class="block text-center mt-4 text-blue-500 text-sm hover:underline">← Back to Home</a>
         </div>
     </div>
@@ -55,7 +49,12 @@
                     <button onclick="generateSampleData()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-sm font-bold flex items-center gap-2">
                         <i class="fas fa-magic"></i> Generate 10 Sample Ads
                     </button>
-                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold">Logout</button>
+                    <button onclick="deleteAllSampleAds()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold flex items-center gap-2">
+                        <i class="fas fa-trash"></i> Delete All Sample Ads
+                    </button>
+                    <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-sm font-bold">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
                 </div>
             </div>
         </header>
@@ -69,7 +68,7 @@
                     <p class="text-2xl font-bold text-gray-800" id="countPending">0</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
-                    <p class="text-gray-500 text-xs uppercase font-bold">Approved</p>
+                    <p class="text-gray-500 text-xs uppercase font-bold">Approved (Live)</p>
                     <p class="text-2xl font-bold text-gray-800" id="countApproved">0</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
@@ -85,9 +84,19 @@
             <!-- Pending Approvals -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
                 <div class="p-4 bg-yellow-50 border-b border-yellow-100">
-                    <h2 class="font-bold text-gray-800"><i class="fas fa-clock text-yellow-600 mr-2"></i>Pending Approvals</h2>
+                    <h2 class="font-bold text-gray-800"><i class="fas fa-clock text-yellow-600 mr-2"></i>Pending Approvals (Not visible on home page)</h2>
                 </div>
                 <div id="pendingList" class="p-4">
+                    <p class="text-gray-400 text-center">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Approved Ads (Live on Home Page) -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+                <div class="p-4 bg-green-50 border-b border-green-100">
+                    <h2 class="font-bold text-gray-800"><i class="fas fa-check-circle text-green-600 mr-2"></i>Approved Ads (✅ Live on Home Page)</h2>
+                </div>
+                <div id="approvedList" class="p-4">
                     <p class="text-gray-400 text-center">Loading...</p>
                 </div>
             </div>
@@ -122,37 +131,23 @@
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
         const loginError = document.getElementById('loginError');
-        const debugInfo = document.getElementById('debugInfo');
 
-        // Check if already logged in
+        // Auth State
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                debugInfo.innerHTML = `Logged in: ${user.email}<br>UID: ${user.uid}`;
-                
                 try {
                     const doc = await db.collection('users').doc(user.uid).get();
                     
-                    if (doc.exists) {
-                        const data = doc.data();
-                        debugInfo.innerHTML += `<br>userType: "${data.userType}"`;
-                        
-                        if (data.userType === 'admin') {
-                            showDashboard(user);
-                        } else {
-                            loginError.textContent = `❌ Access Denied! Your userType is "${data.userType}", not "admin".`;
-                            loginError.classList.remove('hidden');
-                        }
+                    if (doc.exists && doc.data().userType === 'admin') {
+                        showDashboard(user);
                     } else {
-                        loginError.textContent = `❌ No user document found in Firestore for UID: ${user.uid}. Please create it in Firebase Console.`;
+                        loginError.textContent = '❌ Access Denied! Not an admin.';
                         loginError.classList.remove('hidden');
-                        debugInfo.innerHTML += `<br>❌ Document NOT found in users collection`;
                     }
                 } catch (error) {
-                    loginError.textContent = `❌ Error: ${error.message}`;
+                    loginError.textContent = '❌ Error: ' + error.message;
                     loginError.classList.remove('hidden');
                 }
-            } else {
-                debugInfo.innerHTML = 'Not logged in. Please login below.';
             }
         });
 
@@ -163,20 +158,18 @@
             loadDashboardData();
         }
 
-        // Login Form
+        // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
             loginError.classList.add('hidden');
-            debugInfo.innerHTML = 'Attempting login...';
             
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                debugInfo.innerHTML = `Login successful! Checking admin status...`;
             } catch (error) {
-                loginError.textContent = `❌ Login failed: ${error.message}`;
+                loginError.textContent = '❌ Login failed: ' + error.message;
                 loginError.classList.remove('hidden');
             }
         });
@@ -212,7 +205,7 @@
                     const ref = db.collection('ads').doc();
                     batch.set(ref, {
                         ...sample,
-                        status: 'approved',
+                        status: 'approved', // ✅ Auto approved - will show on home page
                         sellerUid: auth.currentUser.uid,
                         sellerEmail: auth.currentUser.email,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -221,7 +214,38 @@
                 });
                 
                 await batch.commit();
-                alert("✅ 10 Sample Ads Generated!");
+                alert("✅ 10 Sample Ads Generated and Approved! (Visible on home page)");
+                loadDashboardData();
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        // Delete All Sample Ads
+        async function deleteAllSampleAds() {
+            if(!confirm("⚠️ Are you sure you want to DELETE ALL sample ads? This cannot be undone!")) return;
+            
+            try {
+                const snapshot = await db.collection('ads').get();
+                const batch = db.batch();
+                let count = 0;
+                
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    // Delete ads created by admin-sample or with sample images
+                    if (data.sellerUid === 'admin-sample' || data.sellerEmail === 'sample@emarket.com') {
+                        batch.delete(doc.ref);
+                        count++;
+                    }
+                });
+                
+                if (count === 0) {
+                    alert("No sample ads found to delete.");
+                    return;
+                }
+                
+                await batch.commit();
+                alert(`✅ Deleted ${count} sample ads successfully!`);
                 loadDashboardData();
             } catch (error) {
                 alert("Error: " + error.message);
@@ -242,14 +266,51 @@
                 list.innerHTML = '<div class="space-y-2">' + snap.docs.map(doc => {
                     const ad = doc.data();
                     return `
-                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                             <div class="flex-1">
                                 <p class="font-bold text-sm">${ad.title}</p>
                                 <p class="text-xs text-gray-500">${ad.category} • Rs. ${ad.price.toLocaleString()}</p>
+                                <p class="text-[10px] text-gray-400">Status: <span class="text-yellow-600 font-bold">PENDING</span> (Not visible on home page)</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="approveAd('${doc.id}')" class="bg-green-600 text-white px-3 py-1 rounded text-xs">Approve</button>
-                                <button onclick="deleteAd('${doc.id}')" class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs">Reject</button>
+                                <button onclick="approveAd('${doc.id}')" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button onclick="deleteAd('${doc.id}')" class="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200">
+                                    <i class="fas fa-trash"></i> Reject
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('') + '</div>';
+            });
+
+            // Approved Ads (Live on Home Page)
+            db.collection('ads').where('status', '==', 'approved').onSnapshot(snap => {
+                document.getElementById('countApproved').innerText = snap.size;
+                const list = document.getElementById('approvedList');
+                
+                if (snap.empty) {
+                    list.innerHTML = '<p class="text-gray-400 text-center py-4">No approved ads yet. Click "Generate 10 Sample Ads" to add.</p>';
+                    return;
+                }
+                
+                list.innerHTML = '<div class="space-y-2">' + snap.docs.map(doc => {
+                    const ad = doc.data();
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">${ad.title}</p>
+                                <p class="text-xs text-gray-500">${ad.category} • Rs. ${ad.price.toLocaleString()}</p>
+                                <p class="text-[10px] text-green-600 font-bold">✅ LIVE ON HOME PAGE</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="togglePremium('${doc.id}', ${!ad.isPremium})" class="text-purple-600 text-xs hover:underline">
+                                    ${ad.isPremium ? '⭐ Remove Premium' : 'Make Premium'}
+                                </button>
+                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs hover:underline">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
                             </div>
                         </div>
                     `;
@@ -258,18 +319,18 @@
 
             // All Ads
             db.collection('ads').orderBy('createdAt', 'desc').limit(20).onSnapshot(snap => {
-                document.getElementById('countApproved').innerText = snap.docs.filter(d => d.data().status === 'approved').length;
                 document.getElementById('countPremium').innerText = snap.docs.filter(d => d.data().isPremium).length;
                 
                 const list = document.getElementById('allAdsList');
                 
                 if (snap.empty) {
-                    list.innerHTML = '<p class="text-gray-400 text-center py-4">No ads yet. Click "Generate 10 Sample Ads" to add sample data.</p>';
+                    list.innerHTML = '<p class="text-gray-400 text-center py-4">No ads yet.</p>';
                     return;
                 }
                 
                 list.innerHTML = '<div class="space-y-2">' + snap.docs.map(doc => {
                     const ad = doc.data();
+                    const statusColor = ad.status === 'approved' ? 'green' : ad.status === 'pending' ? 'yellow' : 'red';
                     return `
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div class="flex-1">
@@ -277,8 +338,8 @@
                                 <p class="text-xs text-gray-500">${ad.category} • ${ad.status} ${ad.isPremium ? '⭐' : ''}</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="togglePremium('${doc.id}', ${!ad.isPremium})" class="text-purple-600 text-xs">${ad.isPremium ? 'Remove Premium' : 'Make Premium'}</button>
-                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs">Delete</button>
+                                ${ad.status !== 'approved' ? `<button onclick="approveAd('${doc.id}')" class="text-green-600 text-xs hover:underline">Approve</button>` : ''}
+                                <button onclick="deleteAd('${doc.id}')" class="text-red-500 text-xs hover:underline">Delete</button>
                             </div>
                         </div>
                     `;
@@ -292,14 +353,16 @@
         }
 
         async function approveAd(id) {
-            if(confirm("Approve this ad?")) {
+            if(confirm("✅ Approve this ad? It will be visible on the home page immediately!")) {
                 await db.collection('ads').doc(id).update({ status: 'approved' });
+                alert("✅ Ad approved! Now visible on home page.");
             }
         }
 
         async function deleteAd(id) {
-            if(confirm("Delete this ad?")) {
+            if(confirm("⚠️ Delete this ad permanently?")) {
                 await db.collection('ads').doc(id).delete();
+                alert("🗑️ Ad deleted!");
             }
         }
 
