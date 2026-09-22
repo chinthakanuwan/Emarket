@@ -154,7 +154,6 @@
         const db = firebase.firestore();
 
         let currentCategory = 'All';
-        let allAds = [];
 
         // Auth UI
         auth.onAuthStateChanged(user => {
@@ -184,59 +183,55 @@
             auth.signOut().then(() => window.location.reload());
         }
 
-        // Load Ads from Firestore
+        // Load Ads from Firestore (Fixed - No Index Required)
         function loadAds() {
-            // Load Premium Ads
+            // Load ALL approved ads first
             db.collection('ads')
                 .where('status', '==', 'approved')
-                .where('isPremium', '==', true)
                 .orderBy('createdAt', 'desc')
-                .limit(4)
                 .onSnapshot(snapshot => {
-                    const grid = document.getElementById('premiumAdsGrid');
+                    const allApprovedAds = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
                     
-                    if (snapshot.empty) {
-                        grid.innerHTML = '<div class="col-span-2 text-center py-8 text-gray-400">No premium ads available</div>';
-                        return;
+                    // Client-side filtering for Premium
+                    const premiumAds = allApprovedAds.filter(ad => ad.isPremium === true).slice(0, 4);
+                    
+                    // Client-side filtering for Category
+                    let latestAds = currentCategory === 'All' 
+                        ? allApprovedAds.slice(0, 10)
+                        : allApprovedAds.filter(ad => ad.category === currentCategory).slice(0, 10);
+                    
+                    // Render Premium Ads
+                    const premiumGrid = document.getElementById('premiumAdsGrid');
+                    if (premiumAds.length === 0) {
+                        premiumGrid.innerHTML = '<div class="col-span-2 text-center py-8 text-gray-400">No premium ads available</div>';
+                    } else {
+                        premiumGrid.innerHTML = premiumAds.map(ad => createAdCard(ad)).join('');
                     }
                     
-                    grid.innerHTML = snapshot.docs.map(doc => createAdCard(doc)).join('');
+                    // Render Latest Ads
+                    const latestGrid = document.getElementById('latestAdsGrid');
+                    if (latestAds.length === 0) {
+                        latestGrid.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found in this category</div>';
+                    } else {
+                        latestGrid.innerHTML = latestAds.map(ad => createAdCard(ad)).join('');
+                    }
+                }, error => {
+                    console.error("Error loading ads:", error);
+                    document.getElementById('latestAdsGrid').innerHTML = 
+                        '<div class="col-span-2 text-center py-10 text-red-500">Error loading ads. Check console for details.</div>';
                 });
-
-            // Load Latest Ads
-            let query = db.collection('ads')
-                .where('status', '==', 'approved')
-                .orderBy('createdAt', 'desc')
-                .limit(10);
-
-            if (currentCategory !== 'All') {
-                query = db.collection('ads')
-                    .where('status', '==', 'approved')
-                    .where('category', '==', currentCategory)
-                    .orderBy('createdAt', 'desc')
-                    .limit(10);
-            }
-
-            query.onSnapshot(snapshot => {
-                const grid = document.getElementById('latestAdsGrid');
-                
-                if (snapshot.empty) {
-                    grid.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found in this category</div>';
-                    return;
-                }
-                
-                grid.innerHTML = snapshot.docs.map(doc => createAdCard(doc)).join('');
-            });
         }
 
         // Create Ad Card HTML
-        function createAdCard(doc) {
-            const ad = doc.data();
+        function createAdCard(ad) {
             const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
             
             return `
                 <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer" 
-                         onclick="window.location.href='ad-details.html?id=${doc.id}'">
+                         onclick="window.location.href='ad-details.html?id=${ad.id}'">
                     <div class="relative h-48 bg-gray-100">
                         <img src="${imageUrl}" 
                              onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
@@ -287,38 +282,31 @@
                 return;
             }
             
-            // Client-side search (for demo)
-            const filteredAds = allAds.filter(ad => 
-                ad.title.toLowerCase().includes(searchTerm) ||
-                ad.desc.toLowerCase().includes(searchTerm)
-            );
-            
-            const grid = document.getElementById('latestAdsGrid');
-            if (filteredAds.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found matching your search</div>';
-            } else {
-                grid.innerHTML = filteredAds.map(ad => createAdCardFromData(ad)).join('');
-            }
+            // Reload all ads and filter client-side
+            db.collection('ads')
+                .where('status', '==', 'approved')
+                .get()
+                .then(snapshot => {
+                    const allAds = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    
+                    const filteredAds = allAds.filter(ad => 
+                        ad.title.toLowerCase().includes(searchTerm) ||
+                        (ad.desc && ad.desc.toLowerCase().includes(searchTerm))
+                    );
+                    
+                    const grid = document.getElementById('latestAdsGrid');
+                    if (filteredAds.length === 0) {
+                        grid.innerHTML = '<div class="col-span-2 text-center py-10 text-gray-400">No ads found matching your search</div>';
+                    } else {
+                        grid.innerHTML = filteredAds.map(ad => createAdCard(ad)).join('');
+                    }
+                });
         }
 
-        function createAdCardFromData(ad) {
-            const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300';
-            return `
-                <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden">
-                    <div class="relative h-48 bg-gray-100">
-                        <img src="${imageUrl}" alt="${ad.title}" class="w-full h-full object-cover">
-                        <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">${ad.category}</span>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title}</h3>
-                        <p class="text-blue-700 font-extrabold text-lg">Rs. ${Number(ad.price).toLocaleString()}</p>
-                        <p class="text-xs text-gray-500 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>${ad.location}</p>
-                    </div>
-                </article>
-            `;
-        }
-
-        // Set All as default active category
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             filterCategory('All');
             loadAds();
