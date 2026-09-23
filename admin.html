@@ -497,13 +497,29 @@
                 .catch(err => showToast('Error: ' + err.message, 'error'));
         }
 
+        // ✅ FIX: Load ALL users (not just admin)
         function loadUsers() {
             db.collection('users').get().then(snap => {
                 allUsers = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 const container = document.getElementById('usersList');
-                if (allUsers.length === 0) { container.innerHTML = '<p class="text-center text-gray-400 py-8">No users found</p>'; return; }
+                
+                console.log('📋 Total users found:', allUsers.length);
+                
+                if (allUsers.length === 0) { 
+                    container.innerHTML = '<p class="text-center text-gray-400 py-8">No users found</p>'; 
+                    return; 
+                }
+                
                 container.innerHTML = allUsers.map(user => {
-                    const features = user.features || { canPostAds: true, maxAdsPerMonth: 10, isPremiumUser: false, premiumAdsLimit: 0, featuredListings: false, prioritySupport: false };
+                    const features = user.features || { 
+                        canPostAds: true, 
+                        maxAdsPerMonth: 10, 
+                        isPremiumUser: false, 
+                        premiumAdsLimit: 0, 
+                        featuredListings: false, 
+                        prioritySupport: false 
+                    };
+                    
                     return `
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                             <div class="flex items-center justify-between mb-4">
@@ -515,38 +531,56 @@
                                         <p class="font-bold text-gray-800">${user.fullName || 'N/A'}</p>
                                         <p class="text-sm text-gray-600">${user.email}</p>
                                         <p class="text-xs text-gray-500">Ads Posted: ${user.adsPosted || 0}</p>
+                                        <p class="text-xs text-gray-500">Joined: ${user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown'}</p>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium ${user.userType === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">${user.userType || 'customer'}</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${user.userType === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${user.userType || 'customer'}
+                                </span>
                             </div>
                             <div class="border-t pt-4">
                                 <h4 class="font-bold text-sm text-gray-700 mb-3">Features & Permissions</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-ad mr-2 text-blue-500"></i>Can Post Ads</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'canPostAds', ${!features.canPostAds})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.canPostAds ? 'active' : 'inactive'}">${features.canPostAds ? '✓ ON' : '✗ OFF'}</button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'canPostAds', ${!features.canPostAds})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.canPostAds ? 'active' : 'inactive'}">
+                                            ${features.canPostAds ? '✓ ON' : '✗ OFF'}
+                                        </button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-crown mr-2 text-yellow-500"></i>Premium User</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'isPremiumUser', ${!features.isPremiumUser})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.isPremiumUser ? 'active' : 'inactive'}">${features.isPremiumUser ? '✓ ON' : '✗ OFF'}</button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'isPremiumUser', ${!features.isPremiumUser})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.isPremiumUser ? 'active' : 'inactive'}">
+                                            ${features.isPremiumUser ? '✓ ON' : '✗ OFF'}
+                                        </button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-star mr-2 text-purple-500"></i>Featured Listings</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">${features.featuredListings ? '✓ ON' : '✗ OFF'}</button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">
+                                            ${features.featuredListings ? '✓ ON' : '✗ OFF'}
+                                        </button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-headset mr-2 text-green-500"></i>Priority Support</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'prioritySupport', ${!features.prioritySupport})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.prioritySupport ? 'active' : 'inactive'}">${features.prioritySupport ? '✓ ON' : '✗ OFF'}</button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'prioritySupport', ${!features.prioritySupport})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.prioritySupport ? 'active' : 'inactive'}">
+                                            ${features.prioritySupport ? '✓ ON' : '✗ OFF'}
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="mt-3 flex gap-2">
-                                    <button onclick="resetUserPassword('${user.email}')" class="flex-1 bg-yellow-500 text-white py-2 rounded text-sm hover:bg-yellow-600 touch-btn"><i class="fas fa-key mr-1"></i>Reset Password</button>
-                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="flex-1 bg-blue-500 text-white py-2 rounded text-sm hover:bg-blue-600 touch-btn"><i class="fas fa-user-edit mr-1"></i>Change Role</button>
+                                    <button onclick="resetUserPassword('${user.email}')" class="flex-1 bg-yellow-500 text-white py-2 rounded text-sm hover:bg-yellow-600 touch-btn">
+                                        <i class="fas fa-key mr-1"></i>Reset Password
+                                    </button>
+                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="flex-1 bg-blue-500 text-white py-2 rounded text-sm hover:bg-blue-600 touch-btn">
+                                        <i class="fas fa-user-edit mr-1"></i>Change Role
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     `;
                 }).join('');
+            }).catch(error => {
+                console.error('Error loading users:', error);
+                document.getElementById('usersList').innerHTML = `<p class="text-center text-red-500 py-8">Error: ${error.message}</p>`;
             });
         }
 
