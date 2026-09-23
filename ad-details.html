@@ -108,6 +108,7 @@
         <div id="errorState" class="hidden text-center py-20">
             <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
             <p class="text-gray-600 mb-4">Ad not found or has been removed</p>
+            <p class="text-sm text-gray-500 mb-4">Ad ID: <span id="debugAdId"></span></p>
             <a href="index.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Home
             </a>
@@ -167,7 +168,8 @@
         let currentAd = null;
 
         console.log("🔍 Full URL:", window.location.href);
-        console.log("🔍 Ad ID from URL:", adId);
+        console.log(" Ad ID from URL:", adId);
+        document.getElementById('debugAdId').textContent = adId || 'None';
 
         // Load Ad Details
         async function loadAdDetails() {
@@ -186,7 +188,7 @@
                 
                 if (!doc.exists) {
                     console.error("❌ Ad document NOT found in database!");
-                    console.log("📋 Check Firestore > ads collection for available documents");
+                    console.log("📋 Available ads: Check Firestore > ads collection");
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('errorState').classList.remove('hidden');
                     return;
@@ -194,7 +196,7 @@
 
                 currentAd = { id: doc.id, ...doc.data() };
                 console.log("✅ Ad loaded successfully:", currentAd);
-                console.log("📊 Ad status:", currentAd.status);
+                console.log(" Ad status:", currentAd.status);
                 console.log("📊 Ad title:", currentAd.title);
                 
                 // Increment view count
@@ -278,6 +280,9 @@
                             </a>
                         `;
                     }).join('');
+                })
+                .catch(error => {
+                    console.error("Error loading similar ads:", error);
                 });
         }
 
