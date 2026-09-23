@@ -9,15 +9,109 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                z-index: 50;
+                transition: left 0.3s ease;
+                width: 80%;
+                max-width: 300px;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 40;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+            .desktop-header {
+                display: none;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            .action-buttons button {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-header {
+                display: none !important;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
+        }
+
+        /* Touch-friendly buttons */
+        .touch-btn {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Smooth scrolling */
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+
+        /* Card animations */
+        .card-enter {
+            animation: cardSlideIn 0.3s ease-out;
+        }
+        @keyframes cardSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 smooth-scroll">
 
     <!-- Login Screen -->
     <div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-700 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md card-enter">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-shield-alt text-white text-2xl"></i>
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-shield-alt text-white text-3xl"></i>
                 </div>
                 <h1 class="text-3xl font-bold text-gray-800">Admin Panel</h1>
                 <p class="text-gray-500 mt-2">Emarket Management System</p>
@@ -25,14 +119,18 @@
             
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@emarket.com" required>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <i class="fas fa-envelope mr-1"></i> Email
+                    </label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none touch-btn" placeholder="admin@emarket.com" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <i class="fas fa-lock mr-1"></i> Password
+                    </label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none touch-btn" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition">
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition touch-btn">
                     <i class="fas fa-sign-in-alt mr-2"></i> Login
                 </button>
             </form>
@@ -43,11 +141,14 @@
 
     <!-- Admin Dashboard -->
     <div id="dashboard" class="hidden">
-        <div class="flex h-screen overflow-hidden">
-            
-            <!-- Sidebar -->
-            <aside class="w-64 bg-white shadow-lg flex-shrink-0">
-                <div class="p-6 border-b">
+        
+        <!-- Sidebar Overlay (Mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar bg-white shadow-lg w-64 flex-shrink-0 h-screen overflow-y-auto" id="sidebar">
+            <div class="p-6 border-b">
+                <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                             <i class="fas fa-layer-group text-white"></i>
@@ -57,242 +158,254 @@
                             <p class="text-xs text-gray-500">Admin Panel</p>
                         </div>
                     </div>
-                </div>
-                
-                <nav class="p-4 space-y-1">
-                    <button onclick="showSection('dashboard')" class="sidebar-link active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="dashboard">
-                        <i class="fas fa-tachometer-alt w-5"></i> Dashboard
-                    </button>
-                    <button onclick="showSection('ads')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="ads">
-                        <i class="fas fa-ad w-5"></i> Ads Management
-                    </button>
-                    <button onclick="showSection('users')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="users">
-                        <i class="fas fa-users w-5"></i> Users
-                    </button>
-                    <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="premium">
-                        <i class="fas fa-crown w-5"></i> Premium Ads
-                    </button>
-                    <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="notifications">
-                        <i class="fas fa-bell w-5"></i> Notifications
-                    </button>
-                    <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="categories">
-                        <i class="fas fa-folder w-5"></i> Categories
-                    </button>
-                    <button onclick="showSection('adslots')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="adslots">
-                        <i class="fas fa-image w-5"></i> Ad Slots
-                    </button>
-                    <button onclick="showSection('settings')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50" data-section="settings">
-                        <i class="fas fa-cog w-5"></i> Settings
-                    </button>
-                </nav>
-                
-                <div class="p-4 border-t mt-auto">
-                    <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50">
-                        <i class="fas fa-sign-out-alt w-5"></i> Logout
+                    <button onclick="toggleSidebar()" class="md:hidden text-gray-500 hover:text-gray-700 touch-btn">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-            </aside>
+            </div>
+            
+            <nav class="p-4 space-y-1">
+                <button onclick="showSection('dashboard')" class="sidebar-link active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt w-5"></i> Dashboard
+                </button>
+                <button onclick="showSection('ads')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="ads">
+                    <i class="fas fa-ad w-5"></i> Ads Management
+                </button>
+                <button onclick="showSection('users')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="users">
+                    <i class="fas fa-users w-5"></i> Users
+                </button>
+                <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="premium">
+                    <i class="fas fa-crown w-5"></i> Premium Ads
+                </button>
+                <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="notifications">
+                    <i class="fas fa-bell w-5"></i> Notifications
+                </button>
+                <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="categories">
+                    <i class="fas fa-folder w-5"></i> Categories
+                </button>
+                <button onclick="showSection('adslots')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="adslots">
+                    <i class="fas fa-image w-5"></i> Ad Slots
+                </button>
+                <button onclick="showSection('settings')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="settings">
+                    <i class="fas fa-cog w-5"></i> Settings
+                </button>
+            </nav>
+            
+            <div class="p-4 border-t mt-auto">
+                <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition touch-btn">
+                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                </button>
+            </div>
+        </aside>
 
-            <!-- Main Content -->
-            <div class="flex-1 flex flex-col overflow-hidden">
-                
-                <!-- Top Header -->
-                <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
-                    <h1 id="pageTitle" class="text-xl font-bold text-gray-800">Dashboard</h1>
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-gray-800" id="adminName">Admin</p>
-                                <p class="text-xs text-gray-500" id="adminEmail">admin@emarket.com</p>
-                            </div>
+        <!-- Main Content -->
+        <div class="main-content flex-1 flex flex-col">
+            
+            <!-- Mobile Header -->
+            <header class="mobile-header bg-white shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+                <button onclick="toggleSidebar()" class="text-gray-600 hover:text-gray-800 touch-btn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <h1 class="font-bold text-gray-800" id="mobileTitle">Dashboard</h1>
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    <i class="fas fa-user"></i>
+                </div>
+            </header>
+
+            <!-- Desktop Header -->
+            <header class="desktop-header bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+                <h1 id="pageTitle" class="text-xl font-bold text-gray-800">Dashboard</h1>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800" id="adminName">Admin</p>
+                            <p class="text-xs text-gray-500" id="adminEmail">admin@emarket.com</p>
                         </div>
                     </div>
-                </header>
+                </div>
+            </header>
 
-                <!-- Content Area -->
-                <main class="flex-1 overflow-y-auto p-6">
-                    
-                    <!-- Dashboard Section -->
-                    <section id="section-dashboard" class="section">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-blue-500">
-                                <p class="text-sm text-gray-500">Total Ads</p>
-                                <p class="text-3xl font-bold text-gray-800" id="statTotalAds">0</p>
-                            </div>
-                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-yellow-500">
-                                <p class="text-sm text-gray-500">Pending</p>
-                                <p class="text-3xl font-bold text-gray-800" id="statPending">0</p>
-                            </div>
-                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-purple-500">
-                                <p class="text-sm text-gray-500">Premium Ads</p>
-                                <p class="text-3xl font-bold text-gray-800" id="statPremium">0</p>
-                            </div>
-                            <div class="bg-white rounded-xl p-6 shadow-sm border-l-4 border-green-500">
-                                <p class="text-sm text-gray-500">Total Users</p>
-                                <p class="text-3xl font-bold text-gray-800" id="statUsers">0</p>
-                            </div>
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-6">
+                
+                <!-- Dashboard Section -->
+                <section id="section-dashboard" class="section card-enter">
+                    <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-blue-500">
+                            <p class="text-xs md:text-sm text-gray-500">Total Ads</p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800" id="statTotalAds">0</p>
                         </div>
+                        <div class="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-yellow-500">
+                            <p class="text-xs md:text-sm text-gray-500">Pending</p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800" id="statPending">0</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-purple-500">
+                            <p class="text-xs md:text-sm text-gray-500">Premium</p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800" id="statPremium">0</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-green-500">
+                            <p class="text-xs md:text-sm text-gray-500">Users</p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800" id="statUsers">0</p>
+                        </div>
+                    </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                            <button onclick="generateSampleData()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-6 shadow-lg text-left">
-                                <i class="fas fa-magic text-3xl mb-3"></i>
-                                <h3 class="font-bold text-lg">Generate Sample Ads</h3>
-                                <p class="text-sm opacity-90">Add 10 sample ads</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <button onclick="generateSampleData()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-4 md:p-6 shadow-lg text-left touch-btn">
+                            <i class="fas fa-magic text-2xl md:text-3xl mb-2"></i>
+                            <h3 class="font-bold text-base md:text-lg">Generate Sample Ads</h3>
+                            <p class="text-xs md:text-sm opacity-90">Add 10 sample ads</p>
+                        </button>
+                        <button onclick="showSection('ads')" class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl p-4 md:p-6 shadow-lg text-left touch-btn">
+                            <i class="fas fa-check-double text-2xl md:text-3xl mb-2"></i>
+                            <h3 class="font-bold text-base md:text-lg">Approve Ads</h3>
+                            <p class="text-xs md:text-sm opacity-90">Review pending ads</p>
+                        </button>
+                        <button onclick="showSection('notifications')" class="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-4 md:p-6 shadow-lg text-left touch-btn">
+                            <i class="fas fa-paper-plane text-2xl md:text-3xl mb-2"></i>
+                            <h3 class="font-bold text-base md:text-lg">Send Notification</h3>
+                            <p class="text-xs md:text-sm opacity-90">Notify all users</p>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Ads Management Section -->
+                <section id="section-ads" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Ads Management</h2>
+                            <select id="adsFilter" onchange="loadAds()" class="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-lg touch-btn">
+                                <option value="all">All Ads</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="w-full min-w-[600px]">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Ad</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Category</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Price</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adsTableBody" class="divide-y">
+                                    <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Users Section -->
+                <section id="section-users" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">User Management</h2>
+                        <div class="table-responsive">
+                            <table class="w-full min-w-[500px]">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">User</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Email</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Role</th>
+                                        <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody" class="divide-y">
+                                    <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Premium Ads Section -->
+                <section id="section-premium" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Premium Ads</h2>
+                        <div id="premiumAdsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <p class="col-span-2 text-center text-gray-400 py-8">Loading...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section id="section-notifications" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Send Notification</h2>
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                <input type="text" id="notifTitle" class="w-full px-4 py-3 border border-gray-300 rounded-lg touch-btn" placeholder="Notification title">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                <textarea id="notifMessage" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg touch-btn" placeholder="Notification message"></textarea>
+                            </div>
+                            <button onclick="sendNotification()" class="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 touch-btn">
+                                <i class="fas fa-paper-plane mr-2"></i>Send Notification
                             </button>
-                            <button onclick="showSection('ads')" class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl p-6 shadow-lg text-left">
-                                <i class="fas fa-check-double text-3xl mb-3"></i>
-                                <h3 class="font-bold text-lg">Approve Pending Ads</h3>
-                                <p class="text-sm opacity-90">Review new ads</p>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-3">Sent Notifications</h3>
+                        <div id="notificationsList" class="space-y-3">
+                            <p class="text-center text-gray-400 py-4">No notifications sent yet</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Categories Section -->
+                <section id="section-categories" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Categories</h2>
+                            <button onclick="addCategory()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 touch-btn">
+                                <i class="fas fa-plus mr-2"></i>Add
                             </button>
-                            <button onclick="showSection('notifications')" class="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-6 shadow-lg text-left">
-                                <i class="fas fa-paper-plane text-3xl mb-3"></i>
-                                <h3 class="font-bold text-lg">Send Notification</h3>
-                                <p class="text-sm opacity-90">Notify all users</p>
+                        </div>
+                        <div id="categoriesList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <p class="col-span-3 text-center text-gray-400 py-8">Loading...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ad Slots Section -->
+                <section id="section-adslots" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">Ad Slots Management</h2>
+                        <p class="text-gray-600 mb-6 text-sm">Manage advertisement slots on your website.</p>
+                        
+                        <div id="adSlotsList" class="space-y-4">
+                            <!-- Ad slots will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="section-settings" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Site Settings</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
+                                <input type="text" id="settingSiteName" class="w-full px-4 py-3 border border-gray-300 rounded-lg touch-btn" value="Emarket">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+                                <input type="email" id="settingContactEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg touch-btn" value="admin@emarket.com">
+                            </div>
+                            <button onclick="saveSettings()" class="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 touch-btn">
+                                <i class="fas fa-save mr-2"></i>Save Settings
                             </button>
                         </div>
-                    </section>
+                    </div>
+                </section>
 
-                    <!-- Ads Management Section -->
-                    <section id="section-ads" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800">Ads Management</h2>
-                                <div class="flex gap-2">
-                                    <select id="adsFilter" onchange="loadAds()" class="px-4 py-2 border border-gray-300 rounded-lg">
-                                        <option value="all">All Ads</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="rejected">Rejected</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Ad</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Category</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Price</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Status</th>
-                                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="adsTableBody" class="divide-y">
-                                        <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Users Section -->
-                    <section id="section-users" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 mb-6">User Management</h2>
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">User</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Email</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Role</th>
-                                            <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="usersTableBody" class="divide-y">
-                                        <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Premium Ads Section -->
-                    <section id="section-premium" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 mb-6">Premium Ads</h2>
-                            <div id="premiumAdsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <p class="col-span-2 text-center text-gray-400 py-8">Loading...</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Notifications Section -->
-                    <section id="section-notifications" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 mb-6">Send Notification</h2>
-                            <div class="space-y-4 mb-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                    <input type="text" id="notifTitle" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Notification title">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                    <textarea id="notifMessage" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Notification message"></textarea>
-                                </div>
-                                <button onclick="sendNotification()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                                    <i class="fas fa-paper-plane mr-2"></i>Send Notification
-                                </button>
-                            </div>
-                            <h3 class="font-bold text-gray-800 mb-3">Sent Notifications</h3>
-                            <div id="notificationsList" class="space-y-3">
-                                <p class="text-center text-gray-400 py-4">No notifications sent yet</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Categories Section -->
-                    <section id="section-categories" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-bold text-gray-800">Categories</h2>
-                                <button onclick="addCategory()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                                    <i class="fas fa-plus mr-2"></i>Add Category
-                                </button>
-                            </div>
-                            <div id="categoriesList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <p class="col-span-3 text-center text-gray-400 py-8">Loading...</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Ad Slots Section -->
-                    <section id="section-adslots" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 mb-2">Ad Slots Management</h2>
-                            <p class="text-gray-600 mb-6">Manage advertisement slots on your website. Add Google Ads or custom image ads.</p>
-                            
-                            <div id="adSlotsList" class="space-y-6">
-                                <!-- Ad slots will be loaded here -->
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Settings Section -->
-                    <section id="section-settings" class="section hidden">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h2 class="text-xl font-bold text-gray-800 mb-6">Site Settings</h2>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
-                                    <input type="text" id="settingSiteName" class="w-full px-4 py-2 border border-gray-300 rounded-lg" value="Emarket">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-                                    <input type="email" id="settingContactEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg" value="admin@emarket.com">
-                                </div>
-                                <button onclick="saveSettings()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                                    <i class="fas fa-save mr-2"></i>Save Settings
-                                </button>
-                            </div>
-                        </div>
-                    </section>
-
-                </main>
-            </div>
+            </main>
         </div>
     </div>
 
@@ -315,6 +428,14 @@
 
         let currentUser = null;
         let allAds = [];
+
+        // Toggle Sidebar (Mobile)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
 
         // Auth State
         auth.onAuthStateChanged(async user => {
@@ -385,6 +506,12 @@
                 settings: 'Settings'
             };
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
+            document.getElementById('mobileTitle').textContent = titles[sectionName] || 'Dashboard';
+            
+            // Close sidebar on mobile after navigation
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
             
             if (sectionName === 'ads') loadAds();
             if (sectionName === 'users') loadUsers();
@@ -454,19 +581,19 @@
                             <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[ad.status] || 'bg-gray-100'}">
                                 ${ad.status}
                             </span>
-                            ${ad.isPremium ? '<span class="ml-1 px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">⭐ Premium</span>' : ''}
+                            ${ad.isPremium ? '<span class="ml-1 px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">⭐</span>' : ''}
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <div class="flex justify-end gap-1">
-                                <button onclick="editAd('${ad.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded" title="Edit">
+                            <div class="flex justify-end gap-1 action-buttons">
+                                <button onclick="editAd('${ad.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded touch-btn" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                ${ad.status !== 'approved' ? `<button onclick="approveAd('${ad.id}')" class="p-2 text-green-600 hover:bg-green-50 rounded" title="Approve"><i class="fas fa-check"></i></button>` : ''}
-                                ${ad.status !== 'rejected' ? `<button onclick="rejectAd('${ad.id}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded" title="Reject"><i class="fas fa-times"></i></button>` : ''}
-                                <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 rounded" title="Toggle Premium">
+                                ${ad.status !== 'approved' ? `<button onclick="approveAd('${ad.id}')" class="p-2 text-green-600 hover:bg-green-50 rounded touch-btn" title="Approve"><i class="fas fa-check"></i></button>` : ''}
+                                ${ad.status !== 'rejected' ? `<button onclick="rejectAd('${ad.id}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded touch-btn" title="Reject"><i class="fas fa-times"></i></button>` : ''}
+                                <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 rounded touch-btn" title="Toggle Premium">
                                     <i class="fas fa-crown"></i>
                                 </button>
-                                <button onclick="deleteAd('${ad.id}')" class="p-2 text-red-600 hover:bg-red-50 rounded" title="Delete">
+                                <button onclick="deleteAd('${ad.id}')" class="p-2 text-red-600 hover:bg-red-50 rounded touch-btn" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -541,11 +668,11 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <div class="flex justify-end gap-1">
-                                    <button onclick="resetUserPassword('${user.email}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded" title="Reset Password">
+                                <div class="flex justify-end gap-1 action-buttons">
+                                    <button onclick="resetUserPassword('${user.email}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded touch-btn" title="Reset Password">
                                         <i class="fas fa-key"></i>
                                     </button>
-                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded" title="Change Role">
+                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded touch-btn" title="Change Role">
                                         <i class="fas fa-user-edit"></i>
                                     </button>
                                 </div>
@@ -574,8 +701,8 @@
                             <h4 class="font-bold text-gray-800">${ad.title}</h4>
                             <p class="text-sm text-gray-600">${ad.category} • Rs. ${Number(ad.price).toLocaleString()}</p>
                             <div class="flex gap-2 mt-3">
-                                <button onclick="togglePremium('${doc.id}', false)" class="flex-1 bg-yellow-500 text-white py-1 rounded text-sm hover:bg-yellow-600">Remove Premium</button>
-                                <button onclick="deleteAd('${doc.id}'); loadPremiumAds();" class="flex-1 bg-red-500 text-white py-1 rounded text-sm hover:bg-red-600">Delete</button>
+                                <button onclick="togglePremium('${doc.id}', false)" class="flex-1 bg-yellow-500 text-white py-2 rounded text-sm hover:bg-yellow-600 touch-btn">Remove Premium</button>
+                                <button onclick="deleteAd('${doc.id}'); loadPremiumAds();" class="flex-1 bg-red-500 text-white py-2 rounded text-sm hover:bg-red-600 touch-btn">Delete</button>
                             </div>
                         </div>
                     `;
@@ -622,7 +749,7 @@
                                     <p class="text-sm text-gray-600 mt-1">${n.message}</p>
                                     <p class="text-xs text-gray-500 mt-2">By: ${n.sentBy}</p>
                                 </div>
-                                <button onclick="deleteNotification('${doc.id}')" class="text-red-500 hover:text-red-700">
+                                <button onclick="deleteNotification('${doc.id}')" class="text-red-500 hover:text-red-700 touch-btn">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -669,23 +796,23 @@
             showToast('Category added: ' + name, 'success');
         }
 
-        // ===== AD SLOTS MANAGEMENT =====
+        // Ad Slots Management
         function loadAdSlots() {
             const slots = [
                 { id: 'sidebar-left', name: 'Left Sidebar (300x250)', width: 300, height: 250 },
                 { id: 'middle-horizontal', name: 'Middle Horizontal (728x90)', width: 728, height: 90 },
-                { id: 'sidebar-right', name: 'Right Sidebar / Bottom (160x600)', width: 160, height: 600 }
+                { id: 'sidebar-right', name: 'Right Sidebar (160x600)', width: 160, height: 600 }
             ];
 
             const container = document.getElementById('adSlotsList');
             container.innerHTML = slots.map(slot => `
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <div class="flex justify-between items-center mb-4">
+                <div class="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-200">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                         <div>
                             <h4 class="font-bold text-lg text-gray-800">${slot.name}</h4>
                             <p class="text-sm text-gray-500">Size: ${slot.width}x${slot.height}px</p>
                         </div>
-                        <button onclick="editAdSlot('${slot.id}', '${slot.name}')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                        <button onclick="editAdSlot('${slot.id}', '${slot.name}')" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm touch-btn">
                             <i class="fas fa-edit mr-2"></i>Edit Slot
                         </button>
                     </div>
@@ -695,7 +822,6 @@
                 </div>
             `).join('');
 
-            // Load each slot data
             slots.forEach(slot => {
                 db.collection('adSlots').doc(slot.id).onSnapshot(doc => {
                     const preview = document.getElementById(`slot-preview-${slot.id}`);
@@ -703,14 +829,14 @@
                         const data = doc.data();
                         if (data.image && data.image.trim() !== '') {
                             preview.innerHTML = `
-                                <div class="flex items-center gap-4">
-                                    <img src="${data.image}" class="w-32 h-20 object-cover rounded border" onerror="this.src='https://via.placeholder.com/128x80?text=Error'">
+                                <div class="flex flex-col md:flex-row items-center gap-4">
+                                    <img src="${data.image}" class="w-full md:w-32 h-20 object-cover rounded border" onerror="this.src='https://via.placeholder.com/128x80?text=Error'">
                                     <div class="flex-1">
                                         <p class="font-medium text-gray-800">Image Ad</p>
                                         <p class="text-sm text-gray-500">Link: ${data.link || 'None'}</p>
                                         <p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i>Active</p>
                                     </div>
-                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700" title="Clear">
+                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 touch-btn" title="Clear">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -720,7 +846,7 @@
                                 <div class="bg-yellow-50 border border-yellow-200 rounded p-3">
                                     <p class="text-sm text-yellow-800"><i class="fas fa-code mr-1"></i> Google Ads code configured</p>
                                     <p class="text-xs text-yellow-600 mt-1">Code length: ${data.googleCode.length} characters</p>
-                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 text-xs mt-2">
+                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 text-xs mt-2 touch-btn">
                                         <i class="fas fa-trash mr-1"></i>Clear
                                     </button>
                                 </div>
@@ -910,8 +1036,8 @@
             };
             
             const toast = document.createElement('div');
-            toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 min-w-[250px]`;
-            toast.innerHTML = `<i class="fas ${icons[type]}"></i> <span>${message}</span>`;
+            toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 min-w-[250px] max-w-[90vw]`;
+            toast.innerHTML = `<i class="fas ${icons[type]}"></i> <span class="text-sm">${message}</span>`;
             
             document.getElementById('toastContainer').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
