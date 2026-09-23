@@ -3,57 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emarket - Login</title>
+    <title>Login - Emarket</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm border border-gray-100">
-        <h1 class="text-3xl font-bold text-center text-blue-600 mb-2">Emarket</h1>
-        <p class="text-center text-gray-500 mb-6 text-sm">ඔබේ ගිණුමට පිවිසෙන්න</p>
-        
-        <!-- Tabs -->
-        <div class="flex mb-6 bg-gray-100 p-1 rounded-lg">
-            <button id="tabLogin" class="w-1/2 py-2 rounded-md bg-white text-blue-600 font-bold shadow-sm transition-all" onclick="switchTab('login')">ලොග් වන්න</button>
-            <button id="tabSignup" class="w-1/2 py-2 rounded-md text-gray-500 font-medium transition-all" onclick="switchTab('signup')">ලියාපදිංචි වන්න</button>
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        <!-- Logo -->
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-layer-group text-white text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800">Welcome to Emarket</h1>
+            <p class="text-gray-500 mt-2">Login to your account</p>
         </div>
 
-        <!-- Login Form -->
-        <form id="loginForm" class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
-                <input type="email" id="lEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="example@email.com" required>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">මුරපදය</label>
-                <input type="password" id="lPass" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
-            </div>
-            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-md">ලොග් වන්න</button>
-        </form>
+        <!-- Email/Password Login -->
+        <div id="emailLoginSection">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <i class="fas fa-envelope mr-1"></i> Email
+                    </label>
+                    <input type="email" id="email" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                           placeholder="your@email.com">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <i class="fas fa-lock mr-1"></i> Password
+                    </label>
+                    <input type="password" id="password" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                           placeholder="••••••••">
+                </div>
 
-        <!-- Signup Form (Hidden by default) -->
-        <form id="signupForm" class="space-y-4 hidden">
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">බේ නම</label>
-                <input type="text" id="sName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="Chinthaka Anuwan" required>
+                <button onclick="loginWithEmail()" 
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login with Email
+                </button>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
-                <input type="email" id="sEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="example@email.com" required>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">මුරපදය (අකුරු 6+)</label>
-                <input type="password" id="sPass" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="••••••••" required>
-            </div>
-            <button type="submit" class="w-full bg-green-600 text-white p-3 rounded-lg font-bold hover:bg-green-700 transition shadow-md">ගිණුම සාදන්න</button>
-        </form>
 
-        <p id="msg" class="text-center mt-4 text-sm font-medium min-h-[20px]"></p>
-        <a href="index.html" class="block text-center mt-6 text-blue-500 text-sm hover:underline">← Home Page එකට යන්න</a>
+            <!-- Divider -->
+            <div class="my-6 flex items-center">
+                <div class="flex-1 border-t border-gray-300"></div>
+                <span class="px-4 text-gray-500 text-sm">OR</span>
+                <div class="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            <!-- Phone Login -->
+            <div>
+                <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">
+                    <i class="fas fa-mobile-alt mr-2"></i>Login with Phone
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Mobile Number
+                        </label>
+                        <input type="tel" id="phoneNumber" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                               placeholder="+94 77 123 4567">
+                        <p class="text-xs text-gray-500 mt-1">
+                            Include country code (e.g., +94 for Sri Lanka)
+                        </p>
+                    </div>
+                    
+                    <button onclick="sendPhoneCode()" 
+                            class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
+                        <i class="fas fa-sms mr-2"></i>Send Verification Code
+                    </button>
+                </div>
+                
+                <!-- OTP Input -->
+                <div id="otpSection" class="hidden mt-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Verification Code
+                        </label>
+                        <input type="text" id="otpCode" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                               placeholder="Enter 6-digit code"
+                               maxlength="6">
+                    </div>
+                    
+                    <button onclick="verifyOTP()" 
+                            class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                        <i class="fas fa-check mr-2"></i>Verify Code
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="mt-4 hidden">
+            <div class="p-3 rounded-lg" id="statusText"></div>
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">
+                Don't have an account? 
+                <a href="signup.html" class="text-blue-600 hover:text-blue-700 font-bold">Sign Up</a>
+            </p>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="mt-4 text-center">
+            <a href="index.html" class="text-gray-500 hover:text-gray-700 text-sm">
+                <i class="fas fa-arrow-left mr-1"></i>Back to Home
+            </a>
+        </div>
     </div>
+
+    <!-- reCAPTCHA Container (Required for Phone Auth) -->
+    <div id="recaptcha-container"></div>
 
     <script>
         // Firebase Config
@@ -65,80 +135,161 @@
             messagingSenderId: "1029527442178",
             appId: "1:1029527442178:web:535443f333ce6e9deda81b"
         };
+        
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Tab Switching Logic
-        function switchTab(tab) {
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            const tabLogin = document.getElementById('tabLogin');
-            const tabSignup = document.getElementById('tabSignup');
-            const msg = document.getElementById('msg');
-            msg.innerText = "";
+        let confirmationResult = null;
 
-            if(tab === 'login') {
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
+        // Email Login
+        async function loginWithEmail() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showStatus('Please enter email and password', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Logging in...', 'info');
                 
-                tabLogin.className = "w-1/2 py-2 rounded-md bg-white text-blue-600 font-bold shadow-sm transition-all";
-                tabSignup.className = "w-1/2 py-2 rounded-md text-gray-500 font-medium transition-all";
-            } else {
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
                 
-                tabSignup.className = "w-1/2 py-2 rounded-md bg-white text-green-600 font-bold shadow-sm transition-all";
-                tabLogin.className = "w-1/2 py-2 rounded-md text-gray-500 font-medium transition-all";
+                showStatus('Login successful! Redirecting...', 'success');
+                
+                // Save user to Firestore if not exists
+                const userRef = db.collection('users').doc(user.uid);
+                const userDoc = await userRef.get();
+                
+                if (!userDoc.exists) {
+                    await userRef.set({
+                        email: user.email,
+                        userType: 'customer',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'active'
+                    });
+                }
+                
+                // Redirect to home page
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showStatus('Error: ' + error.message, 'error');
             }
         }
 
-        // Login Logic
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('lEmail').value;
-            const pass = document.getElementById('lPass').value;
-            const msg = document.getElementById('msg');
+        // Send Phone Verification Code
+        async function sendPhoneCode() {
+            const phoneNumber = document.getElementById('phoneNumber').value;
             
-            msg.innerText = "ලොග් වෙමින්...";
-            msg.className = "text-center mt-4 text-sm text-blue-600";
-
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => { 
-                    msg.innerText = "සාර්ථකයි! Home එකට යමු...";
-                    setTimeout(() => window.location.href = "index.html", 1000);
-                })
-                .catch(err => { 
-                    msg.innerText = "වැරදි Email හෝ මුරපදයකි."; 
-                    msg.className = "text-center mt-4 text-sm text-red-600"; 
-                });
-        });
-
-        // Signup Logic
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('sName').value;
-            const email = document.getElementById('sEmail').value;
-            const pass = document.getElementById('sPass').value;
-            const msg = document.getElementById('msg');
-
-            msg.innerText = "ගිණුම සාදමින්...";
-            msg.className = "text-center mt-4 text-sm text-blue-600";
+            if (!phoneNumber) {
+                showStatus('Please enter a phone number', 'error');
+                return;
+            }
+            
+            // Validate phone number format
+            if (!phoneNumber.startsWith('+')) {
+                showStatus('Phone number must start with + (e.g., +94)', 'error');
+                return;
+            }
             
             try {
-                const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                await db.collection('users').doc(cred.user.uid).set({
-                    fullName: name, 
-                    email: email, 
-                    userType: 'customer',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                showStatus('Sending verification code...', 'info');
+                
+                // Firebase Phone Auth
+                const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        // reCAPTCHA solved
+                    }
                 });
-                msg.innerText = "ගිණුම සාර්ථකව සාදන ලදී!";
-                msg.className = "text-center mt-4 text-sm text-green-600";
-                setTimeout(() => window.location.href = "index.html", 1500);
-            } catch(err) {
-                msg.innerText = err.message;
-                msg.className = "text-center mt-4 text-sm text-red-600";
+                
+                confirmationResult = await auth.signInWithPhoneNumber(phoneNumber, appVerifier);
+                
+                showStatus('Verification code sent! Check your phone.', 'success');
+                document.getElementById('otpSection').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Phone auth error:', error);
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Verify OTP Code
+        async function verifyOTP() {
+            const otpCode = document.getElementById('otpCode').value;
+            
+            if (!otpCode || otpCode.length !== 6) {
+                showStatus('Please enter a valid 6-digit code', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Verifying code...', 'info');
+                
+                const result = await confirmationResult.confirm(otpCode);
+                
+                // User signed in successfully
+                showStatus('Login successful! Redirecting...', 'success');
+                
+                // Save user to Firestore if not exists
+                const user = result.user;
+                const userRef = db.collection('users').doc(user.uid);
+                const userDoc = await userRef.get();
+                
+                if (!userDoc.exists) {
+                    await userRef.set({
+                        email: user.phoneNumber,
+                        phone: user.phoneNumber,
+                        userType: 'customer',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'active'
+                    });
+                }
+                
+                // Redirect to home page
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('OTP verification error:', error);
+                showStatus('Invalid code. Please try again.', 'error');
+            }
+        }
+
+        // Show Status Message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            const statusText = document.getElementById('statusText');
+            
+            statusDiv.classList.remove('hidden');
+            statusText.textContent = message;
+            
+            const colors = {
+                success: 'bg-green-100 text-green-800 border border-green-200',
+                error: 'bg-red-100 text-red-800 border border-red-200',
+                info: 'bg-blue-100 text-blue-800 border border-blue-200'
+            };
+            
+            statusText.className = `p-3 rounded-lg ${colors[type]}`;
+            
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is already logged in, redirect to home
+                window.location.href = 'index.html';
             }
         });
     </script>
