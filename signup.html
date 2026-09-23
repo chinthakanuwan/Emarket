@@ -13,7 +13,6 @@
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 
     <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-        <!-- Logo -->
         <div class="text-center mb-6">
             <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-user-plus text-white text-2xl"></i>
@@ -22,7 +21,6 @@
             <p class="text-gray-500 mt-2">Join Emarket and start selling!</p>
         </div>
 
-        <!-- Sign Up Form -->
         <div class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -67,12 +65,10 @@
             </button>
         </div>
 
-        <!-- Status Message -->
         <div id="statusMessage" class="mt-4 hidden">
             <div class="p-3 rounded-lg" id="statusText"></div>
         </div>
 
-        <!-- Login Link -->
         <div class="mt-6 text-center">
             <p class="text-gray-600 text-sm">
                 Already have an account? 
@@ -80,7 +76,6 @@
             </p>
         </div>
 
-        <!-- Back to Home -->
         <div class="mt-4 text-center">
             <a href="index.html" class="text-gray-500 hover:text-gray-700 text-sm">
                 <i class="fas fa-arrow-left mr-1"></i>Back to Home
@@ -89,7 +84,6 @@
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -103,108 +97,86 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Sign Up Function
         async function signUp() {
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
-            // Validation
-            if (!fullName) {
-                showStatus('Please enter your full name', 'error');
-                return;
-            }
-            
-            if (!email) {
-                showStatus('Please enter your email', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showStatus('Password must be at least 6 characters', 'error');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showStatus('Passwords do not match', 'error');
-                return;
-            }
+            if (!fullName) { showStatus('Please enter your full name', 'error'); return; }
+            if (!email) { showStatus('Please enter your email', 'error'); return; }
+            if (password.length < 6) { showStatus('Password must be at least 6 characters', 'error'); return; }
+            if (password !== confirmPassword) { showStatus('Passwords do not match', 'error'); return; }
             
             try {
                 showStatus('Creating account...', 'info');
                 
-                // Create user in Firebase Auth
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 
-                // Update user profile with name
-                await user.updateProfile({
-                    displayName: fullName
-                });
+                await user.updateProfile({ displayName: fullName });
                 
-                // Save user data to Firestore
                 await db.collection('users').doc(user.uid).set({
                     fullName: fullName,
                     email: email,
                     userType: 'customer',
                     status: 'active',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    adsPosted: 0
+                    adsPosted: 0,
+                    features: {
+                        canPostAds: true,
+                        maxAdsPerMonth: 10,
+                        isPremiumUser: false,
+                        premiumAdsLimit: 0,
+                        featuredListings: false,
+                        prioritySupport: false
+                    }
+                });
+                
+                // 🔔 Admin notification
+                await db.collection('notifications').add({
+                    title: '🆕 New User Registered',
+                    message: `${fullName} (${email}) has created a new account.`,
+                    type: 'new_user',
+                    userId: user.uid,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
                 showStatus('Account created successfully! Redirecting...', 'success');
                 
-                // Redirect to home page after 2 seconds
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
                 
             } catch (error) {
                 console.error('Sign up error:', error);
-                
                 let errorMessage = error.message;
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    errorMessage = 'This email is already registered. Please login instead.';
-                } else if (error.code === 'auth/weak-password') {
-                    errorMessage = 'Password is too weak. Use at least 6 characters.';
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = 'Invalid email address.';
-                }
-                
+                if (error.code === 'auth/email-already-in-use') errorMessage = 'This email is already registered.';
+                else if (error.code === 'auth/weak-password') errorMessage = 'Password too weak.';
+                else if (error.code === 'auth/invalid-email') errorMessage = 'Invalid email address.';
                 showStatus('Error: ' + errorMessage, 'error');
             }
         }
 
-        // Show Status Message
         function showStatus(message, type) {
             const statusDiv = document.getElementById('statusMessage');
             const statusText = document.getElementById('statusText');
-            
             statusDiv.classList.remove('hidden');
             statusText.textContent = message;
-            
             const colors = {
                 success: 'bg-green-100 text-green-800 border border-green-200',
                 error: 'bg-red-100 text-red-800 border border-red-200',
                 info: 'bg-blue-100 text-blue-800 border border-blue-200'
             };
-            
             statusText.className = `p-3 rounded-lg ${colors[type]}`;
-            
             if (type === 'success') {
-                setTimeout(() => {
-                    statusDiv.classList.add('hidden');
-                }, 3000);
+                setTimeout(() => statusDiv.classList.add('hidden'), 3000);
             }
         }
 
-        // Check if user is already logged in
         auth.onAuthStateChanged(user => {
-            if (user) {
-                window.location.href = 'index.html';
-            }
+            if (user) window.location.href = 'index.html';
         });
     </script>
 </body>
