@@ -3,296 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emarket - Sri Lanka's Best Classifieds</title>
+    <title>Login / Sign Up - Emarket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 
-    <!-- Top Notice Bar -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4">
-        <div class="container mx-auto flex items-center justify-center gap-2 text-sm">
-            <i class="fas fa-bullhorn"></i>
-            <span class="font-medium">🎉 Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform! | Sell Anything for Free!</span>
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        <!-- Logo -->
+        <div class="text-center mb-6">
+            <a href="index.html" class="text-3xl font-bold text-blue-600 flex items-center justify-center gap-2">
+                <i class="fas fa-layer-group"></i> Emarket
+            </a>
+            <p class="text-gray-500 mt-2">Login or create account</p>
         </div>
-    </div>
 
-    <!-- Hero Slider -->
-    <div class="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Buy & Sell Anything in Sri Lanka</h1>
-                <p class="text-xl text-gray-300 mb-6">Join thousands of buyers and sellers on Emarket</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="post-ad.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-bold transition">
-                        <i class="fas fa-plus mr-2"></i>Post Free Ad
-                    </a>
-                    <a href="#latest-ads" class="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-bold transition">
-                        <i class="fas fa-search mr-2"></i>Browse Ads
-                    </a>
-                </div>
+        <!-- Tab Switcher -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="showTab('email')" id="emailTab" class="flex-1 py-2 rounded-lg font-bold bg-blue-600 text-white">
+                <i class="fas fa-envelope mr-2"></i>Email
+            </button>
+            <button onclick="showTab('phone')" id="phoneTab" class="flex-1 py-2 rounded-lg font-bold bg-gray-200 text-gray-700">
+                <i class="fas fa-mobile-alt mr-2"></i>Phone
+            </button>
+        </div>
+
+        <!-- Email Login/Signup Form -->
+        <div id="emailForm" class="space-y-4">
+            <!-- Toggle between Login and Signup -->
+            <div class="flex gap-2 mb-4">
+                <button onclick="showEmailMode('login')" id="emailLoginBtn" class="flex-1 py-2 rounded-lg font-bold bg-blue-100 text-blue-600">
+                    Login
+                </button>
+                <button onclick="showEmailMode('signup')" id="emailSignupBtn" class="flex-1 py-2 rounded-lg font-bold bg-gray-100 text-gray-600">
+                    Sign Up
+                </button>
             </div>
-        </div>
-    </div>
 
-    <!-- Seller Account Banner -->
-    <div class="bg-gradient-to-r from-green-500 to-teal-600 text-white py-4">
-        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                    <i class="fas fa-store text-green-600 text-xl"></i>
+            <div id="signupNameField" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" id="fullName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="John Doe">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="your@email.com">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••">
+            </div>
+
+            <div id="signupConfirmPassword" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••">
+            </div>
+
+            <button onclick="handleEmailAuth()" id="emailSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold">
+                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            </button>
+        </div>
+
+        <!-- Phone OTP Form -->
+        <div id="phoneForm" class="hidden space-y-4">
+            <!-- Step 1: Enter Phone Number -->
+            <div id="phoneStep1">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                    <p class="text-sm text-blue-800">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Enter your mobile number to receive OTP
+                    </p>
                 </div>
+
                 <div>
-                    <h3 class="font-bold text-lg">Start Selling Today!</h3>
-                    <p class="text-sm text-green-100">Create your seller account and reach thousands of customers</p>
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <a href="login.html" class="bg-white text-green-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Login
-                </a>
-                <a href="login.html?signup=true" class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg font-bold transition">
-                    <i class="fas fa-user-plus mr-2"></i>Sign Up
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
-                    <i class="fas fa-layer-group"></i> Emarket
-                </a>
-                
-                <div class="flex-1 max-w-2xl">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
                     <div class="flex gap-2">
-                        <input type="text" id="searchInput" placeholder="Search ads..." 
-                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                        <button onclick="searchAds()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-search"></i>
-                        </button>
+                        <span class="px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-600">+94</span>
+                        <input type="tel" id="phoneNumber" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="771234567">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Example: 771234567</p>
+                </div>
+
+                <button onclick="sendOTP()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold mt-4">
+                    <i class="fas fa-paper-plane mr-2"></i>Send OTP
+                </button>
+            </div>
+
+            <!-- Step 2: Enter OTP -->
+            <div id="phoneStep2" class="hidden">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                    <p class="text-sm text-green-800">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        OTP sent to <span id="sentPhoneNumber" class="font-bold"></span>
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Enter OTP Code</label>
+                    <input type="text" id="otpCode" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-center text-2xl tracking-widest" placeholder="••••••" maxlength="6">
+                    <p class="text-xs text-gray-500 mt-1">6-digit code from SMS</p>
+                </div>
+
+                <div id="newUserFields" class="hidden space-y-4 mt-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="phoneFullName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Your name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email (Optional)</label>
+                        <input type="email" id="phoneEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="your@email.com">
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600">
-                        <i class="fas fa-plus mr-2"></i>Post Free Ad
-                    </a>
-                    <div id="authSection">
-                        <a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>
-                    </div>
-                </div>
+                <button onclick="verifyOTP()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold mt-4">
+                    <i class="fas fa-check mr-2"></i>Verify OTP
+                </button>
+
+                <button onclick="resetPhoneAuth()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-bold mt-2">
+                    <i class="fas fa-arrow-left mr-2"></i>Change Number
+                </button>
             </div>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container mx-auto px-4 py-6 flex-grow">
-        
-        <!-- Premium Ads Section -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fas fa-star text-yellow-500"></i> Premium Ads
-            </h2>
-            <div id="premiumAdsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="col-span-full text-center py-10 text-gray-400">
-                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                    <p>Loading premium ads...</p>
-                </div>
-            </div>
+        <!-- Status Message -->
+        <div id="statusMessage" class="hidden mt-4 p-3 rounded-lg"></div>
+
+        <!-- Divider -->
+        <div class="my-6 flex items-center">
+            <div class="flex-1 border-t"></div>
+            <span class="px-4 text-gray-400 text-sm">OR</span>
+            <div class="flex-1 border-t"></div>
         </div>
 
-        <!-- Middle Horizontal Ad Slot (728x90) -->
-        <div id="middleHorizontalAd" class="bg-gray-100 rounded-lg overflow-hidden border border-gray-200 mb-8">
-            <div class="h-24 flex items-center justify-center text-gray-400 text-xs">
-                <i class="fas fa-spinner fa-spin mr-2"></i> Loading ad...
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- Left Sidebar - Categories + Ad Slot -->
-            <aside class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-32">
-                    <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-sm">Categories</h3>
-                    <ul class="space-y-1 text-xs" id="categoryList">
-                        <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-th-large w-4"></i> All Ads
-                        </button></li>
-                        <li><button onclick="filterCategory('Vehicles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-car w-4"></i> Vehicles
-                        </button></li>
-                        <li><button onclick="filterCategory('Property')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-home w-4"></i> Property
-                        </button></li>
-                        <li><button onclick="filterCategory('Mobiles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-mobile-alt w-4"></i> Mobile Phones
-                        </button></li>
-                        <li><button onclick="filterCategory('Electronics')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-laptop w-4"></i> Electronics
-                        </button></li>
-                        <li><button onclick="filterCategory('Fashion')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-tshirt w-4"></i> Fashion
-                        </button></li>
-                        <li><button onclick="filterCategory('Jobs')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-briefcase w-4"></i> Jobs
-                        </button></li>
-                        <li class="pt-2 mt-2 border-t">
-                            <button onclick="showMoreCategories()" class="w-full text-left flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded text-xs font-medium">
-                                <i class="fas fa-ellipsis-h"></i> More Categories
-                            </button>
-                        </li>
-                    </ul>
-
-                    <!-- Left Sidebar Ad Slot (300x250) -->
-                    <div id="leftSidebarAd" class="mt-6 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                        <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                            <i class="fas fa-spinner fa-spin mb-2 block"></i>
-                            <p>Loading ad...</p>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Main Content - Latest Ads -->
-            <main class="lg:col-span-10">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 id="latest-ads" class="text-2xl font-bold text-gray-800">Latest Ads</h2>
-                    <span id="adsCount" class="text-sm text-gray-500">Loading...</span>
-                </div>
-                
-                <div id="latestAdsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="col-span-full text-center py-10 text-gray-400">
-                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                        <p>Loading ads...</p>
-                    </div>
-                </div>
-
-                <!-- Bottom Ad Slot -->
-                <div id="bottomAdSlot" class="mt-8 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                    <div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">
-                        <i class="fas fa-spinner fa-spin mb-2 block"></i>
-                        <p>Loading ad...</p>
-                    </div>
-                </div>
-
-                <!-- Subcategories Section -->
-                <div class="mt-8 bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Explore by Category</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <button onclick="filterCategory('Vehicles')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
-                            <i class="fas fa-car text-3xl text-gray-600 group-hover:text-blue-600 mb-2"></i>
-                            <p class="text-sm font-medium text-gray-700">Vehicles</p>
-                        </button>
-                        <button onclick="filterCategory('Property')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
-                            <i class="fas fa-home text-3xl text-gray-600 group-hover:text-blue-600 mb-2"></i>
-                            <p class="text-sm font-medium text-gray-700">Property</p>
-                        </button>
-                        <button onclick="filterCategory('Mobiles')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
-                            <i class="fas fa-mobile-alt text-3xl text-gray-600 group-hover:text-blue-600 mb-2"></i>
-                            <p class="text-sm font-medium text-gray-700">Mobiles</p>
-                        </button>
-                        <button onclick="filterCategory('Electronics')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
-                            <i class="fas fa-laptop text-3xl text-gray-600 group-hover:text-blue-600 mb-2"></i>
-                            <p class="text-sm font-medium text-gray-700">Electronics</p>
-                        </button>
-                        <button onclick="filterCategory('Fashion')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
-                            <i class="fas fa-tshirt text-3xl text-gray-600 group-hover:text-blue-600 mb-2"></i>
-                            <p class="text-sm font-medium text-gray-700">Fashion</p>
-                        </button>
-                        <button onclick="filterCategory('Jobs')" class="p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition text-center group">
-                            <i class="fas fa-briefcase text-3xl text-gray-600 group-hover:text-blue-600 mb-2"></i>
-                            <p class="text-sm font-medium text-gray-700">Jobs</p>
-                        </button>
-                    </div>
-                    
-                    <div class="mt-6 text-center">
-                        <button onclick="showMoreCategories()" class="text-blue-600 hover:text-blue-700 font-medium">
-                            <i class="fas fa-ellipsis-h mr-2"></i>More Categories
-                        </button>
-                    </div>
-                </div>
-            </main>
-
-        </div>
+        <!-- Back to Home -->
+        <a href="index.html" class="block text-center text-gray-600 hover:text-blue-600 font-medium">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Home
+        </a>
     </div>
 
-    <!-- More Categories Modal -->
-    <div id="moreCategoriesModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-md w-full p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">All Categories</h3>
-                <button onclick="closeMoreCategories()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="filterCategory('Hotels')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-hotel mr-2"></i> Hotels
-                </button>
-                <button onclick="filterCategory('Restaurants')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-utensils mr-2"></i> Restaurants
-                </button>
-                <button onclick="filterCategory('Services')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-tools mr-2"></i> Services
-                </button>
-                <button onclick="filterCategory('Pets')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-paw mr-2"></i> Pets
-                </button>
-                <button onclick="filterCategory('Sports')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-football-ball mr-2"></i> Sports
-                </button>
-                <button onclick="filterCategory('Books')" class="text-left p-3 hover:bg-gray-50 rounded-lg border">
-                    <i class="fas fa-book mr-2"></i> Books
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- FOOTER (දැන් මේක එකතු වෙලා තියෙනවා!) -->
-    <!-- ========================================== -->
-    <footer class="bg-gray-900 text-white mt-12">
-        <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">About Emarket</h3>
-                    <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform. Buy and sell anything for free!</p>
-                    <a href="about.html" class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Learn More →</a>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="index.html" class="hover:text-white">Home</a></li>
-                        <li><a href="post-ad.html" class="hover:text-white">Post Free Ad</a></li>
-                        <li><a href="about.html" class="hover:text-white">About Us</a></li>
-                        <li><a href="login.html" class="hover:text-white">Login / Sign Up</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
-                    <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
-                </div>
-            </div>
-            
-            <!-- Developer Credit -->
-            <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">
-                    &copy; 2024 Emarket. All rights reserved.
-                </p>
-                <p class="text-blue-400 text-sm mt-2">
-                    <i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong>
-                </p>
-            </div>
-        </div>
-    </footer>
+    <!-- reCAPTCHA Container (Required for Phone Auth) -->
+    <div id="recaptcha-container"></div>
 
     <script>
         // Firebase Config
@@ -306,262 +160,237 @@
         };
         
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
         const auth = firebase.auth();
-        let currentCategory = 'All';
+        const db = firebase.firestore();
 
-        // Auth State
+        let emailMode = 'login';
+        let confirmationResult = null;
+
+        // Check if already logged in
         auth.onAuthStateChanged(user => {
-            const authSection = document.getElementById('authSection');
             if (user) {
-                authSection.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            ${user.email.charAt(0).toUpperCase()}
-                        </div>
-                        <span class="hidden md:inline text-sm font-medium">${user.email.split('@')[0]}</span>
-                    </div>
-                `;
+                window.location.href = 'index.html';
             }
         });
 
-        // ===== AD SLOTS LOADING =====
-        function loadAdSlots() {
-            // Left Sidebar Ad (300x250)
-            db.collection('adSlots').doc('sidebar-left').onSnapshot(doc => {
-                const container = document.getElementById('leftSidebarAd');
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.image && data.image.trim() !== '') {
-                        container.innerHTML = `
-                            <a href="${data.link || '#'}" target="_blank" class="block">
-                                <img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover">
-                            </a>
-                        `;
-                    } else if (data.googleCode) {
-                        container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
-                    } else {
-                        container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot (300x250)</div>`;
-                    }
-                } else {
-                    container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot (300x250)</div>`;
+        // Tab Switching
+        function showTab(tab) {
+            if (tab === 'email') {
+                document.getElementById('emailForm').classList.remove('hidden');
+                document.getElementById('phoneForm').classList.add('hidden');
+                document.getElementById('emailTab').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('emailTab').classList.remove('bg-gray-200', 'text-gray-700');
+                document.getElementById('phoneTab').classList.add('bg-gray-200', 'text-gray-700');
+                document.getElementById('phoneTab').classList.remove('bg-blue-600', 'text-white');
+            } else {
+                document.getElementById('emailForm').classList.add('hidden');
+                document.getElementById('phoneForm').classList.remove('hidden');
+                document.getElementById('phoneTab').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('phoneTab').classList.remove('bg-gray-200', 'text-gray-700');
+                document.getElementById('emailTab').classList.add('bg-gray-200', 'text-gray-700');
+                document.getElementById('emailTab').classList.remove('bg-blue-600', 'text-white');
+                
+                // Initialize reCAPTCHA
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'invisible',
+                        'callback': (response) => {
+                            console.log("reCAPTCHA solved");
+                        }
+                    });
                 }
-            });
-
-            // Middle Horizontal Ad (728x90)
-            db.collection('adSlots').doc('middle-horizontal').onSnapshot(doc => {
-                const container = document.getElementById('middleHorizontalAd');
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.image && data.image.trim() !== '') {
-                        container.innerHTML = `
-                            <a href="${data.link || '#'}" target="_blank" class="block">
-                                <img src="${data.image}" alt="Advertisement" class="w-full h-24 object-cover">
-                            </a>
-                        `;
-                    } else if (data.googleCode) {
-                        container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
-                    } else {
-                        container.innerHTML = `<div class="h-24 flex items-center justify-center text-gray-400 text-xs">Ad Slot (728x90)</div>`;
-                    }
-                } else {
-                    container.innerHTML = `<div class="h-24 flex items-center justify-center text-gray-400 text-xs">Ad Slot (728x90)</div>`;
-                }
-            });
-
-            // Bottom Ad Slot
-            db.collection('adSlots').doc('sidebar-right').onSnapshot(doc => {
-                const container = document.getElementById('bottomAdSlot');
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.image && data.image.trim() !== '') {
-                        container.innerHTML = `
-                            <a href="${data.link || '#'}" target="_blank" class="block">
-                                <img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover">
-                            </a>
-                        `;
-                    } else if (data.googleCode) {
-                        container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
-                    } else {
-                        container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot</div>`;
-                    }
-                } else {
-                    container.innerHTML = `<div class="h-64 flex items-center justify-center text-gray-400 text-xs text-center p-4">Ad Slot</div>`;
-                }
-            });
+            }
         }
 
-        // ===== ADS LOADING =====
-        function loadAds() {
-            console.log("🔄 Loading ads for category:", currentCategory);
+        // Email Mode Switching
+        function showEmailMode(mode) {
+            emailMode = mode;
+            if (mode === 'login') {
+                document.getElementById('emailLoginBtn').classList.add('bg-blue-100', 'text-blue-600');
+                document.getElementById('emailLoginBtn').classList.remove('bg-gray-100', 'text-gray-600');
+                document.getElementById('emailSignupBtn').classList.add('bg-gray-100', 'text-gray-600');
+                document.getElementById('emailSignupBtn').classList.remove('bg-blue-100', 'text-blue-600');
+                document.getElementById('signupNameField').classList.add('hidden');
+                document.getElementById('signupConfirmPassword').classList.add('hidden');
+                document.getElementById('emailSubmitBtn').innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login';
+            } else {
+                document.getElementById('emailSignupBtn').classList.add('bg-blue-100', 'text-blue-600');
+                document.getElementById('emailSignupBtn').classList.remove('bg-gray-100', 'text-gray-600');
+                document.getElementById('emailLoginBtn').classList.add('bg-gray-100', 'text-gray-600');
+                document.getElementById('emailLoginBtn').classList.remove('bg-blue-100', 'text-blue-600');
+                document.getElementById('signupNameField').classList.remove('hidden');
+                document.getElementById('signupConfirmPassword').classList.remove('hidden');
+                document.getElementById('emailSubmitBtn').innerHTML = '<i class="fas fa-user-plus mr-2"></i>Sign Up';
+            }
+        }
+
+        // Email Auth (Login/Signup)
+        async function handleEmailAuth() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             
-            db.collection('ads').get()
-                .then(snapshot => {
-                    console.log("✅ Found", snapshot.size, "total ads");
+            if (!email || !password) {
+                showStatus('Please fill all fields', 'error');
+                return;
+            }
+
+            try {
+                if (emailMode === 'login') {
+                    // Login
+                    await auth.signInWithEmailAndPassword(email, password);
+                    showStatus('✅ Login successful! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                } else {
+                    // Signup
+                    const fullName = document.getElementById('fullName').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
                     
-                    if (snapshot.empty) {
-                        document.getElementById('premiumAdsGrid').innerHTML = 
-                            '<div class="col-span-full text-center py-10 text-gray-400">No premium ads</div>';
-                        document.getElementById('latestAdsGrid').innerHTML = 
-                            '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
+                    if (!fullName) {
+                        showStatus('Please enter your name', 'error');
                         return;
                     }
                     
-                    const allAds = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                    
-                    console.log("📋 All ads:", allAds);
-                    
-                    // Filter: ONLY approved ads
-                    let approvedAds = allAds.filter(ad => {
-                        const isApproved = ad.status === 'approved';
-                        console.log(`Ad: ${ad.title}, Status: ${ad.status}, Approved: ${isApproved}`);
-                        return isApproved;
-                    });
-                    
-                    console.log("✅ Approved ads:", approvedAds.length);
-                    
-                    // Filter by category if needed
-                    if (currentCategory !== 'All') {
-                        approvedAds = approvedAds.filter(ad => ad.category === currentCategory);
-                        console.log("📁 Category filtered:", approvedAds.length);
+                    if (password !== confirmPassword) {
+                        showStatus('Passwords do not match', 'error');
+                        return;
                     }
                     
-                    // Sort by createdAt (newest first)
-                    approvedAds.sort((a, b) => {
-                        const dateA = a.createdAt ? a.createdAt.seconds : 0;
-                        const dateB = b.createdAt ? b.createdAt.seconds : 0;
-                        return dateB - dateA;
+                    if (password.length < 6) {
+                        showStatus('Password must be at least 6 characters', 'error');
+                        return;
+                    }
+
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    
+                    // Save user data to Firestore
+                    await db.collection('users').doc(userCredential.user.uid).set({
+                        fullName: fullName,
+                        email: email,
+                        userType: 'customer',
+                        status: 'active',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    
-                    // Filter Premium ads
-                    const premiumAds = approvedAds.filter(ad => ad.isPremium === true).slice(0, 4);
-                    
-                    // Latest ads
-                    const latestAds = approvedAds.slice(0, 8);
-                    
-                    console.log("⭐ Premium:", premiumAds.length, "Latest:", latestAds.length);
-                    
-                    // Update count
-                    document.getElementById('adsCount').textContent = `${approvedAds.length} ads found`;
-                    
-                    // Render
-                    renderAds('premiumAdsGrid', premiumAds, true);
-                    renderAds('latestAdsGrid', latestAds, false);
-                })
-                .catch(error => {
-                    console.error("❌ Error loading ads:", error);
-                    document.getElementById('latestAdsGrid').innerHTML = 
-                        `<div class="col-span-full text-center py-10 text-red-500">
-                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
-                            <p>Error: ${error.message}</p>
-                        </div>`;
-                });
-        }
 
-        // Render Ads
-        function renderAds(containerId, ads, isPremium) {
-            const container = document.getElementById(containerId);
-            
-            if (ads.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
-                return;
-            }
-            
-            const gridClass = isPremium ? 'grid grid-cols-2 md:grid-cols-4 gap-4' : 'grid grid-cols-2 md:grid-cols-4 gap-4';
-            container.className = gridClass;
-            
-            container.innerHTML = ads.map(ad => {
-                const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
-                const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
-                const location = ad.location || 'Sri Lanka';
-                
-                return `
-                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer group" 
-                             onclick="window.location.href='ad-details.html?id=${ad.id}'">
-                        <div class="relative h-40 bg-gray-100 overflow-hidden">
-                            <img src="${imageUrl}" 
-                                 onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
-                                 alt="${ad.title}" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
-                        </div>
-                        <div class="p-3">
-                            <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title || 'Untitled'}</h3>
-                            <p class="text-blue-700 font-extrabold text-base">${price}</p>
-                            <p class="text-xs text-gray-500 mt-1 truncate">
-                                <i class="fas fa-map-marker-alt mr-1"></i>${location}
-                            </p>
-                        </div>
-                    </article>
-                `;
-            }).join('');
-        }
-
-        // Filter Category
-        function filterCategory(category) {
-            currentCategory = category;
-            
-            document.querySelectorAll('#categoryList button').forEach(btn => {
-                btn.classList.remove('text-blue-600', 'font-medium', 'bg-blue-50');
-                btn.classList.add('text-gray-600');
-            });
-            
-            if (event && event.target) {
-                const btn = event.target.closest('button');
-                if (btn) {
-                    btn.classList.remove('text-gray-600');
-                    btn.classList.add('text-blue-600', 'font-medium', 'bg-blue-50');
+                    showStatus('✅ Account created successfully!', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
                 }
+            } catch (error) {
+                showStatus('❌ ' + error.message, 'error');
             }
+        }
+
+        // Phone OTP - Send OTP
+        async function sendOTP() {
+            const phoneNumber = document.getElementById('phoneNumber').value;
             
-            loadAds();
-            closeMoreCategories();
-        }
-
-        function showMoreCategories() {
-            document.getElementById('moreCategoriesModal').classList.remove('hidden');
-        }
-
-        function closeMoreCategories() {
-            document.getElementById('moreCategoriesModal').classList.add('hidden');
-        }
-
-        function searchAds() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            if (!term) {
-                loadAds();
+            if (!phoneNumber || phoneNumber.length < 9) {
+                showStatus('Please enter valid phone number', 'error');
                 return;
             }
+
+            const fullNumber = '+94' + phoneNumber;
             
-            db.collection('ads').get()
-                .then(snapshot => {
-                    const filtered = snapshot.docs
-                        .map(doc => ({id: doc.id, ...doc.data()}))
-                        .filter(ad => 
-                            ad.status === 'approved' &&
-                            ((ad.title && ad.title.toLowerCase().includes(term)) ||
-                            (ad.desc && ad.desc.toLowerCase().includes(term)))
-                        );
-                    
-                    renderAds('latestAdsGrid', filtered, false);
-                });
+            try {
+                showStatus('📤 Sending OTP...', 'info');
+                
+                confirmationResult = await auth.signInWithPhoneNumber(fullNumber, window.recaptchaVerifier);
+                
+                document.getElementById('sentPhoneNumber').textContent = fullNumber;
+                document.getElementById('phoneStep1').classList.add('hidden');
+                document.getElementById('phoneStep2').classList.remove('hidden');
+                
+                showStatus('✅ OTP sent! Check your SMS', 'success');
+                
+                // Check if user exists
+                const userSnapshot = await db.collection('users').where('phone', '==', fullNumber).get();
+                
+                if (userSnapshot.empty) {
+                    // New user - show name/email fields
+                    document.getElementById('newUserFields').classList.remove('hidden');
+                } else {
+                    // Existing user
+                    document.getElementById('newUserFields').classList.add('hidden');
+                }
+                
+            } catch (error) {
+                showStatus('❌ ' + error.message, 'error');
+                console.error(error);
+            }
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("🚀 Emarket initialized");
-            loadAdSlots();
-            loadAds();
-        });
-
-        document.getElementById('moreCategoriesModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeMoreCategories();
+        // Phone OTP - Verify
+        async function verifyOTP() {
+            const otpCode = document.getElementById('otpCode').value;
+            
+            if (!otpCode || otpCode.length !== 6) {
+                showStatus('Please enter 6-digit OTP', 'error');
+                return;
             }
-        });
+
+            try {
+                showStatus('🔄 Verifying OTP...', 'info');
+                
+                const result = await confirmationResult.confirm(otpCode);
+                const user = result.user;
+                
+                // Check if user exists in Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                
+                if (!userDoc.exists) {
+                    // New user - save data
+                    const fullName = document.getElementById('phoneFullName').value;
+                    const email = document.getElementById('phoneEmail').value;
+                    
+                    if (!fullName) {
+                        showStatus('Please enter your name', 'error');
+                        return;
+                    }
+
+                    await db.collection('users').doc(user.uid).set({
+                        fullName: fullName,
+                        email: email || '',
+                        phone: '+94' + document.getElementById('phoneNumber').value,
+                        userType: 'customer',
+                        status: 'active',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                showStatus('✅ Verification successful! Redirecting...', 'success');
+                setTimeout(() => window.location.href = 'index.html', 1000);
+                
+            } catch (error) {
+                showStatus('❌ Invalid OTP. Please try again.', 'error');
+                console.error(error);
+            }
+        }
+
+        // Reset Phone Auth
+        function resetPhoneAuth() {
+            document.getElementById('phoneStep1').classList.remove('hidden');
+            document.getElementById('phoneStep2').classList.add('hidden');
+            document.getElementById('otpCode').value = '';
+            document.getElementById('phoneNumber').value = '';
+        }
+
+        // Show Status Message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.classList.remove('hidden');
+            statusDiv.textContent = message;
+            
+            const colors = {
+                success: 'bg-green-50 border border-green-200 text-green-800',
+                error: 'bg-red-50 border border-red-200 text-red-800',
+                info: 'bg-blue-50 border border-blue-200 text-blue-800'
+            };
+            
+            statusDiv.className = `${colors[type]} p-3 rounded-lg mt-4`;
+            
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 5000);
+        }
     </script>
 </body>
 </html>
