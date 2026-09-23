@@ -230,13 +230,13 @@
         let currentImageIndex = 0;
         let allImages = [];
 
-        console.log("🔍 URL:", window.location.href);
-        console.log(" Ad ID:", adId);
+        console.log(" URL:", window.location.href);
+        console.log("🔍 Ad ID:", adId);
 
         // Load Ad Details
         async function loadAdDetails() {
             if (!adId) {
-                console.error(" No ad ID in URL!");
+                console.error("❌ No ad ID in URL!");
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
                 return;
@@ -363,25 +363,40 @@
             document.getElementById('lightboxModal').classList.add('hidden');
         }
 
-        // Similar Ads
+        // ===== SIMILAR ADS - FIXED VERSION (No Index Required) =====
         function loadSimilarAds() {
-            if (!currentAd || !currentAd.category) return;
+            if (!currentAd || !currentAd.category) {
+                document.getElementById('similarAdsGrid').innerHTML = 
+                    '<div class="col-span-full text-center py-10 text-gray-400">No similar ads found</div>';
+                return;
+            }
             
+            console.log("🔄 Loading similar ads for category:", currentAd.category);
+            
+            // Fetch all approved ads and filter client-side (no index needed)
             db.collection('ads')
                 .where('status', '==', 'approved')
-                .where('category', '==', currentAd.category)
-                .orderBy('createdAt', 'desc')
-                .limit(4)
                 .get()
                 .then(snapshot => {
-                    const similarAds = snapshot.docs
-                        .map(doc => ({ id: doc.id, ...doc.data() }))
-                        .filter(ad => ad.id !== currentAd.id);
+                    const allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    console.log("📋 Total approved ads:", allAds.length);
+                    
+                    // Filter by same category and exclude current ad
+                    const similarAds = allAds
+                        .filter(ad => ad.category === currentAd.category && ad.id !== currentAd.id)
+                        .sort((a, b) => {
+                            const dateA = a.createdAt ? a.createdAt.seconds : 0;
+                            const dateB = b.createdAt ? b.createdAt.seconds : 0;
+                            return dateB - dateA;
+                        })
+                        .slice(0, 4);
+                    
+                    console.log("⭐ Similar ads found:", similarAds.length);
                     
                     const container = document.getElementById('similarAdsGrid');
                     
                     if (similarAds.length === 0) {
-                        container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No similar ads found</div>';
+                        container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No similar ads found in this category</div>';
                         return;
                     }
                     
@@ -409,7 +424,9 @@
                     }).join('');
                 })
                 .catch(error => {
-                    console.error("Error loading similar ads:", error);
+                    console.error("❌ Error loading similar ads:", error);
+                    document.getElementById('similarAdsGrid').innerHTML = 
+                        '<div class="col-span-full text-center py-10 text-red-500">Error loading similar ads</div>';
                 });
         }
 
