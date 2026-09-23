@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
     <!-- Navbar -->
     <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
@@ -31,7 +31,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-6 max-w-6xl">
+    <div class="container mx-auto px-4 py-6 max-w-6xl flex-grow">
         
         <!-- Loading State -->
         <div id="loadingState" class="text-center py-20">
@@ -185,7 +185,10 @@
 
         // Load Ad Details
         async function loadAdDetails() {
+            console.log("🔍 Loading ad with ID:", adId);
+            
             if (!adId) {
+                console.error("❌ No ad ID in URL");
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
                 return;
@@ -193,31 +196,32 @@
 
             try {
                 const doc = await db.collection('ads').doc(adId).get();
+                console.log(" Document exists:", doc.exists);
                 
                 if (!doc.exists) {
+                    console.error("❌ Ad document not found in database");
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('errorState').classList.remove('hidden');
                     return;
                 }
 
                 currentAd = { id: doc.id, ...doc.data() };
+                console.log("✅ Ad loaded:", currentAd);
+                console.log("Ad status:", currentAd.status);
                 
                 // Increment view count
                 await db.collection('ads').doc(adId).update({
                     views: firebase.firestore.FieldValue.increment(1)
                 });
 
-                // Display ad details
                 displayAdDetails(currentAd);
-                
-                // Load similar ads
                 loadSimilarAds(currentAd);
                 
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('adContent').classList.remove('hidden');
 
             } catch (error) {
-                console.error("Error loading ad:", error);
+                console.error("❌ Error loading ad:", error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
             }
@@ -264,7 +268,7 @@
                 .then(snapshot => {
                     const similarAds = snapshot.docs
                         .map(doc => ({ id: doc.id, ...doc.data() }))
-                        .filter(ad => ad.id !== currentAd.id); // Exclude current ad
+                        .filter(ad => ad.id !== currentAd.id);
                     
                     const container = document.getElementById('similarAdsGrid');
                     
