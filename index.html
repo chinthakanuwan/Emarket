@@ -254,7 +254,9 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- ========================================== -->
+    <!-- FOOTER (දැන් මේක එකතු වෙලා තියෙනවා!) -->
+    <!-- ========================================== -->
     <footer class="bg-gray-900 text-white mt-12">
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -279,9 +281,15 @@
                     <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
                 </div>
             </div>
+            
+            <!-- Developer Credit -->
             <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
-                <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
+                <p class="text-gray-400 text-sm">
+                    &copy; 2024 Emarket. All rights reserved.
+                </p>
+                <p class="text-blue-400 text-sm mt-2">
+                    <i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong>
+                </p>
             </div>
         </div>
     </footer>
@@ -319,12 +327,17 @@
 
         // ===== AD SLOTS LOADING =====
         function loadAdSlots() {
+            // Left Sidebar Ad (300x250)
             db.collection('adSlots').doc('sidebar-left').onSnapshot(doc => {
                 const container = document.getElementById('leftSidebarAd');
                 if (doc.exists) {
                     const data = doc.data();
                     if (data.image && data.image.trim() !== '') {
-                        container.innerHTML = `<a href="${data.link || '#'}" target="_blank" class="block"><img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover"></a>`;
+                        container.innerHTML = `
+                            <a href="${data.link || '#'}" target="_blank" class="block">
+                                <img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover">
+                            </a>
+                        `;
                     } else if (data.googleCode) {
                         container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
                     } else {
@@ -335,12 +348,17 @@
                 }
             });
 
+            // Middle Horizontal Ad (728x90)
             db.collection('adSlots').doc('middle-horizontal').onSnapshot(doc => {
                 const container = document.getElementById('middleHorizontalAd');
                 if (doc.exists) {
                     const data = doc.data();
                     if (data.image && data.image.trim() !== '') {
-                        container.innerHTML = `<a href="${data.link || '#'}" target="_blank" class="block"><img src="${data.image}" alt="Advertisement" class="w-full h-24 object-cover"></a>`;
+                        container.innerHTML = `
+                            <a href="${data.link || '#'}" target="_blank" class="block">
+                                <img src="${data.image}" alt="Advertisement" class="w-full h-24 object-cover">
+                            </a>
+                        `;
                     } else if (data.googleCode) {
                         container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
                     } else {
@@ -351,12 +369,17 @@
                 }
             });
 
+            // Bottom Ad Slot
             db.collection('adSlots').doc('sidebar-right').onSnapshot(doc => {
                 const container = document.getElementById('bottomAdSlot');
                 if (doc.exists) {
                     const data = doc.data();
                     if (data.image && data.image.trim() !== '') {
-                        container.innerHTML = `<a href="${data.link || '#'}" target="_blank" class="block"><img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover"></a>`;
+                        container.innerHTML = `
+                            <a href="${data.link || '#'}" target="_blank" class="block">
+                                <img src="${data.image}" alt="Advertisement" class="w-full h-64 object-cover">
+                            </a>
+                        `;
                     } else if (data.googleCode) {
                         container.innerHTML = `<div class="p-2">${data.googleCode}</div>`;
                     } else {
@@ -370,21 +393,28 @@
 
         // ===== ADS LOADING =====
         function loadAds() {
-            console.log(" Loading ads for category:", currentCategory);
+            console.log("🔄 Loading ads for category:", currentCategory);
             
             db.collection('ads').get()
                 .then(snapshot => {
                     console.log("✅ Found", snapshot.size, "total ads");
                     
                     if (snapshot.empty) {
-                        document.getElementById('premiumAdsGrid').innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No premium ads</div>';
-                        document.getElementById('latestAdsGrid').innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
+                        document.getElementById('premiumAdsGrid').innerHTML = 
+                            '<div class="col-span-full text-center py-10 text-gray-400">No premium ads</div>';
+                        document.getElementById('latestAdsGrid').innerHTML = 
+                            '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>';
                         return;
                     }
                     
-                    const allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    const allAds = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    
                     console.log("📋 All ads:", allAds);
                     
+                    // Filter: ONLY approved ads
                     let approvedAds = allAds.filter(ad => {
                         const isApproved = ad.status === 'approved';
                         console.log(`Ad: ${ad.title}, Status: ${ad.status}, Approved: ${isApproved}`);
@@ -393,34 +423,45 @@
                     
                     console.log("✅ Approved ads:", approvedAds.length);
                     
+                    // Filter by category if needed
                     if (currentCategory !== 'All') {
                         approvedAds = approvedAds.filter(ad => ad.category === currentCategory);
                         console.log("📁 Category filtered:", approvedAds.length);
                     }
                     
+                    // Sort by createdAt (newest first)
                     approvedAds.sort((a, b) => {
                         const dateA = a.createdAt ? a.createdAt.seconds : 0;
                         const dateB = b.createdAt ? b.createdAt.seconds : 0;
                         return dateB - dateA;
                     });
                     
+                    // Filter Premium ads
                     const premiumAds = approvedAds.filter(ad => ad.isPremium === true).slice(0, 4);
+                    
+                    // Latest ads
                     const latestAds = approvedAds.slice(0, 8);
                     
                     console.log("⭐ Premium:", premiumAds.length, "Latest:", latestAds.length);
                     
+                    // Update count
                     document.getElementById('adsCount').textContent = `${approvedAds.length} ads found`;
                     
+                    // Render
                     renderAds('premiumAdsGrid', premiumAds, true);
                     renderAds('latestAdsGrid', latestAds, false);
                 })
                 .catch(error => {
                     console.error("❌ Error loading ads:", error);
-                    document.getElementById('latestAdsGrid').innerHTML = `<div class="col-span-full text-center py-10 text-red-500"><i class="fas fa-exclamation-triangle text-2xl mb-2"></i><p>Error: ${error.message}</p></div>`;
+                    document.getElementById('latestAdsGrid').innerHTML = 
+                        `<div class="col-span-full text-center py-10 text-red-500">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                            <p>Error: ${error.message}</p>
+                        </div>`;
                 });
         }
 
-        // ===== RENDER ADS - FIXED LINK VERSION =====
+        // Render Ads
         function renderAds(containerId, ads, isPremium) {
             const container = document.getElementById(containerId);
             
@@ -436,26 +477,30 @@
                 const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
                 const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
                 const location = ad.location || 'Sri Lanka';
-                const adId = ad.id;
-                
-                console.log("🔗 Rendering ad:", ad.title, "ID:", adId);
                 
                 return `
-                    <a href="ad-details.html?id=${adId}" class="block bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden group">
+                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer group" 
+                             onclick="window.location.href='ad-details.html?id=${ad.id}'">
                         <div class="relative h-40 bg-gray-100 overflow-hidden">
-                            <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'" alt="${ad.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <img src="${imageUrl}" 
+                                 onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'"
+                                 alt="${ad.title}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
                         </div>
                         <div class="p-3">
                             <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title || 'Untitled'}</h3>
                             <p class="text-blue-700 font-extrabold text-base">${price}</p>
-                            <p class="text-xs text-gray-500 mt-1 truncate"><i class="fas fa-map-marker-alt mr-1"></i>${location}</p>
+                            <p class="text-xs text-gray-500 mt-1 truncate">
+                                <i class="fas fa-map-marker-alt mr-1"></i>${location}
+                            </p>
                         </div>
-                    </a>
+                    </article>
                 `;
             }).join('');
         }
 
+        // Filter Category
         function filterCategory(category) {
             currentCategory = category;
             
@@ -495,12 +540,17 @@
                 .then(snapshot => {
                     const filtered = snapshot.docs
                         .map(doc => ({id: doc.id, ...doc.data()}))
-                        .filter(ad => ad.status === 'approved' && ((ad.title && ad.title.toLowerCase().includes(term)) || (ad.desc && ad.desc.toLowerCase().includes(term))));
+                        .filter(ad => 
+                            ad.status === 'approved' &&
+                            ((ad.title && ad.title.toLowerCase().includes(term)) ||
+                            (ad.desc && ad.desc.toLowerCase().includes(term)))
+                        );
                     
                     renderAds('latestAdsGrid', filtered, false);
                 });
         }
 
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             console.log("🚀 Emarket initialized");
             loadAdSlots();
@@ -508,7 +558,9 @@
         });
 
         document.getElementById('moreCategoriesModal').addEventListener('click', function(e) {
-            if (e.target === this) closeMoreCategories();
+            if (e.target === this) {
+                closeMoreCategories();
+            }
         });
     </script>
 </body>
