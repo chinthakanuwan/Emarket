@@ -44,7 +44,6 @@
             
             <!-- Main Ad -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                <!-- Image Gallery -->
                 <div class="relative">
                     <img id="mainImage" src="" alt="" class="w-full h-96 object-cover">
                     <div class="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold" id="premiumBadge" style="display: none;">
@@ -52,7 +51,6 @@
                     </div>
                 </div>
 
-                <!-- Ad Info -->
                 <div class="p-6">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
                         <div>
@@ -63,7 +61,6 @@
                                 <span><i class="fas fa-eye mr-1"></i> <span id="adViews"></span> views</span>
                                 <span><i class="fas fa-clock mr-1"></i> <span id="adDate"></span></span>
                             </div>
-                            <!-- Tags -->
                             <div id="adTags" class="mt-3 flex flex-wrap gap-2"></div>
                         </div>
                         <div class="text-right">
@@ -71,13 +68,11 @@
                         </div>
                     </div>
 
-                    <!-- Description -->
                     <div class="border-t pt-4 mt-4">
                         <h2 class="text-xl font-bold text-gray-800 mb-3">Description</h2>
                         <p id="adDescription" class="text-gray-700 leading-relaxed whitespace-pre-line"></p>
                     </div>
 
-                    <!-- Contact Seller -->
                     <div class="border-t pt-4 mt-6 bg-gray-50 p-4 rounded-lg">
                         <h3 class="font-bold text-gray-800 mb-3">Contact Seller</h3>
                         <div class="flex flex-col md:flex-row gap-4 items-center">
@@ -126,14 +121,11 @@
     <footer class="bg-gray-900 text-white mt-12">
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- About -->
                 <div>
                     <h3 class="text-xl font-bold mb-4">About Emarket</h3>
                     <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform. Buy and sell anything for free!</p>
                     <a href="about.html" class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Learn More →</a>
                 </div>
-                
-                <!-- Quick Links -->
                 <div>
                     <h3 class="text-xl font-bold mb-4">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
@@ -143,8 +135,6 @@
                         <li><a href="login.html" class="hover:text-white">Login / Sign Up</a></li>
                     </ul>
                 </div>
-                
-                <!-- Contact -->
                 <div>
                     <h3 class="text-xl font-bold mb-4">Contact Us</h3>
                     <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
@@ -152,15 +142,9 @@
                     <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
                 </div>
             </div>
-            
-            <!-- Developer Credit -->
             <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">
-                    &copy; 2024 Emarket. All rights reserved.
-                </p>
-                <p class="text-blue-400 text-sm mt-2">
-                    <i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong>
-                </p>
+                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+                <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
             </div>
         </div>
     </footer>
@@ -179,9 +163,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Get ad ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
         let currentAd = null;
+
+        console.log("🔍 URL:", window.location.href);
+        console.log(" Ad ID from URL:", adId);
 
         // Load Ad Details
         async function loadAdDetails() {
@@ -207,7 +195,7 @@
 
                 currentAd = { id: doc.id, ...doc.data() };
                 console.log("✅ Ad loaded:", currentAd);
-                console.log("Ad status:", currentAd.status);
+                console.log("📊 Ad status:", currentAd.status);
                 
                 // Increment view count
                 await db.collection('ads').doc(adId).update({
@@ -221,7 +209,7 @@
                 document.getElementById('adContent').classList.remove('hidden');
 
             } catch (error) {
-                console.error("❌ Error loading ad:", error);
+                console.error(" Error loading ad:", error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
             }
@@ -240,12 +228,10 @@
             document.getElementById('adViews').textContent = ad.views || 0;
             document.getElementById('adDate').textContent = ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
             
-            // Premium badge
             if (ad.isPremium) {
                 document.getElementById('premiumBadge').style.display = 'block';
             }
 
-            // Tags
             const tagsContainer = document.getElementById('adTags');
             if (ad.tags && ad.tags.length > 0) {
                 tagsContainer.innerHTML = ad.tags.map(tag => 
@@ -282,8 +268,7 @@
                         const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
                         
                         return `
-                            <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer" 
-                                     onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                            <a href="ad-details.html?id=${ad.id}" class="block bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden">
                                 <div class="relative h-40 bg-gray-100 overflow-hidden">
                                     <img src="${img}" class="w-full h-full object-cover">
                                     ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
@@ -295,7 +280,7 @@
                                         <i class="fas fa-map-marker-alt mr-1"></i>${ad.location || 'Sri Lanka'}
                                     </p>
                                 </div>
-                            </article>
+                            </a>
                         `;
                     }).join('');
                 })
