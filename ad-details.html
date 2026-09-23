@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Ad Details - Emarket</title>
+    <title>Ad Details - Emarket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="bg-gray-50">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
+    <nav class="bg-white shadow-sm border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <a href="index.html" class="text-2xl font-bold text-blue-600">
@@ -31,7 +31,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-6 max-w-6xl flex-grow">
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
         
         <!-- Loading -->
         <div id="loadingState" class="text-center py-20">
@@ -59,9 +59,7 @@
                                 <span><i class="fas fa-folder mr-1"></i><span id="adCategory"></span></span>
                                 <span><i class="fas fa-map-marker-alt mr-1"></i><span id="adLocation"></span></span>
                                 <span><i class="fas fa-eye mr-1"></i><span id="adViews"></span> views</span>
-                                <span><i class="fas fa-clock mr-1"></i><span id="adDate"></span></span>
                             </div>
-                            <div id="adTags" class="mt-3 flex flex-wrap gap-2"></div>
                         </div>
                         <div class="text-right">
                             <p id="adPrice" class="text-4xl font-bold text-blue-600"></p>
@@ -70,7 +68,7 @@
 
                     <div class="border-t pt-4 mt-4">
                         <h2 class="text-xl font-bold text-gray-800 mb-3">Description</h2>
-                        <p id="adDescription" class="text-gray-700 leading-relaxed whitespace-pre-line"></p>
+                        <p id="adDescription" class="text-gray-700 leading-relaxed"></p>
                     </div>
 
                     <div class="border-t pt-4 mt-6 bg-gray-50 p-4 rounded-lg">
@@ -89,16 +87,6 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Similar Ads -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                    <i class="fas fa-th-large text-blue-600 mr-2"></i>Similar Ads
-                </h2>
-                <div id="similarAdsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="col-span-full text-center py-10 text-gray-400">Loading...</div>
                 </div>
             </div>
 
@@ -122,27 +110,23 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">About Emarket</h3>
-                    <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform. Buy and sell anything for free!</p>
-                    <a href="about.html" class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Learn More →</a>
+                    <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform.</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold mb-4">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
                         <li><a href="index.html" class="hover:text-white">Home</a></li>
                         <li><a href="post-ad.html" class="hover:text-white">Post Free Ad</a></li>
-                        <li><a href="about.html" class="hover:text-white">About Us</a></li>
-                        <li><a href="login.html" class="hover:text-white">Login / Sign Up</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
-                    <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
+                    <h3 class="text-xl font-bold mb-4">Contact</h3>
+                    <p class="text-gray-400 text-sm"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
+                    <p class="text-gray-400 text-sm"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+                <p class="text-gray-400 text-sm">&copy; 2024 Emarket.</p>
                 <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
             </div>
         </div>
@@ -165,10 +149,9 @@
         // Get ad ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
-        let currentAd = null;
-
-        console.log("🔍 Full URL:", window.location.href);
-        console.log(" Ad ID from URL:", adId);
+        
+        console.log("🔍 URL:", window.location.href);
+        console.log("🔍 Ad ID:", adId);
         document.getElementById('debugAdId').textContent = adId || 'None';
 
         // Load Ad Details
@@ -181,121 +164,64 @@
             }
 
             try {
-                console.log("📥 Loading ad from Firestore:", adId);
+                console.log(" Loading ad:", adId);
+                
                 const doc = await db.collection('ads').doc(adId).get();
                 
-                console.log("📄 Document exists:", doc.exists);
+                console.log(" Document exists:", doc.exists);
+                console.log("📄 Document data:", doc.data());
                 
                 if (!doc.exists) {
-                    console.error("❌ Ad document NOT found in database!");
-                    console.log("📋 Available ads: Check Firestore > ads collection");
+                    console.error("❌ Ad not found in database!");
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('errorState').classList.remove('hidden');
                     return;
                 }
 
-                currentAd = { id: doc.id, ...doc.data() };
-                console.log("✅ Ad loaded successfully:", currentAd);
-                console.log(" Ad status:", currentAd.status);
-                console.log("📊 Ad title:", currentAd.title);
+                const ad = doc.data();
+                console.log("✅ Ad loaded:", ad);
                 
-                // Increment view count
-                await db.collection('ads').doc(adId).update({
-                    views: firebase.firestore.FieldValue.increment(1)
-                });
-                console.log("👁️ View count incremented");
-
-                // Display ad details
-                document.getElementById('pageTitle').textContent = currentAd.title + ' - Emarket';
-                document.getElementById('mainImage').src = currentAd.images && currentAd.images[0] ? currentAd.images[0] : 'https://via.placeholder.com/800x400';
-                document.getElementById('adTitle').textContent = currentAd.title;
-                document.getElementById('adCategory').textContent = currentAd.category || 'General';
-                document.getElementById('adLocation').textContent = currentAd.location || 'Sri Lanka';
-                document.getElementById('adPrice').textContent = 'Rs. ' + Number(currentAd.price).toLocaleString();
-                document.getElementById('adDescription').textContent = currentAd.desc || 'No description';
-                document.getElementById('sellerEmail').textContent = currentAd.sellerEmail || 'N/A';
-                document.getElementById('sellerPhone').textContent = currentAd.phone || 'N/A';
-                document.getElementById('adViews').textContent = currentAd.views || 0;
-                document.getElementById('adDate').textContent = currentAd.createdAt ? new Date(currentAd.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
+                // Display ad
+                document.getElementById('mainImage').src = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/800x400';
+                document.getElementById('adTitle').textContent = ad.title || 'Untitled';
+                document.getElementById('adCategory').textContent = ad.category || 'General';
+                document.getElementById('adLocation').textContent = ad.location || 'Sri Lanka';
+                document.getElementById('adPrice').textContent = 'Rs. ' + Number(ad.price).toLocaleString();
+                document.getElementById('adDescription').textContent = ad.desc || 'No description';
+                document.getElementById('sellerEmail').textContent = ad.sellerEmail || 'N/A';
+                document.getElementById('sellerPhone').textContent = ad.phone || 'N/A';
+                document.getElementById('adViews').textContent = ad.views || 0;
                 
-                if (currentAd.isPremium) {
+                if (ad.isPremium) {
                     document.getElementById('premiumBadge').classList.remove('hidden');
                 }
 
-                // Tags
-                if (currentAd.tags && currentAd.tags.length > 0) {
-                    document.getElementById('adTags').innerHTML = currentAd.tags.map(tag => 
-                        `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`
-                    ).join('');
-                }
+                // Increment views
+                await db.collection('ads').doc(adId).update({
+                    views: (ad.views || 0) + 1
+                });
 
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('adContent').classList.remove('hidden');
 
-                // Load similar ads
-                loadSimilarAds();
-
             } catch (error) {
-                console.error("❌ Error loading ad:", error);
+                console.error("❌ Error:", error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
             }
         }
 
-        function loadSimilarAds() {
-            if (!currentAd || !currentAd.category) return;
-            
-            db.collection('ads')
-                .where('status', '==', 'approved')
-                .where('category', '==', currentAd.category)
-                .orderBy('createdAt', 'desc')
-                .limit(3)
-                .get()
-                .then(snapshot => {
-                    const similarAds = snapshot.docs
-                        .map(doc => ({ id: doc.id, ...doc.data() }))
-                        .filter(ad => ad.id !== currentAd.id);
-                    
-                    const container = document.getElementById('similarAdsGrid');
-                    
-                    if (similarAds.length === 0) {
-                        container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No similar ads</div>';
-                        return;
-                    }
-                    
-                    container.innerHTML = similarAds.map(ad => {
-                        const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/400x300';
-                        const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact';
-                        
-                        return `
-                            <a href="ad-details.html?id=${ad.id}" class="block bg-white rounded-lg shadow-sm hover:shadow-md transition border overflow-hidden">
-                                <div class="h-40 bg-gray-100">
-                                    <img src="${img}" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-3">
-                                    <h3 class="font-bold text-gray-800 text-sm line-clamp-2">${ad.title}</h3>
-                                    <p class="text-blue-700 font-extrabold">${price}</p>
-                                    <p class="text-xs text-gray-500"><i class="fas fa-map-marker-alt mr-1"></i>${ad.location || 'Sri Lanka'}</p>
-                                </div>
-                            </a>
-                        `;
-                    }).join('');
-                })
-                .catch(error => {
-                    console.error("Error loading similar ads:", error);
-                });
-        }
-
         function contactSeller() {
-            if (currentAd && currentAd.phone) {
-                window.open(`tel:${currentAd.phone}`, '_self');
+            const phone = document.getElementById('sellerPhone').textContent;
+            if (phone && phone !== 'N/A') {
+                window.location.href = 'tel:' + phone;
             } else {
                 alert('Phone number not available');
             }
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', loadAdDetails);
+        loadAdDetails();
     </script>
 </body>
 </html>
