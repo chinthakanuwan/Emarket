@@ -10,98 +10,29 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        /* Mobile Optimizations */
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -100%;
-                top: 0;
-                bottom: 0;
-                z-index: 50;
-                transition: left 0.3s ease;
-                width: 80%;
-                max-width: 300px;
-            }
-            .sidebar.open {
-                left: 0;
-            }
-            .sidebar-overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 40;
-            }
-            .sidebar-overlay.show {
-                display: block;
-            }
-            .main-content {
-                margin-left: 0 !important;
-            }
-            .mobile-header {
-                display: flex !important;
-            }
-            .desktop-header {
-                display: none;
-            }
-            .table-responsive {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            .action-buttons {
-                flex-wrap: wrap;
-            }
-            .action-buttons button {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
+            .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; z-index: 50; transition: left 0.3s ease; width: 85%; max-width: 300px; }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
+            .sidebar-overlay.show { display: block; }
+            .main-content { margin-left: 0 !important; }
+            .mobile-header { display: flex !important; }
+            .desktop-header { display: none; }
+            .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
-        
         @media (min-width: 769px) {
-            .mobile-header {
-                display: none !important;
-            }
-            .sidebar-overlay {
-                display: none !important;
-            }
+            .mobile-header { display: none !important; }
+            .sidebar-overlay { display: none !important; }
         }
-
-        /* Touch-friendly buttons */
-        .touch-btn {
-            min-height: 44px;
-            min-width: 44px;
-        }
-
-        /* Smooth scrolling */
-        .smooth-scroll {
-            scroll-behavior: smooth;
-        }
-
-        /* Card animations */
-        .card-enter {
-            animation: cardSlideIn 0.3s ease-out;
-        }
-        @keyframes cardSlideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Loading spinner */
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .touch-btn { min-height: 44px; min-width: 44px; }
+        .smooth-scroll { scroll-behavior: smooth; }
+        .card-enter { animation: cardSlideIn 0.3s ease-out; }
+        @keyframes cardSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .notification-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .feature-toggle { transition: all 0.3s ease; }
+        .feature-toggle.active { background: #10b981; color: white; }
+        .feature-toggle.inactive { background: #e5e7eb; color: #6b7280; }
     </style>
 </head>
 <body class="bg-gray-100 smooth-scroll">
@@ -116,36 +47,27 @@
                 <h1 class="text-3xl font-bold text-gray-800">Admin Panel</h1>
                 <p class="text-gray-500 mt-2">Emarket Management System</p>
             </div>
-            
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-envelope mr-1"></i> Email
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-envelope mr-1"></i> Email</label>
                     <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none touch-btn" placeholder="admin@emarket.com" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-lock mr-1"></i> Password
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-lock mr-1"></i> Password</label>
                     <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none touch-btn" placeholder="••••••••" required>
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition touch-btn">
                     <i class="fas fa-sign-in-alt mr-2"></i> Login
                 </button>
             </form>
-            
             <div id="loginError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm hidden"></div>
         </div>
     </div>
 
     <!-- Admin Dashboard -->
     <div id="dashboard" class="hidden">
-        
-        <!-- Sidebar Overlay (Mobile) -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
         
-        <!-- Sidebar -->
         <aside class="sidebar bg-white shadow-lg w-64 flex-shrink-0 h-screen overflow-y-auto" id="sidebar">
             <div class="p-6 border-b">
                 <div class="flex items-center justify-between">
@@ -177,8 +99,9 @@
                 <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="premium">
                     <i class="fas fa-crown w-5"></i> Premium Ads
                 </button>
-                <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="notifications">
+                <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn relative" data-section="notifications">
                     <i class="fas fa-bell w-5"></i> Notifications
+                    <span id="notifBadge" class="notification-badge hidden">0</span>
                 </button>
                 <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="categories">
                     <i class="fas fa-folder w-5"></i> Categories
@@ -198,24 +121,29 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <div class="main-content flex-1 flex flex-col">
-            
-            <!-- Mobile Header -->
             <header class="mobile-header bg-white shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
                 <button onclick="toggleSidebar()" class="text-gray-600 hover:text-gray-800 touch-btn">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
                 <h1 class="font-bold text-gray-800" id="mobileTitle">Dashboard</h1>
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    <i class="fas fa-user"></i>
+                <div class="relative">
+                    <button onclick="showSection('notifications')" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200 touch-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <span id="mobileNotifBadge" class="notification-badge hidden">0</span>
                 </div>
             </header>
 
-            <!-- Desktop Header -->
             <header class="desktop-header bg-white shadow-sm px-6 py-4 flex items-center justify-between">
                 <h1 id="pageTitle" class="text-xl font-bold text-gray-800">Dashboard</h1>
                 <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <button onclick="showSection('notifications')" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200 touch-btn">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <span id="desktopNotifBadge" class="notification-badge hidden">0</span>
+                    </div>
                     <div class="flex items-center gap-2">
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                             <i class="fas fa-user"></i>
@@ -228,10 +156,8 @@
                 </div>
             </header>
 
-            <!-- Content Area -->
             <main class="flex-1 overflow-y-auto p-4 md:p-6">
                 
-                <!-- Dashboard Section -->
                 <section id="section-dashboard" class="section card-enter">
                     <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div class="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-blue-500">
@@ -252,6 +178,15 @@
                         </div>
                     </div>
 
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-bell text-yellow-500"></i> Recent Notifications
+                        </h3>
+                        <div id="recentNotifications" class="space-y-3">
+                            <p class="text-gray-400 text-center py-4">Loading...</p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <button onclick="generateSampleData()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-4 md:p-6 shadow-lg text-left touch-btn">
                             <i class="fas fa-magic text-2xl md:text-3xl mb-2"></i>
@@ -265,13 +200,12 @@
                         </button>
                         <button onclick="showSection('notifications')" class="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-4 md:p-6 shadow-lg text-left touch-btn">
                             <i class="fas fa-paper-plane text-2xl md:text-3xl mb-2"></i>
-                            <h3 class="font-bold text-base md:text-lg">Send Notification</h3>
-                            <p class="text-xs md:text-sm opacity-90">Notify all users</p>
+                            <h3 class="font-bold text-base md:text-lg">All Notifications</h3>
+                            <p class="text-xs md:text-sm opacity-90">View all notifications</p>
                         </button>
                     </div>
                 </section>
 
-                <!-- Ads Management Section -->
                 <section id="section-ads" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -302,29 +236,15 @@
                     </div>
                 </section>
 
-                <!-- Users Section -->
                 <section id="section-users" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">User Management</h2>
-                        <div class="table-responsive">
-                            <table class="w-full min-w-[500px]">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">User</th>
-                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Email</th>
-                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase">Role</th>
-                                        <th class="px-4 py-3 text-right text-xs font-bold text-gray-500 uppercase">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTableBody" class="divide-y">
-                                    <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
-                                </tbody>
-                            </table>
+                        <div id="usersList" class="space-y-4">
+                            <p class="text-center text-gray-400 py-8">Loading...</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Premium Ads Section -->
                 <section id="section-premium" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">Premium Ads</h2>
@@ -334,31 +254,20 @@
                     </div>
                 </section>
 
-                <!-- Notifications Section -->
                 <section id="section-notifications" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
-                        <h2 class="text-xl font-bold text-gray-800 mb-6">Send Notification</h2>
-                        <div class="space-y-4 mb-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                <input type="text" id="notifTitle" class="w-full px-4 py-3 border border-gray-300 rounded-lg touch-btn" placeholder="Notification title">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                <textarea id="notifMessage" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg touch-btn" placeholder="Notification message"></textarea>
-                            </div>
-                            <button onclick="sendNotification()" class="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 touch-btn">
-                                <i class="fas fa-paper-plane mr-2"></i>Send Notification
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Notifications</h2>
+                            <button onclick="markAllRead()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 touch-btn text-sm">
+                                <i class="fas fa-check-double mr-2"></i>Mark All Read
                             </button>
                         </div>
-                        <h3 class="font-bold text-gray-800 mb-3">Sent Notifications</h3>
                         <div id="notificationsList" class="space-y-3">
-                            <p class="text-center text-gray-400 py-4">No notifications sent yet</p>
+                            <p class="text-center text-gray-400 py-4">Loading...</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Categories Section -->
                 <section id="section-categories" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex justify-between items-center mb-6">
@@ -373,19 +282,14 @@
                     </div>
                 </section>
 
-                <!-- Ad Slots Section -->
                 <section id="section-adslots" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-2">Ad Slots Management</h2>
                         <p class="text-gray-600 mb-6 text-sm">Manage advertisement slots on your website.</p>
-                        
-                        <div id="adSlotsList" class="space-y-4">
-                            <!-- Ad slots will be loaded here -->
-                        </div>
+                        <div id="adSlotsList" class="space-y-4"></div>
                     </div>
                 </section>
 
-                <!-- Settings Section -->
                 <section id="section-settings" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">Site Settings</h2>
@@ -409,11 +313,9 @@
         </div>
     </div>
 
-    <!-- Toast Container -->
     <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -428,16 +330,15 @@
 
         let currentUser = null;
         let allAds = [];
+        let allUsers = [];
+        let unreadNotifCount = 0;
+        let notifUnsubscribe = null;
 
-        // Toggle Sidebar (Mobile)
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
         }
 
-        // Auth State
         auth.onAuthStateChanged(async user => {
             if (user) {
                 try {
@@ -445,6 +346,7 @@
                     if (doc.exists && doc.data().userType === 'admin') {
                         currentUser = user;
                         showDashboard(user);
+                        setupRealtimeNotifications();
                     } else {
                         showToast('Access Denied! Not an admin.', 'error');
                         logout();
@@ -455,6 +357,36 @@
             }
         });
 
+        function setupRealtimeNotifications() {
+            if (notifUnsubscribe) notifUnsubscribe();
+            notifUnsubscribe = db.collection('notifications')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    let unread = 0;
+                    snapshot.docs.forEach(doc => { if (!doc.data().read) unread++; });
+                    unreadNotifCount = unread;
+                    updateNotificationBadges(unread);
+                    if (!document.getElementById('section-notifications').classList.contains('hidden')) {
+                        renderNotifications(snapshot.docs);
+                    }
+                    if (!document.getElementById('section-dashboard').classList.contains('hidden')) {
+                        renderRecentNotifications(snapshot.docs.slice(0, 5));
+                    }
+                });
+        }
+
+        function updateNotificationBadges(count) {
+            ['notifBadge', 'mobileNotifBadge', 'desktopNotifBadge'].forEach(id => {
+                const badge = document.getElementById(id);
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
+        }
+
         function showDashboard(user) {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
@@ -463,14 +395,10 @@
             loadDashboardData();
         }
 
-        // Login
         document.getElementById('loginForm').addEventListener('submit', async e => {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
             } catch (error) {
                 document.getElementById('loginError').textContent = 'Error: ' + error.message;
                 document.getElementById('loginError').classList.remove('hidden');
@@ -478,41 +406,23 @@
         });
 
         function logout() {
+            if (notifUnsubscribe) notifUnsubscribe();
             auth.signOut().then(() => {
                 document.getElementById('dashboard').classList.add('hidden');
                 document.getElementById('loginScreen').classList.remove('hidden');
             });
         }
 
-        // Navigation
         function showSection(sectionName) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`section-${sectionName}`).classList.remove('hidden');
-            
             document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active', 'bg-blue-50', 'text-blue-600'));
             const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active', 'bg-blue-50', 'text-blue-600');
-            }
-            
-            const titles = {
-                dashboard: 'Dashboard',
-                ads: 'Ads Management',
-                users: 'User Management',
-                premium: 'Premium Ads',
-                notifications: 'Notifications',
-                categories: 'Categories',
-                adslots: 'Ad Slots',
-                settings: 'Settings'
-            };
+            if (activeLink) activeLink.classList.add('active', 'bg-blue-50', 'text-blue-600');
+            const titles = { dashboard: 'Dashboard', ads: 'Ads Management', users: 'Users', premium: 'Premium Ads', notifications: 'Notifications', categories: 'Categories', adslots: 'Ad Slots', settings: 'Settings' };
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
             document.getElementById('mobileTitle').textContent = titles[sectionName] || 'Dashboard';
-            
-            // Close sidebar on mobile after navigation
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            }
-            
+            if (window.innerWidth < 768) toggleSidebar();
             if (sectionName === 'ads') loadAds();
             if (sectionName === 'users') loadUsers();
             if (sectionName === 'premium') loadPremiumAds();
@@ -521,7 +431,6 @@
             if (sectionName === 'adslots') loadAdSlots();
         }
 
-        // Load Dashboard Data
         function loadDashboardData() {
             db.collection('ads').get().then(snap => {
                 const ads = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -529,73 +438,46 @@
                 document.getElementById('statPending').textContent = ads.filter(a => a.status === 'pending').length;
                 document.getElementById('statPremium').textContent = ads.filter(a => a.isPremium).length;
             });
-            
-            db.collection('users').get().then(snap => {
-                document.getElementById('statUsers').textContent = snap.size;
-            });
+            db.collection('users').get().then(snap => { document.getElementById('statUsers').textContent = snap.size; });
         }
 
-        // Load Ads
         function loadAds() {
             const filter = document.getElementById('adsFilter').value;
-            
             db.collection('ads').get().then(snap => {
                 allAds = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                
                 let filtered = allAds;
                 if (filter !== 'all') filtered = filtered.filter(a => a.status === filter);
-                
                 renderAdsTable(filtered);
             });
         }
 
         function renderAdsTable(ads) {
             const tbody = document.getElementById('adsTableBody');
-            if (ads.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">No ads found</td></tr>';
-                return;
-            }
-            
+            if (ads.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">No ads found</td></tr>'; return; }
             tbody.innerHTML = ads.map(ad => {
-                const statusColors = {
-                    pending: 'bg-yellow-100 text-yellow-800',
-                    approved: 'bg-green-100 text-green-800',
-                    rejected: 'bg-red-100 text-red-800'
-                };
+                const statusColors = { pending: 'bg-yellow-100 text-yellow-800', approved: 'bg-green-100 text-green-800', rejected: 'bg-red-100 text-red-800' };
                 const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/100';
-                
                 return `
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <img src="${img}" class="w-12 h-12 rounded object-cover">
-                                <div>
-                                    <p class="font-medium text-gray-800 text-sm">${ad.title}</p>
-                                    <p class="text-xs text-gray-500">${ad.location || 'N/A'}</p>
-                                </div>
+                                <div><p class="font-medium text-gray-800 text-sm">${ad.title}</p><p class="text-xs text-gray-500">${ad.location || 'N/A'}</p></div>
                             </div>
                         </td>
                         <td class="px-4 py-3 text-sm text-gray-600">${ad.category}</td>
                         <td class="px-4 py-3 text-sm font-bold text-blue-600">Rs. ${Number(ad.price).toLocaleString()}</td>
                         <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[ad.status] || 'bg-gray-100'}">
-                                ${ad.status}
-                            </span>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[ad.status] || 'bg-gray-100'}">${ad.status}</span>
                             ${ad.isPremium ? '<span class="ml-1 px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">⭐</span>' : ''}
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <div class="flex justify-end gap-1 action-buttons">
-                                <button onclick="editAd('${ad.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded touch-btn" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
+                            <div class="flex justify-end gap-1">
+                                <button onclick="editAd('${ad.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded touch-btn" title="Edit"><i class="fas fa-edit"></i></button>
                                 ${ad.status !== 'approved' ? `<button onclick="approveAd('${ad.id}')" class="p-2 text-green-600 hover:bg-green-50 rounded touch-btn" title="Approve"><i class="fas fa-check"></i></button>` : ''}
                                 ${ad.status !== 'rejected' ? `<button onclick="rejectAd('${ad.id}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded touch-btn" title="Reject"><i class="fas fa-times"></i></button>` : ''}
-                                <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 rounded touch-btn" title="Toggle Premium">
-                                    <i class="fas fa-crown"></i>
-                                </button>
-                                <button onclick="deleteAd('${ad.id}')" class="p-2 text-red-600 hover:bg-red-50 rounded touch-btn" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button onclick="togglePremium('${ad.id}', ${!ad.isPremium})" class="p-2 text-purple-600 hover:bg-purple-50 rounded touch-btn" title="Toggle Premium"><i class="fas fa-crown"></i></button>
+                                <button onclick="deleteAd('${ad.id}')" class="p-2 text-red-600 hover:bg-red-50 rounded touch-btn" title="Delete"><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -603,94 +485,83 @@
             }).join('');
         }
 
-        // Edit Ad Function
         function editAd(adId) {
             const ad = allAds.find(a => a.id === adId);
             if (!ad) return;
-            
-            const newTitle = prompt('Edit Title:', ad.title);
-            if (newTitle === null) return;
-            
-            const newPrice = prompt('Edit Price:', ad.price);
-            if (newPrice === null) return;
-            
-            const newDesc = prompt('Edit Description:', ad.desc || '');
-            if (newDesc === null) return;
-            
-            const newLocation = prompt('Edit Location:', ad.location || '');
-            if (newLocation === null) return;
-            
-            db.collection('ads').doc(adId).update({
-                title: newTitle,
-                price: Number(newPrice),
-                desc: newDesc,
-                location: newLocation,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                showToast('Ad updated successfully!', 'success');
-                loadAds();
-            }).catch(err => {
-                showToast('Error: ' + err.message, 'error');
-            });
+            const newTitle = prompt('Edit Title:', ad.title); if (newTitle === null) return;
+            const newPrice = prompt('Edit Price:', ad.price); if (newPrice === null) return;
+            const newDesc = prompt('Edit Description:', ad.desc || ''); if (newDesc === null) return;
+            const newLocation = prompt('Edit Location:', ad.location || ''); if (newLocation === null) return;
+            db.collection('ads').doc(adId).update({ title: newTitle, price: Number(newPrice), desc: newDesc, location: newLocation, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+                .then(() => { showToast('Ad updated!', 'success'); loadAds(); })
+                .catch(err => showToast('Error: ' + err.message, 'error'));
         }
 
-        // Load Users
         function loadUsers() {
             db.collection('users').get().then(snap => {
-                const users = snap.docs.map(d => ({id: d.id, ...d.data()}));
-                const tbody = document.getElementById('usersTableBody');
-                
-                if (users.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">No users found</td></tr>';
-                    return;
-                }
-                
-                tbody.innerHTML = users.map(user => {
-                    const roleColors = {
-                        admin: 'bg-purple-100 text-purple-800',
-                        customer: 'bg-gray-100 text-gray-800'
-                    };
-                    
+                allUsers = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                const container = document.getElementById('usersList');
+                if (allUsers.length === 0) { container.innerHTML = '<p class="text-center text-gray-400 py-8">No users found</p>'; return; }
+                container.innerHTML = allUsers.map(user => {
+                    const features = user.features || { canPostAds: true, maxAdsPerMonth: 10, isPremiumUser: false, premiumAdsLimit: 0, featuredListings: false, prioritySupport: false };
                     return `
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3">
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                                         ${(user.fullName || user.email || 'U').charAt(0).toUpperCase()}
                                     </div>
-                                    <p class="font-medium text-gray-800 text-sm">${user.fullName || 'N/A'}</p>
+                                    <div>
+                                        <p class="font-bold text-gray-800">${user.fullName || 'N/A'}</p>
+                                        <p class="text-sm text-gray-600">${user.email}</p>
+                                        <p class="text-xs text-gray-500">Ads Posted: ${user.adsPosted || 0}</p>
+                                    </div>
                                 </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-600">${user.email}</td>
-                            <td class="px-4 py-3">
-                                <span class="px-2 py-1 rounded-full text-xs font-medium ${roleColors[user.userType] || roleColors.customer}">
-                                    ${user.userType || 'customer'}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <div class="flex justify-end gap-1 action-buttons">
-                                    <button onclick="resetUserPassword('${user.email}')" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded touch-btn" title="Reset Password">
-                                        <i class="fas fa-key"></i>
-                                    </button>
-                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded touch-btn" title="Change Role">
-                                        <i class="fas fa-user-edit"></i>
-                                    </button>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${user.userType === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">${user.userType || 'customer'}</span>
+                            </div>
+                            <div class="border-t pt-4">
+                                <h4 class="font-bold text-sm text-gray-700 mb-3">Features & Permissions</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border">
+                                        <span class="text-sm"><i class="fas fa-ad mr-2 text-blue-500"></i>Can Post Ads</span>
+                                        <button onclick="toggleUserFeature('${user.id}', 'canPostAds', ${!features.canPostAds})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.canPostAds ? 'active' : 'inactive'}">${features.canPostAds ? '✓ ON' : '✗ OFF'}</button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border">
+                                        <span class="text-sm"><i class="fas fa-crown mr-2 text-yellow-500"></i>Premium User</span>
+                                        <button onclick="toggleUserFeature('${user.id}', 'isPremiumUser', ${!features.isPremiumUser})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.isPremiumUser ? 'active' : 'inactive'}">${features.isPremiumUser ? '✓ ON' : '✗ OFF'}</button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border">
+                                        <span class="text-sm"><i class="fas fa-star mr-2 text-purple-500"></i>Featured Listings</span>
+                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">${features.featuredListings ? '✓ ON' : '✗ OFF'}</button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border">
+                                        <span class="text-sm"><i class="fas fa-headset mr-2 text-green-500"></i>Priority Support</span>
+                                        <button onclick="toggleUserFeature('${user.id}', 'prioritySupport', ${!features.prioritySupport})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.prioritySupport ? 'active' : 'inactive'}">${features.prioritySupport ? '✓ ON' : '✗ OFF'}</button>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
+                                <div class="mt-3 flex gap-2">
+                                    <button onclick="resetUserPassword('${user.email}')" class="flex-1 bg-yellow-500 text-white py-2 rounded text-sm hover:bg-yellow-600 touch-btn"><i class="fas fa-key mr-1"></i>Reset Password</button>
+                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="flex-1 bg-blue-500 text-white py-2 rounded text-sm hover:bg-blue-600 touch-btn"><i class="fas fa-user-edit mr-1"></i>Change Role</button>
+                                </div>
+                            </div>
+                        </div>
                     `;
                 }).join('');
             });
         }
 
-        // Premium Ads
+        async function toggleUserFeature(userId, feature, newValue) {
+            try {
+                await db.collection('users').doc(userId).update({ [`features.${feature}`]: newValue });
+                showToast(`Feature updated!`, 'success');
+                loadUsers();
+            } catch (error) { showToast('Error: ' + error.message, 'error'); }
+        }
+
         function loadPremiumAds() {
             db.collection('ads').where('isPremium', '==', true).get().then(snap => {
                 const list = document.getElementById('premiumAdsList');
-                if (snap.empty) {
-                    list.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-8">No premium ads</p>';
-                    return;
-                }
+                if (snap.empty) { list.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-8">No premium ads</p>'; return; }
                 list.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
                 list.innerHTML = snap.docs.map(doc => {
                     const ad = doc.data();
@@ -710,63 +581,70 @@
             });
         }
 
-        // Notifications
-        async function sendNotification() {
-            const title = document.getElementById('notifTitle').value;
-            const message = document.getElementById('notifMessage').value;
-            
-            if (!title || !message) return showToast('Title and message required', 'error');
-            
-            try {
-                await db.collection('notifications').add({
-                    title, message,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    sentBy: currentUser.email
-                });
-                showToast('Notification sent successfully!', 'success');
-                document.getElementById('notifTitle').value = '';
-                document.getElementById('notifMessage').value = '';
-                loadNotifications();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
+        function loadNotifications() {
+            db.collection('notifications').orderBy('createdAt', 'desc').get().then(snap => { renderNotifications(snap.docs); });
         }
 
-        function loadNotifications() {
-            db.collection('notifications').orderBy('createdAt', 'desc').get().then(snap => {
-                const list = document.getElementById('notificationsList');
-                if (snap.empty) {
-                    list.innerHTML = '<p class="text-center text-gray-400 py-4">No notifications sent yet</p>';
-                    return;
-                }
-                list.innerHTML = snap.docs.map(doc => {
-                    const n = doc.data();
-                    return `
-                        <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-bold text-gray-800">${n.title}</h4>
-                                    <p class="text-sm text-gray-600 mt-1">${n.message}</p>
-                                    <p class="text-xs text-gray-500 mt-2">By: ${n.sentBy}</p>
-                                </div>
-                                <button onclick="deleteNotification('${doc.id}')" class="text-red-500 hover:text-red-700 touch-btn">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+        function renderNotifications(docs) {
+            const list = document.getElementById('notificationsList');
+            if (docs.length === 0) { list.innerHTML = '<p class="text-center text-gray-400 py-4">No notifications</p>'; return; }
+            list.innerHTML = docs.map(doc => {
+                const n = doc.data();
+                const typeColors = { new_user: 'bg-blue-50 border-blue-500', new_ad: 'bg-green-50 border-green-500', default: 'bg-gray-50 border-gray-500' };
+                const color = typeColors[n.type] || typeColors.default;
+                return `
+                    <div class="p-4 rounded-lg border-l-4 ${color} ${n.read ? 'opacity-60' : ''}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800">${n.title}</h4>
+                                <p class="text-sm text-gray-600 mt-1">${n.message}</p>
+                                <p class="text-xs text-gray-500 mt-2">${n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleString() : ''}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                ${!n.read ? `<button onclick="markAsRead('${doc.id}')" class="text-blue-500 hover:text-blue-700 touch-btn" title="Mark as read"><i class="fas fa-check"></i></button>` : ''}
+                                <button onclick="deleteNotification('${doc.id}')" class="text-red-500 hover:text-red-700 touch-btn" title="Delete"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
-                    `;
-                }).join('');
-            });
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderRecentNotifications(docs) {
+            const container = document.getElementById('recentNotifications');
+            if (docs.length === 0) { container.innerHTML = '<p class="text-gray-400 text-center py-4">No recent notifications</p>'; return; }
+            container.innerHTML = docs.map(doc => {
+                const n = doc.data();
+                return `
+                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 ${n.type === 'new_user' ? 'border-blue-500' : n.type === 'new_ad' ? 'border-green-500' : 'border-gray-500'} ${n.read ? 'opacity-60' : ''}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <p class="font-bold text-sm text-gray-800">${n.title}</p>
+                                <p class="text-xs text-gray-600 mt-1">${n.message}</p>
+                            </div>
+                            <span class="text-xs text-gray-400 ml-2">${n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleTimeString() : ''}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function markAsRead(id) { await db.collection('notifications').doc(id).update({ read: true }); showToast('Marked as read', 'success'); }
+
+        async function markAllRead() {
+            const snapshot = await db.collection('notifications').where('read', '==', false).get();
+            const batch = db.batch();
+            snapshot.docs.forEach(doc => batch.update(doc.ref, { read: true }));
+            await batch.commit();
+            showToast('All notifications marked as read', 'success');
         }
 
         async function deleteNotification(id) {
             if (!confirm('Delete this notification?')) return;
             await db.collection('notifications').doc(id).delete();
             showToast('Notification deleted', 'success');
-            loadNotifications();
         }
 
-        // Categories
         function loadCategories() {
             const defaultCategories = [
                 { name: 'Vehicles', icon: 'fa-car', color: 'blue' },
@@ -776,9 +654,7 @@
                 { name: 'Fashion', icon: 'fa-tshirt', color: 'pink' },
                 { name: 'Jobs', icon: 'fa-briefcase', color: 'yellow' }
             ];
-            
-            const list = document.getElementById('categoriesList');
-            list.innerHTML = defaultCategories.map(cat => `
+            document.getElementById('categoriesList').innerHTML = defaultCategories.map(cat => `
                 <div class="bg-white rounded-lg p-4 border border-gray-200 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-${cat.color}-100 rounded-lg flex items-center justify-center">
@@ -790,22 +666,15 @@
             `).join('');
         }
 
-        function addCategory() {
-            const name = prompt('Category name:');
-            if (!name) return;
-            showToast('Category added: ' + name, 'success');
-        }
+        function addCategory() { const name = prompt('Category name:'); if (name) showToast('Category added: ' + name, 'success'); }
 
-        // Ad Slots Management
         function loadAdSlots() {
             const slots = [
                 { id: 'sidebar-left', name: 'Left Sidebar (300x250)', width: 300, height: 250 },
                 { id: 'middle-horizontal', name: 'Middle Horizontal (728x90)', width: 728, height: 90 },
                 { id: 'sidebar-right', name: 'Right Sidebar (160x600)', width: 160, height: 600 }
             ];
-
-            const container = document.getElementById('adSlotsList');
-            container.innerHTML = slots.map(slot => `
+            document.getElementById('adSlotsList').innerHTML = slots.map(slot => `
                 <div class="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-200">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                         <div>
@@ -828,138 +697,48 @@
                     if (doc.exists) {
                         const data = doc.data();
                         if (data.image && data.image.trim() !== '') {
-                            preview.innerHTML = `
-                                <div class="flex flex-col md:flex-row items-center gap-4">
-                                    <img src="${data.image}" class="w-full md:w-32 h-20 object-cover rounded border" onerror="this.src='https://via.placeholder.com/128x80?text=Error'">
-                                    <div class="flex-1">
-                                        <p class="font-medium text-gray-800">Image Ad</p>
-                                        <p class="text-sm text-gray-500">Link: ${data.link || 'None'}</p>
-                                        <p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i>Active</p>
-                                    </div>
-                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 touch-btn" title="Clear">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            `;
-                        } else if (data.googleCode) {
-                            preview.innerHTML = `
-                                <div class="bg-yellow-50 border border-yellow-200 rounded p-3">
-                                    <p class="text-sm text-yellow-800"><i class="fas fa-code mr-1"></i> Google Ads code configured</p>
-                                    <p class="text-xs text-yellow-600 mt-1">Code length: ${data.googleCode.length} characters</p>
-                                    <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 text-xs mt-2 touch-btn">
-                                        <i class="fas fa-trash mr-1"></i>Clear
-                                    </button>
-                                </div>
-                            `;
-                        } else {
-                            preview.innerHTML = '<p class="text-gray-400 text-center text-sm">No ad configured</p>';
-                        }
-                    } else {
-                        preview.innerHTML = '<p class="text-gray-400 text-center text-sm">No ad configured - Click "Edit Slot" to add</p>';
-                    }
+                            preview.innerHTML = `<div class="flex flex-col md:flex-row items-center gap-4">
+                                <img src="${data.image}" class="w-full md:w-32 h-20 object-cover rounded border">
+                                <div class="flex-1"><p class="font-medium text-gray-800">Image Ad</p><p class="text-sm text-gray-500">Link: ${data.link || 'None'}</p><p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i>Active</p></div>
+                                <button onclick="clearAdSlot('${slot.id}')" class="text-red-500 hover:text-red-700 touch-btn"><i class="fas fa-trash"></i></button>
+                            </div>`;
+                        } else { preview.innerHTML = '<p class="text-gray-400 text-center text-sm">No ad configured</p>'; }
+                    } else { preview.innerHTML = '<p class="text-gray-400 text-center text-sm">No ad configured</p>'; }
                 });
             });
         }
 
         function editAdSlot(slotId, slotName) {
-            const choice = prompt(`Edit ${slotName}\n\nType "image" for Image Ad\nType "google" for Google Ads\nType "clear" to remove ad`, 'image');
-            
-            if (!choice || choice.toLowerCase() === 'clear') {
-                if (choice && choice.toLowerCase() === 'clear') {
-                    clearAdSlot(slotId);
-                }
-                return;
-            }
-            
+            const choice = prompt(`Edit ${slotName}\n\nType "image" for Image Ad\nType "google" for Google Ads\nType "clear" to remove`, 'image');
+            if (!choice) return;
+            if (choice.toLowerCase() === 'clear') { clearAdSlot(slotId); return; }
             if (choice.toLowerCase() === 'image') {
-                const image = prompt('Enter Image URL:');
-                if (image === null || image.trim() === '') return;
-                
-                const link = prompt('Enter Click URL (optional, press Enter to skip):', '');
-                
-                db.collection('adSlots').doc(slotId).set({
-                    image: image.trim(),
-                    link: link ? link.trim() : '',
-                    googleCode: null,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true }).then(() => {
-                    showToast(`✅ ${slotName} updated successfully!`, 'success');
-                }).catch(err => {
-                    showToast('❌ Error: ' + err.message, 'error');
-                });
+                const image = prompt('Enter Image URL:'); if (!image) return;
+                const link = prompt('Enter Click URL (optional):', '') || '';
+                db.collection('adSlots').doc(slotId).set({ image: image.trim(), link: link.trim(), googleCode: null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+                    .then(() => showToast(`${slotName} updated!`, 'success')).catch(err => showToast('Error: ' + err.message, 'error'));
             } else if (choice.toLowerCase() === 'google') {
-                const googleCode = prompt('Paste your Google Ads code:');
-                if (googleCode === null || googleCode.trim() === '') return;
-                
-                db.collection('adSlots').doc(slotId).set({
-                    image: null,
-                    link: null,
-                    googleCode: googleCode,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true }).then(() => {
-                    showToast(`✅ ${slotName} Google Ads updated!`, 'success');
-                }).catch(err => {
-                    showToast('❌ Error: ' + err.message, 'error');
-                });
-            } else {
-                showToast('Invalid choice. Type "image", "google", or "clear"', 'error');
+                const code = prompt('Paste Google Ads code:'); if (!code) return;
+                db.collection('adSlots').doc(slotId).set({ image: null, link: null, googleCode: code, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+                    .then(() => showToast(`${slotName} updated!`, 'success')).catch(err => showToast('Error: ' + err.message, 'error'));
             }
         }
 
         function clearAdSlot(slotId) {
             if (!confirm('Clear this ad slot?')) return;
-            
-            db.collection('adSlots').doc(slotId).set({
-                image: null,
-                link: null,
-                googleCode: null,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).then(() => {
-                showToast('Ad slot cleared', 'success');
-            }).catch(err => {
-                showToast('Error: ' + err.message, 'error');
-            });
+            db.collection('adSlots').doc(slotId).set({ image: null, link: null, googleCode: null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+                .then(() => showToast('Ad slot cleared', 'success'));
         }
 
-        // Actions
-        async function approveAd(id) {
-            if (!confirm('Approve this ad?')) return;
-            await db.collection('ads').doc(id).update({ status: 'approved' });
-            showToast('Ad approved!', 'success');
-            loadAds();
-            loadDashboardData();
-        }
-
-        async function rejectAd(id) {
-            if (!confirm('Reject this ad?')) return;
-            await db.collection('ads').doc(id).update({ status: 'rejected' });
-            showToast('Ad rejected', 'warning');
-            loadAds();
-        }
-
-        async function deleteAd(id) {
-            if (!confirm('Delete this ad permanently?')) return;
-            await db.collection('ads').doc(id).delete();
-            showToast('Ad deleted!', 'success');
-            loadAds();
-            loadDashboardData();
-        }
-
-        async function togglePremium(id, status) {
-            await db.collection('ads').doc(id).update({ isPremium: status });
-            showToast(status ? 'Ad marked as Premium!' : 'Premium removed', 'success');
-            loadAds();
-            loadDashboardData();
-        }
+        async function approveAd(id) { if (!confirm('Approve this ad?')) return; await db.collection('ads').doc(id).update({ status: 'approved' }); showToast('Ad approved!', 'success'); loadAds(); loadDashboardData(); }
+        async function rejectAd(id) { if (!confirm('Reject this ad?')) return; await db.collection('ads').doc(id).update({ status: 'rejected' }); showToast('Ad rejected', 'warning'); loadAds(); }
+        async function deleteAd(id) { if (!confirm('Delete this ad permanently?')) return; await db.collection('ads').doc(id).delete(); showToast('Ad deleted!', 'success'); loadAds(); loadDashboardData(); }
+        async function togglePremium(id, status) { await db.collection('ads').doc(id).update({ isPremium: status }); showToast(status ? 'Ad marked as Premium!' : 'Premium removed', 'success'); loadAds(); loadDashboardData(); }
 
         async function resetUserPassword(email) {
             if (!confirm(`Send password reset email to ${email}?`)) return;
-            try {
-                await auth.sendPasswordResetEmail(email);
-                showToast('Password reset email sent!', 'success');
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
+            try { await auth.sendPasswordResetEmail(email); showToast('Password reset email sent!', 'success'); }
+            catch (error) { showToast('Error: ' + error.message, 'error'); }
         }
 
         async function toggleUserRole(userId, currentRole) {
@@ -970,10 +749,8 @@
             loadUsers();
         }
 
-        // Generate Sample Data
         async function generateSampleData() {
             if (!confirm('Generate 10 sample ads?')) return;
-            
             const samples = [
                 { title: "Toyota Prius 2012", price: 8500000, category: "Vehicles", location: "Colombo", phone: "0771234567", desc: "Well maintained.", images: ["https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400"], isPremium: true },
                 { title: "Land for Sale", price: 15000000, category: "Property", location: "Kandy", phone: "0712345678", desc: "20 perches.", images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400"], isPremium: false },
@@ -986,59 +763,30 @@
                 { title: "Software Engineer Job", price: 150000, category: "Jobs", location: "Remote", phone: "0770000000", desc: "Full stack.", images: ["https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400"], isPremium: true },
                 { title: "Designer Handbag", price: 15000, category: "Fashion", location: "Pettah", phone: "0720000000", desc: "Imported.", images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400"], isPremium: false }
             ];
-
             try {
                 const batch = db.batch();
                 samples.forEach(sample => {
                     const ref = db.collection('ads').doc();
-                    batch.set(ref, {
-                        ...sample,
-                        status: 'approved',
-                        sellerUid: currentUser.uid,
-                        sellerEmail: currentUser.email,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        views: Math.floor(Math.random() * 100)
-                    });
+                    batch.set(ref, { ...sample, status: 'approved', sellerUid: currentUser.uid, sellerEmail: currentUser.email, createdAt: firebase.firestore.FieldValue.serverTimestamp(), views: Math.floor(Math.random() * 100) });
                 });
                 await batch.commit();
                 showToast('✅ 10 Sample Ads Generated!', 'success');
                 loadDashboardData();
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
+            } catch (error) { showToast('Error: ' + error.message, 'error'); }
         }
 
-        // Settings
         function saveSettings() {
-            const settings = {
-                siteName: document.getElementById('settingSiteName').value,
-                contactEmail: document.getElementById('settingContactEmail').value
-            };
-            
-            db.collection('settings').doc('site').set(settings, { merge: true }).then(() => {
-                showToast('Settings saved!', 'success');
-            }).catch(err => showToast('Error: ' + err.message, 'error'));
+            const settings = { siteName: document.getElementById('settingSiteName').value, contactEmail: document.getElementById('settingContactEmail').value };
+            db.collection('settings').doc('site').set(settings, { merge: true })
+                .then(() => showToast('Settings saved!', 'success')).catch(err => showToast('Error: ' + err.message, 'error'));
         }
 
-        // Toast Notification
         function showToast(message, type = 'info') {
-            const colors = {
-                success: 'bg-green-500',
-                error: 'bg-red-500',
-                warning: 'bg-yellow-500',
-                info: 'bg-blue-500'
-            };
-            const icons = {
-                success: 'fa-check-circle',
-                error: 'fa-exclamation-circle',
-                warning: 'fa-exclamation-triangle',
-                info: 'fa-info-circle'
-            };
-            
+            const colors = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500', info: 'bg-blue-500' };
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
             const toast = document.createElement('div');
             toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 min-w-[250px] max-w-[90vw]`;
             toast.innerHTML = `<i class="fas ${icons[type]}"></i> <span class="text-sm">${message}</span>`;
-            
             document.getElementById('toastContainer').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
