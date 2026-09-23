@@ -254,18 +254,15 @@
         </div>
     </div>
 
-    <!-- FOOTER - මේක තමා ඔයාට පේන්නේ නැති එක -->
+    <!-- Footer -->
     <footer class="bg-gray-900 text-white mt-12">
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- About -->
                 <div>
                     <h3 class="text-xl font-bold mb-4">About Emarket</h3>
                     <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform. Buy and sell anything for free!</p>
                     <a href="about.html" class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Learn More →</a>
                 </div>
-                
-                <!-- Quick Links -->
                 <div>
                     <h3 class="text-xl font-bold mb-4">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
@@ -275,8 +272,6 @@
                         <li><a href="login.html" class="hover:text-white">Login / Sign Up</a></li>
                     </ul>
                 </div>
-                
-                <!-- Contact -->
                 <div>
                     <h3 class="text-xl font-bold mb-4">Contact Us</h3>
                     <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
@@ -284,15 +279,9 @@
                     <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
                 </div>
             </div>
-            
-            <!-- Developer Credit -->
             <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">
-                    &copy; 2024 Emarket. All rights reserved.
-                </p>
-                <p class="text-blue-400 text-sm mt-2">
-                    <i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong>
-                </p>
+                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+                <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
             </div>
         </div>
     </footer>
@@ -379,9 +368,9 @@
             });
         }
 
-        // ===== ADS LOADING =====
+        // ===== ADS LOADING - FIXED VERSION =====
         function loadAds() {
-            console.log("🔄 Loading ads for category:", currentCategory);
+            console.log(" Loading ads for category:", currentCategory);
             
             db.collection('ads').get()
                 .then(snapshot => {
@@ -394,7 +383,7 @@
                     }
                     
                     const allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    console.log(" All ads:", allAds);
+                    console.log("📋 All ads:", allAds);
                     
                     let approvedAds = allAds.filter(ad => {
                         const isApproved = ad.status === 'approved';
@@ -431,6 +420,7 @@
                 });
         }
 
+        // ===== RENDER ADS - FIXED LINK VERSION =====
         function renderAds(containerId, ads, isPremium) {
             const container = document.getElementById(containerId);
             
@@ -446,10 +436,12 @@
                 const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
                 const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
                 const location = ad.location || 'Sri Lanka';
+                const adId = ad.id;
+                
+                console.log("🔗 Rendering ad:", ad.title, "ID:", adId);
                 
                 return `
-                    <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer group" 
-                             onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                    <a href="ad-details.html?id=${adId}" class="block bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden group">
                         <div class="relative h-40 bg-gray-100 overflow-hidden">
                             <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'" alt="${ad.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
@@ -459,7 +451,7 @@
                             <p class="text-blue-700 font-extrabold text-base">${price}</p>
                             <p class="text-xs text-gray-500 mt-1 truncate"><i class="fas fa-map-marker-alt mr-1"></i>${location}</p>
                         </div>
-                    </article>
+                    </a>
                 `;
             }).join('');
         }
@@ -510,7 +502,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log(" Emarket initialized");
+            console.log("🚀 Emarket initialized");
             loadAdSlots();
             loadAds();
         });
