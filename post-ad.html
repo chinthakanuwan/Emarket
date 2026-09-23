@@ -12,32 +12,26 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navbar -->
     <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
-                    <i class="fas fa-layer-group"></i> Emarket
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="text-2xl font-bold text-blue-600">
+                    <i class="fas fa-layer-group mr-2"></i>Emarket
                 </a>
-                <div class="flex items-center gap-3">
-                    <a href="index.html" class="text-gray-600 hover:text-blue-600">
-                        <i class="fas fa-arrow-left mr-2"></i>Back to Home
-                    </a>
-                </div>
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Home
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mx-auto px-4 py-8 max-w-3xl">
         
-        <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-2">Post Free Ad</h1>
             <p class="text-gray-600">Sell anything for free on Emarket Sri Lanka</p>
         </div>
 
-        <!-- Login Warning -->
         <div id="loginWarning" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 hidden">
             <div class="flex items-center gap-3">
                 <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
@@ -45,13 +39,10 @@
                     <p class="font-bold text-yellow-800">Please Login First</p>
                     <p class="text-sm text-yellow-700">You need to login to post an ad</p>
                 </div>
-                <a href="login.html" class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-yellow-700">
-                    Login
-                </a>
+                <a href="login.html" class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-yellow-700">Login</a>
             </div>
         </div>
 
-        <!-- Success Message -->
         <div id="successMessage" class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 hidden">
             <div class="flex items-center gap-3">
                 <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -60,15 +51,11 @@
                     <p class="text-sm text-green-700">Your ad will be reviewed and approved within 24 hours.</p>
                 </div>
             </div>
-            <a href="index.html" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 inline-block mt-3">
-                Back to Home
-            </a>
+            <a href="index.html" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 inline-block mt-3">Back to Home</a>
         </div>
 
-        <!-- Ad Form -->
         <form id="adForm" class="bg-white rounded-lg shadow-sm p-6 space-y-6">
             
-            <!-- Title -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-heading mr-1"></i> Ad Title *
@@ -78,7 +65,6 @@
                        placeholder="e.g., Toyota Prius 2012 for Sale">
             </div>
 
-            <!-- Category & Price -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -111,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- Location & Phone -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -131,7 +116,6 @@
                 </div>
             </div>
 
-            <!-- Description -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-align-left mr-1"></i> Description *
@@ -141,7 +125,6 @@
                           placeholder="Describe your item in detail..."></textarea>
             </div>
 
-            <!-- Tags -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tags mr-1"></i> Tags (Optional)
@@ -150,11 +133,10 @@
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                        placeholder="e.g., toyota, prius, hybrid, 2012 (comma separated)">
                 <p class="text-xs text-gray-500 mt-1">
-                    <i class="fas fa-info-circle mr-1"></i>Separate tags with commas to help people find your ad
+                    <i class="fas fa-info-circle mr-1"></i>Separate tags with commas
                 </p>
             </div>
 
-            <!-- Image URL -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-image mr-1"></i> Image URL
@@ -163,12 +145,10 @@
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                        placeholder="https://example.com/image.jpg">
                 <p class="text-xs text-gray-500 mt-1">
-                    <i class="fas fa-info-circle mr-1"></i>
-                    Paste an image URL or leave empty for default image
+                    <i class="fas fa-info-circle mr-1"></i>Paste an image URL or leave empty
                 </p>
             </div>
 
-            <!-- Premium Option -->
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <div class="flex items-start gap-3">
                     <input type="checkbox" id="adPremium" 
@@ -184,7 +164,6 @@
                 </div>
             </div>
 
-            <!-- Terms & Conditions -->
             <div class="flex items-start gap-3">
                 <input type="checkbox" id="adTerms" required 
                        class="w-5 h-5 mt-1 text-blue-600 rounded focus:ring-blue-500">
@@ -193,13 +172,11 @@
                 </label>
             </div>
 
-            <!-- Submit Button -->
             <button type="submit" id="submitBtn" 
-                    class="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-lg font-bold text-lg transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-lg font-bold text-lg transition">
                 <i class="fas fa-paper-plane mr-2"></i>Submit Ad
             </button>
 
-            <!-- Loading State -->
             <div id="loadingState" class="hidden text-center py-4">
                 <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i>
                 <p class="text-gray-600">Submitting your ad...</p>
@@ -207,7 +184,6 @@
 
         </form>
 
-        <!-- Info Box -->
         <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 class="font-bold text-blue-800 mb-3"><i class="fas fa-info-circle mr-2"></i>How It Works</h3>
             <ol class="space-y-2 text-sm text-blue-700">
@@ -222,22 +198,16 @@
 
     </div>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white mt-12">
         <div class="container mx-auto px-4 py-8">
-            <div class="border-t border-gray-800 pt-6 text-center">
-                <p class="text-gray-400 text-sm">
-                    &copy; 2024 Emarket. All rights reserved.
-                </p>
-                <p class="text-blue-400 text-sm mt-2">
-                    <i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong>
-                </p>
+            <div class="text-center">
+                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+                <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -253,7 +223,6 @@
 
         let currentUser = null;
 
-        // Check Auth State
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
@@ -265,7 +234,6 @@
             }
         });
 
-        // Form Submit
         document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -277,7 +245,6 @@
             const submitBtn = document.getElementById('submitBtn');
             const loadingState = document.getElementById('loadingState');
 
-            // Get form values
             const tagsInput = document.getElementById('adTags').value;
             const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag) : [];
 
@@ -298,23 +265,33 @@
                 views: 0
             };
 
-            // Show loading
             submitBtn.classList.add('hidden');
             loadingState.classList.remove('hidden');
 
             try {
-                // Save to Firestore
-                await db.collection('ads').add(adData);
+                const docRef = await db.collection('ads').add(adData);
 
-                // Show success
+                // 🔔 Admin notification
+                await db.collection('notifications').add({
+                    title: '📢 New Ad Submitted',
+                    message: `${adData.title} by ${currentUser.email} is pending approval.`,
+                    type: 'new_ad',
+                    adId: docRef.id,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Update user's adsPosted count
+                await db.collection('users').doc(currentUser.uid).update({
+                    adsPosted: firebase.firestore.FieldValue.increment(1)
+                });
+
                 loadingState.classList.add('hidden');
                 document.getElementById('successMessage').classList.remove('hidden');
                 document.getElementById('adForm').classList.add('hidden');
 
-                console.log('✅ Ad submitted successfully!');
-
             } catch (error) {
-                console.error('❌ Error submitting ad:', error);
+                console.error('Error submitting ad:', error);
                 loadingState.classList.add('hidden');
                 submitBtn.classList.remove('hidden');
                 alert('Error submitting ad: ' + error.message);
