@@ -4,125 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Ad Details - Emarket</title>
-    <meta name="description" id="pageDesc" content="View details of this ad on Emarket.">
-    
-    <!-- Social Share Meta Tags (Dynamic via JS) -->
-    <meta property="og:title" id="ogTitle" content="Emarket Ad">
-    <meta property="og:description" id="ogDesc" content="Check out this amazing deal!">
-    <meta property="og:image" id="ogImage" content="">
-    <meta property="og:url" content="">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-100 pb-20">
+<body class="bg-gray-50">
 
-    <nav class="bg-white shadow-sm p-4 sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-xl font-bold text-blue-700"><i class="fas fa-arrow-left mr-2"></i> Back</a>
-            <div class="flex gap-3">
-                <button onclick="shareAd('whatsapp')" class="text-green-600 text-xl"><i class="fab fa-whatsapp"></i></button>
-                <button onclick="shareAd('facebook')" class="text-blue-600 text-xl"><i class="fab fa-facebook"></i></button>
-                <button onclick="copyLink()" class="text-gray-600 text-xl"><i class="fas fa-link"></i></button>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
+                    <i class="fas fa-layer-group"></i> Emarket
+                </a>
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="text-gray-600 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600">
+                        <i class="fas fa-plus mr-2"></i>Post Free Ad
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 py-6 max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
         
-        <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <img id="mainImage" src="" class="w-full h-64 md:h-96 object-cover bg-gray-200">
-                <div id="thumbGrid" class="flex gap-2 p-2 overflow-x-auto bg-gray-50"></div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <span id="adCategory" class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded uppercase"></span>
-                        <h1 id="adTitle" class="text-2xl font-bold text-gray-900 mt-2"></h1>
-                    </div>
-                    <p id="adPrice" class="text-2xl font-extrabold text-blue-700"></p>
-                </div>
-                
-                <div class="flex items-center gap-2 text-gray-500 text-sm mb-6 border-b pb-4">
-                    <i class="fas fa-map-marker-alt"></i> <span id="adLocation"></span>
-                    <span class="mx-2">•</span>
-                    <i class="far fa-clock"></i> <span id="adDate"></span>
-                </div>
-
-                <h3 class="font-bold text-gray-800 mb-2">Description</h3>
-                <p id="adDesc" class="text-gray-600 leading-relaxed whitespace-pre-line"></p>
-            </div>
-
-            <!-- Reviews Section -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-star text-yellow-400"></i> Reviews & Ratings 
-                    <span id="avgRating" class="text-sm font-normal text-gray-500">(0 reviews)</span>
-                </h3>
-                
-                <!-- Add Review Form -->
-                <div id="reviewFormContainer" class="mb-6 p-4 bg-gray-50 rounded-lg hidden">
-                    <div class="flex gap-1 mb-2 text-2xl text-gray-300 cursor-pointer" id="starContainer">
-                        <i class="fas fa-star hover:text-yellow-400" data-val="1"></i>
-                        <i class="fas fa-star hover:text-yellow-400" data-val="2"></i>
-                        <i class="fas fa-star hover:text-yellow-400" data-val="3"></i>
-                        <i class="fas fa-star hover:text-yellow-400" data-val="4"></i>
-                        <i class="fas fa-star hover:text-yellow-400" data-val="5"></i>
-                    </div>
-                    <textarea id="reviewText" rows="2" class="w-full p-2 border rounded mb-2 text-sm" placeholder="Write a review..."></textarea>
-                    <button onclick="submitReview()" class="bg-blue-600 text-white px-4 py-1.5 rounded text-sm font-bold">Submit Review</button>
-                </div>
-                <button id="loginToReviewBtn" onclick="window.location.href='login.html'" class="w-full border border-dashed border-gray-300 p-3 rounded text-gray-500 text-sm mb-6">Login to write a review</button>
-
-                <!-- Reviews List -->
-                <div id="reviewsList" class="space-y-4">
-                    <p class="text-gray-400 text-sm">No reviews yet.</p>
-                </div>
-            </div>
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-20">
+            <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+            <p class="text-gray-600">Loading ad details...</p>
         </div>
 
-        <!-- Sidebar -->
-        <div class="space-y-6">
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
-                <h3 class="font-bold text-gray-800 mb-4">Seller Information</h3>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl"><i class="fas fa-user"></i></div>
-                    <div>
-                        <p class="font-bold text-gray-800">Private Seller</p>
-                        <p class="text-xs text-gray-500">Member since 2024</p>
+        <!-- Ad Details Content -->
+        <div id="adContent" class="hidden">
+            
+            <!-- Main Ad -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
+                <!-- Image Gallery -->
+                <div class="relative">
+                    <img id="mainImage" src="" alt="" class="w-full h-96 object-cover">
+                    <div class="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold" id="premiumBadge" style="display: none;">
+                        <i class="fas fa-star mr-1"></i> PREMIUM
                     </div>
                 </div>
-                
-                <button id="showPhoneBtn" onclick="revealPhone()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2 mb-2">
-                    <i class="fas fa-phone-alt"></i> Show Phone Number
-                </button>
-                <a id="phoneLink" href="#" class="hidden w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-bold text-center border border-gray-200 hover:bg-gray-200 mb-2"></a>
-                
-                <!-- Message Seller Button -->
-                <button onclick="openChatModal()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-comment-dots"></i> Message Seller
-                </button>
+
+                <!-- Ad Info -->
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+                        <div>
+                            <h1 id="adTitle" class="text-3xl font-bold text-gray-800 mb-2"></h1>
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span><i class="fas fa-folder mr-1"></i> <span id="adCategory"></span></span>
+                                <span><i class="fas fa-map-marker-alt mr-1"></i> <span id="adLocation"></span></span>
+                                <span><i class="fas fa-eye mr-1"></i> <span id="adViews"></span> views</span>
+                                <span><i class="fas fa-clock mr-1"></i> <span id="adDate"></span></span>
+                            </div>
+                            <!-- Tags -->
+                            <div id="adTags" class="mt-3 flex flex-wrap gap-2"></div>
+                        </div>
+                        <div class="text-right">
+                            <p id="adPrice" class="text-4xl font-bold text-blue-600"></p>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="border-t pt-4 mt-4">
+                        <h2 class="text-xl font-bold text-gray-800 mb-3">Description</h2>
+                        <p id="adDescription" class="text-gray-700 leading-relaxed whitespace-pre-line"></p>
+                    </div>
+
+                    <!-- Contact Seller -->
+                    <div class="border-t pt-4 mt-6 bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-gray-800 mb-3">Contact Seller</h3>
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600">Seller Email:</p>
+                                <p id="sellerEmail" class="font-medium text-gray-800"></p>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600">Phone:</p>
+                                <p id="sellerPhone" class="font-medium text-gray-800"></p>
+                            </div>
+                            <button onclick="contactSeller()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">
+                                <i class="fas fa-phone mr-2"></i>Contact Seller
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Similar Ads -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-th-large text-blue-600"></i> Similar Ads
+                </h2>
+                <div id="similarAdsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="col-span-full text-center py-10 text-gray-400">
+                        <p>Loading similar ads...</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden text-center py-20">
+            <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+            <p class="text-gray-600 mb-4">Ad not found or has been removed</p>
+            <a href="index.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Home
+            </a>
+        </div>
+
     </div>
 
-    <!-- Chat Modal -->
-    <div id="chatModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl w-full max-w-md p-6 relative">
-            <button onclick="document.getElementById('chatModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
-            <h3 class="font-bold text-lg mb-4">Message Seller</h3>
-            <textarea id="chatMessage" rows="4" class="w-full border rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Hi, is this still available?"></textarea>
-            <button onclick="sendMessageToSeller()" class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Send Message</button>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">About Emarket</h3>
+                    <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform. Buy and sell anything for free!</p>
+                    <a href="about.html" class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Learn More →</a>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-white">Home</a></li>
+                        <li><a href="post-ad.html" class="hover:text-white">Post Free Ad</a></li>
+                        <li><a href="about.html" class="hover:text-white">About Us</a></li>
+                        <li><a href="login.html" class="hover:text-white">Login / Sign Up</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
+                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
+                    <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
+                </div>
+            </div>
+            
+            <!-- Developer Credit -->
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center">
+                <p class="text-gray-400 text-sm">
+                    &copy; 2024 Emarket. All rights reserved.
+                </p>
+                <p class="text-blue-400 text-sm mt-2">
+                    <i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong>
+                </p>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -131,178 +175,142 @@
             messagingSenderId: "1029527442178",
             appId: "1:1029527442178:web:535443f333ce6e9deda81b"
         };
+        
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.firestore();
 
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
-        let currentRating = 0;
-        let currentAdData = null;
+        let currentAd = null;
 
-        if (adId) {
-            db.collection('ads').doc(adId).get().then(doc => {
-                if (!doc.exists) { document.body.innerHTML = "<div class='p-10 text-center'>Ad not found.</div>"; return; }
-                
-                currentAdData = doc.data();
-                const ad = currentAdData;
-                
-                // Populate UI
-                document.getElementById('mainImage').src = ad.images[0] || 'https://via.placeholder.com/600x400';
-                document.getElementById('adTitle').innerText = ad.title;
-                document.getElementById('adPrice').innerText = `Rs. ${Number(ad.price).toLocaleString()}`;
-                document.getElementById('adCategory').innerText = ad.category;
-                document.getElementById('adLocation').innerText = ad.location;
-                document.getElementById('adDesc').innerText = ad.desc;
-                document.getElementById('adDate').innerText = new Date(ad.createdAt.seconds * 1000).toLocaleDateString();
-                window.adPhone = ad.phone;
-
-                // Thumbnails
-                document.getElementById('thumbGrid').innerHTML = ad.images.map(img => 
-                    `<img src="${img}" onclick="document.getElementById('mainImage').src='${img}'" class="w-16 h-16 object-cover rounded cursor-pointer border hover:border-blue-500 transition">`
-                ).join('');
-
-                // Update SEO Meta Tags Dynamically
-                document.title = `${ad.title} - Rs. ${ad.price} | Emarket`;
-                document.getElementById('pageDesc').content = ad.desc.substring(0, 150);
-                document.getElementById('ogTitle').content = ad.title;
-                document.getElementById('ogDesc').content = ad.desc.substring(0, 150);
-                document.getElementById('ogImage').content = ad.images[0];
-                document.getElementById('ogUrl').content = window.location.href;
-
-                // Load Reviews
-                loadReviews(adId);
-            });
-        }
-
-        function revealPhone() {
-            document.getElementById('showPhoneBtn').classList.add('hidden');
-            const display = document.createElement('p');
-            display.className = "text-center text-lg font-bold text-gray-800 mt-2 tracking-widest";
-            display.innerText = window.adPhone;
-            document.getElementById('showPhoneBtn').parentNode.insertBefore(display, document.getElementById('phoneLink'));
-            
-            const link = document.getElementById('phoneLink');
-            link.href = `tel:${window.adPhone}`;
-            link.classList.remove('hidden');
-            link.innerText = ` Call ${window.adPhone}`;
-        }
-
-        // Social Share Functions
-        function shareAd(platform) {
-            const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(`Check out this ad: ${currentAdData.title}`);
-            
-            if (platform === 'whatsapp') window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
-            if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
-        }
-
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied!");
-        }
-
-        // Review System
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('reviewFormContainer').classList.remove('hidden');
-                document.getElementById('loginToReviewBtn').classList.add('hidden');
+        // Load Ad Details
+        async function loadAdDetails() {
+            if (!adId) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                return;
             }
-        });
 
-        // Star Rating Logic
-        document.querySelectorAll('#starContainer i').forEach(star => {
-            star.addEventListener('click', function() {
-                currentRating = parseInt(this.getAttribute('data-val'));
-                updateStars(currentRating);
-            });
-        });
-
-        function updateStars(rating) {
-            document.querySelectorAll('#starContainer i').forEach((star, index) => {
-                if (index < rating) star.classList.add('text-yellow-400');
-                else star.classList.remove('text-yellow-400');
-            });
-        }
-
-        async function submitReview() {
-            const user = auth.currentUser;
-            if (!user) return alert("Please login first!");
-            if (currentRating === 0) return alert("Please select a rating!");
-            
-            const text = document.getElementById('reviewText').value;
-            if (!text) return alert("Please write a review!");
-
-            await db.collection('ads').doc(adId).collection('reviews').add({
-                userId: user.uid,
-                userName: user.email.split('@')[0],
-                rating: currentRating,
-                text: text,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            document.getElementById('reviewText').value = "";
-            currentRating = 0;
-            updateStars(0);
-            alert("Review submitted!");
-        }
-
-        function loadReviews(adId) {
-            db.collection('ads').doc(adId).collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snap => {
-                const list = document.getElementById('reviewsList');
-                let totalRating = 0;
+            try {
+                const doc = await db.collection('ads').doc(adId).get();
                 
-                if (snap.empty) {
-                    list.innerHTML = '<p class="text-gray-400 text-sm">No reviews yet.</p>';
-                    document.getElementById('avgRating').innerText = "(0 reviews)";
+                if (!doc.exists) {
+                    document.getElementById('loadingState').classList.add('hidden');
+                    document.getElementById('errorState').classList.remove('hidden');
                     return;
                 }
 
-                list.innerHTML = snap.docs.map(doc => {
-                    const r = doc.data();
-                    totalRating += r.rating;
-                    return `
-                        <div class="border-b pb-3 last:border-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-sm text-gray-800">${r.userName}</span>
-                                <div class="text-yellow-400 text-xs">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
-                            </div>
-                            <p class="text-sm text-gray-600">${r.text}</p>
-                        </div>
-                    `;
-                }).join('');
+                currentAd = { id: doc.id, ...doc.data() };
+                
+                // Increment view count
+                await db.collection('ads').doc(adId).update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                });
 
-                const avg = (totalRating / snap.size).toFixed(1);
-                document.getElementById('avgRating').innerText = `(${avg}/5 from ${snap.size} reviews)`;
-            });
+                // Display ad details
+                displayAdDetails(currentAd);
+                
+                // Load similar ads
+                loadSimilarAds(currentAd);
+                
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('adContent').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error loading ad:", error);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+            }
         }
 
-        // Message Seller Logic
-        function openChatModal() {
-            if (!auth.currentUser) return alert("Please login to message seller!");
-            document.getElementById('chatModal').classList.remove('hidden');
+        function displayAdDetails(ad) {
+            document.getElementById('pageTitle').textContent = ad.title + ' - Emarket';
+            document.getElementById('mainImage').src = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/800x400?text=No+Image';
+            document.getElementById('adTitle').textContent = ad.title;
+            document.getElementById('adCategory').textContent = ad.category || 'General';
+            document.getElementById('adLocation').textContent = ad.location || 'Sri Lanka';
+            document.getElementById('adPrice').textContent = 'Rs. ' + Number(ad.price).toLocaleString();
+            document.getElementById('adDescription').textContent = ad.desc || 'No description provided';
+            document.getElementById('sellerEmail').textContent = ad.sellerEmail || 'N/A';
+            document.getElementById('sellerPhone').textContent = ad.phone || 'N/A';
+            document.getElementById('adViews').textContent = ad.views || 0;
+            document.getElementById('adDate').textContent = ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
+            
+            // Premium badge
+            if (ad.isPremium) {
+                document.getElementById('premiumBadge').style.display = 'block';
+            }
+
+            // Tags
+            const tagsContainer = document.getElementById('adTags');
+            if (ad.tags && ad.tags.length > 0) {
+                tagsContainer.innerHTML = ad.tags.map(tag => 
+                    `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`
+                ).join('');
+            } else {
+                tagsContainer.innerHTML = '<span class="text-gray-400 text-sm">No tags</span>';
+            }
         }
 
-        async function sendMessageToSeller() {
-            const user = auth.currentUser;
-            const msg = document.getElementById('chatMessage').value;
-            if (!msg) return;
-
-            // Create a conversation or add message to 'messages' collection
-            await db.collection('messages').add({
-                adId: adId,
-                sellerUid: currentAdData.sellerUid,
-                buyerUid: user.uid,
-                buyerEmail: user.email,
-                message: msg,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                read: false
-            });
-
-            alert("Message sent to seller!");
-            document.getElementById('chatModal').classList.add('hidden');
-            document.getElementById('chatMessage').value = "";
+        function loadSimilarAds(currentAd) {
+            const category = currentAd.category;
+            
+            db.collection('ads')
+                .where('status', '==', 'approved')
+                .where('category', '==', category)
+                .orderBy('createdAt', 'desc')
+                .limit(3)
+                .get()
+                .then(snapshot => {
+                    const similarAds = snapshot.docs
+                        .map(doc => ({ id: doc.id, ...doc.data() }))
+                        .filter(ad => ad.id !== currentAd.id); // Exclude current ad
+                    
+                    const container = document.getElementById('similarAdsGrid');
+                    
+                    if (similarAds.length === 0) {
+                        container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No similar ads found</div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = similarAds.map(ad => {
+                        const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/400x300';
+                        const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact for price';
+                        
+                        return `
+                            <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden cursor-pointer" 
+                                     onclick="window.location.href='ad-details.html?id=${ad.id}'">
+                                <div class="relative h-40 bg-gray-100 overflow-hidden">
+                                    <img src="${img}" class="w-full h-full object-cover">
+                                    ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
+                                </div>
+                                <div class="p-3">
+                                    <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title}</h3>
+                                    <p class="text-blue-700 font-extrabold text-base">${price}</p>
+                                    <p class="text-xs text-gray-500 mt-1 truncate">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>${ad.location || 'Sri Lanka'}
+                                    </p>
+                                </div>
+                            </article>
+                        `;
+                    }).join('');
+                })
+                .catch(error => {
+                    console.error("Error loading similar ads:", error);
+                });
         }
+
+        function contactSeller() {
+            const phone = currentAd.phone;
+            if (phone) {
+                window.open(`tel:${phone}`, '_self');
+            } else {
+                alert('Phone number not available');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadAdDetails);
     </script>
 </body>
 </html>
