@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Ad Details - Emarket</title>
     
-    <!-- Open Graph Meta Tags -->
     <meta property="og:title" id="ogTitle" content="Ad Details - Emarket">
     <meta property="og:description" id="ogDescription" content="Check out this ad on Emarket Sri Lanka">
     <meta property="og:image" id="ogImage" content="https://via.placeholder.com/1200x630">
@@ -15,7 +14,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
@@ -27,12 +33,9 @@
                     <i class="fas fa-layer-group mr-2"></i>Emarket
                 </a>
                 <div class="flex items-center gap-3">
-                    <a href="index.html" class="text-gray-600 hover:text-blue-600">
-                        <i class="fas fa-home mr-2"></i>Home
-                    </a>
-                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold">
-                        <i class="fas fa-plus mr-2"></i>Post Free Ad
-                    </a>
+                    <a href="index.html" class="text-gray-600 hover:text-blue-600"><i class="fas fa-home mr-2"></i>Home</a>
+                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold"><i class="fas fa-plus mr-2"></i>Post Free Ad</a>
+                    <div id="authSection"></div>
                 </div>
             </div>
         </div>
@@ -41,35 +44,36 @@
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-6 max-w-6xl flex-grow">
         
-        <!-- Loading State -->
-        <div id="loadingState" class="text-center py-20">
-            <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
-            <p class="text-gray-600">Loading ad details...</p>
+        <!-- Loading Skeleton -->
+        <div id="loadingState" class="fade-in">
+            <div class="skeleton h-96 rounded-lg mb-6"></div>
+            <div class="skeleton h-8 w-3/4 rounded mb-4"></div>
+            <div class="skeleton h-4 w-1/2 rounded mb-2"></div>
+            <div class="skeleton h-4 w-1/3 rounded mb-6"></div>
+            <div class="skeleton h-32 rounded mb-6"></div>
+            <p class="text-center text-gray-500 mt-4"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</p>
         </div>
 
         <!-- Error State -->
         <div id="errorState" class="hidden text-center py-20">
             <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
             <p class="text-gray-600 mb-2">Ad not found or has been removed</p>
-            <p class="text-sm text-gray-500 mb-4">Ad ID: <span id="debugAdId">None</span></p>
-            <a href="index.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 inline-block">
+            <a href="index.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 inline-block mt-4">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Home
             </a>
         </div>
 
         <!-- Ad Content -->
-        <div id="adContent" class="hidden">
+        <div id="adContent" class="hidden fade-in">
             <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                <!-- Image -->
                 <div class="relative">
-                    <img id="mainImage" src="" alt="" class="w-full h-96 object-cover">
+                    <img id="mainImage" src="" alt="" class="w-full h-96 object-cover" loading="lazy">
                     <div id="premiumBadge" class="hidden absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                         <i class="fas fa-star mr-1"></i>PREMIUM
                     </div>
                 </div>
 
                 <div class="p-6">
-                    <!-- Title & Info -->
                     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
                         <div>
                             <h1 id="adTitle" class="text-3xl font-bold text-gray-800 mb-2"></h1>
@@ -86,30 +90,18 @@
                         </div>
                     </div>
 
-                    <!-- Description -->
                     <div class="border-t pt-4 mt-4">
                         <h2 class="text-xl font-bold text-gray-800 mb-3">Description</h2>
                         <p id="adDescription" class="text-gray-700 leading-relaxed whitespace-pre-line"></p>
                     </div>
 
-                    <!-- Social Share -->
+                    <!-- Share Buttons -->
                     <div class="bg-gray-50 rounded-lg p-4 mt-6">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-share-alt text-blue-600 mr-2"></i>Share this Ad
-                        </h3>
+                        <h3 class="font-bold text-gray-800 mb-3"><i class="fas fa-share-alt text-blue-600 mr-2"></i>Share this Ad</h3>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="shareAdOnFacebook()" class="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm">
-                                <i class="fab fa-facebook-f"></i> Facebook
-                            </button>
-                            <button onclick="shareAdOnWhatsApp()" class="flex items-center gap-2 bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 text-sm">
-                                <i class="fab fa-whatsapp"></i> WhatsApp
-                            </button>
-                            <button onclick="shareAdOnTwitter()" class="flex items-center gap-2 bg-black text-white px-3 py-2 rounded hover:bg-gray-800 text-sm">
-                                <i class="fab fa-x-twitter"></i> Twitter
-                            </button>
-                            <button onclick="copyAdLink()" class="flex items-center gap-2 bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 text-sm">
-                                <i class="fas fa-link"></i> Copy Link
-                            </button>
+                            <button onclick="shareAdOnFacebook()" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm"><i class="fab fa-facebook-f mr-1"></i>Facebook</button>
+                            <button onclick="shareAdOnWhatsApp()" class="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 text-sm"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</button>
+                            <button onclick="copyAdLink()" class="bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 text-sm"><i class="fas fa-link mr-1"></i>Copy Link</button>
                         </div>
                     </div>
 
@@ -117,27 +109,70 @@
                     <div class="border-t pt-4 mt-6 bg-gray-50 p-4 rounded-lg">
                         <h3 class="font-bold text-gray-800 mb-3">Contact Seller</h3>
                         <div class="flex flex-col md:flex-row gap-4 items-center">
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-600">Seller Email:</p>
-                                <p id="sellerEmail" class="font-medium text-gray-800"></p>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm text-gray-600">Phone:</p>
-                                <p id="sellerPhone" class="font-medium text-gray-800"></p>
-                            </div>
-                            <button onclick="contactSeller()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">
-                                <i class="fas fa-phone mr-2"></i>Contact Seller
-                            </button>
+                            <div class="flex-1"><p class="text-sm text-gray-600">Email:</p><p id="sellerEmail" class="font-medium"></p></div>
+                            <div class="flex-1"><p class="text-sm text-gray-600">Phone:</p><p id="sellerPhone" class="font-medium"></p></div>
+                            <button onclick="contactSeller()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold"><i class="fas fa-phone mr-2"></i>Contact</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- ⭐ REVIEWS & RATINGS SECTION -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-star text-yellow-500"></i>Reviews & Ratings
+                </h2>
+                
+                <!-- Rating Summary -->
+                <div id="ratingSummary" class="bg-yellow-50 rounded-lg p-4 mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="text-center">
+                            <p class="text-4xl font-bold text-yellow-600" id="avgRating">0.0</p>
+                            <div class="flex text-yellow-500 text-sm" id="avgStars"></div>
+                            <p class="text-xs text-gray-600 mt-1"><span id="totalReviews">0</span> reviews</p>
+                        </div>
+                        <div class="flex-1 space-y-1" id="ratingBars"></div>
+                    </div>
+                </div>
+
+                <!-- Add Review Form (Only for logged in users) -->
+                <div id="reviewFormSection" class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3">Write a Review</h3>
+                    <div id="loginToReview" class="hidden">
+                        <p class="text-gray-600 mb-3">Please login to write a review</p>
+                        <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-block">Login</a>
+                    </div>
+                    <form id="reviewForm" class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Rating *</label>
+                            <div class="flex gap-1 text-2xl text-gray-300" id="starRating">
+                                <i class="fas fa-star cursor-pointer hover:text-yellow-500" data-rating="1"></i>
+                                <i class="fas fa-star cursor-pointer hover:text-yellow-500" data-rating="2"></i>
+                                <i class="fas fa-star cursor-pointer hover:text-yellow-500" data-rating="3"></i>
+                                <i class="fas fa-star cursor-pointer hover:text-yellow-500" data-rating="4"></i>
+                                <i class="fas fa-star cursor-pointer hover:text-yellow-500" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="ratingValue" value="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Review *</label>
+                            <textarea id="reviewText" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Share your experience..."></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-bold">
+                            <i class="fas fa-paper-plane mr-2"></i>Submit Review
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Reviews List -->
+                <div id="reviewsList" class="space-y-4">
+                    <p class="text-center text-gray-400 py-4">Loading reviews...</p>
+                </div>
+            </div>
+
             <!-- Similar Ads -->
             <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                    <i class="fas fa-th-large text-blue-600 mr-2"></i>Similar Ads
-                </h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-th-large text-blue-600 mr-2"></i>Similar Ads</h2>
                 <div id="similarAdsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="col-span-full text-center py-10 text-gray-400">Loading...</div>
                 </div>
@@ -154,7 +189,6 @@
     </footer>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -163,128 +197,231 @@
             messagingSenderId: "1029527442178",
             appId: "1:1029527442178:web:535443f333ce6e9deda81b"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
 
-        // Get ad ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
         let currentAd = null;
+        let currentUser = null;
+        let selectedRating = 0;
 
-        console.log("🔍 Full URL:", window.location.href);
-        console.log("🔍 Ad ID from URL:", adId);
-        document.getElementById('debugAdId').textContent = adId || 'None';
+        // Auth State
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            const authSection = document.getElementById('authSection');
+            if (user) {
+                authSection.innerHTML = `<div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">${user.email.charAt(0).toUpperCase()}</div></div>`;
+                document.getElementById('loginToReview').classList.add('hidden');
+                document.getElementById('reviewForm').classList.remove('hidden');
+            } else {
+                authSection.innerHTML = '<a href="login.html" class="text-blue-600 font-bold text-sm">Login</a>';
+                document.getElementById('loginToReview').classList.remove('hidden');
+                document.getElementById('reviewForm').classList.add('hidden');
+            }
+        });
 
-        // Load Ad Details
+        // Star Rating Click Handler
+        document.querySelectorAll('#starRating i').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                document.getElementById('ratingValue').value = selectedRating;
+                document.querySelectorAll('#starRating i').forEach((s, i) => {
+                    s.classList.toggle('text-yellow-500', i < selectedRating);
+                    s.classList.toggle('text-gray-300', i >= selectedRating);
+                });
+            });
+        });
+
+        // Load Ad Details (OPTIMIZED)
         async function loadAdDetails() {
-            console.log("📥 Starting to load ad...");
-            
             if (!adId) {
-                console.error("❌ No ad ID in URL!");
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
                 return;
             }
 
             try {
-                console.log("📥 Loading ad from Firestore:", adId);
                 const doc = await db.collection('ads').doc(adId).get();
                 
-                console.log("📄 Document exists:", doc.exists);
-                
                 if (!doc.exists) {
-                    console.error("❌ Ad document NOT found in database!");
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('errorState').classList.remove('hidden');
                     return;
                 }
 
                 currentAd = { id: doc.id, ...doc.data() };
-                console.log("✅ Ad loaded successfully:", currentAd);
-                console.log("📊 Ad status:", currentAd.status);
-                console.log("📊 Ad title:", currentAd.title);
                 
-                // Increment view count
-                try {
-                    await db.collection('ads').doc(adId).update({
-                        views: firebase.firestore.FieldValue.increment(1)
-                    });
-                    console.log("️ View count incremented");
-                } catch (viewError) {
-                    console.warn("️ Could not update view count:", viewError.message);
-                }
+                // Update views (fire and forget - don't wait)
+                db.collection('ads').doc(adId).update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                }).catch(() => {});
 
-                // Display ad details
+                // Display immediately
                 displayAdDetails(currentAd);
                 
-                // Load similar ads
-                loadSimilarAds();
+                // Load other data in parallel (faster!)
+                Promise.all([
+                    loadReviews(),
+                    loadSimilarAds()
+                ]).catch(err => console.error('Error:', err));
                 
-                // Hide loading, show content
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('adContent').classList.remove('hidden');
 
             } catch (error) {
-                console.error("❌ Error loading ad:", error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
             }
         }
 
         function displayAdDetails(ad) {
-            console.log("🎨 Displaying ad details...");
-            
             document.getElementById('pageTitle').textContent = ad.title + ' - Emarket';
             document.getElementById('mainImage').src = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/800x400?text=No+Image';
             document.getElementById('adTitle').textContent = ad.title || 'Untitled';
             document.getElementById('adCategory').textContent = ad.category || 'General';
             document.getElementById('adLocation').textContent = ad.location || 'Sri Lanka';
             document.getElementById('adPrice').textContent = 'Rs. ' + Number(ad.price).toLocaleString();
-            document.getElementById('adDescription').textContent = ad.desc || 'No description provided';
+            document.getElementById('adDescription').textContent = ad.desc || 'No description';
             document.getElementById('sellerEmail').textContent = ad.sellerEmail || 'N/A';
             document.getElementById('sellerPhone').textContent = ad.phone || 'N/A';
             document.getElementById('adViews').textContent = ad.views || 0;
             document.getElementById('adDate').textContent = ad.createdAt ? new Date(ad.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
             
-            if (ad.isPremium) {
-                document.getElementById('premiumBadge').classList.remove('hidden');
-            }
+            if (ad.isPremium) document.getElementById('premiumBadge').classList.remove('hidden');
 
-            // Tags
             if (ad.tags && ad.tags.length > 0) {
-                document.getElementById('adTags').innerHTML = ad.tags.map(tag => 
-                    `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`
-                ).join('');
+                document.getElementById('adTags').innerHTML = ad.tags.map(tag => `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`).join('');
             }
-
-            // Update OG Meta Tags dynamically
-            document.getElementById('ogTitle').setAttribute('content', ad.title + ' - Emarket Sri Lanka');
-            document.getElementById('ogDescription').setAttribute('content', ad.desc || 'Check out this ad on Emarket');
-            document.getElementById('ogImage').setAttribute('content', ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/1200x630');
-            document.getElementById('ogUrl').setAttribute('content', window.location.href);
-            
-            console.log("✅ Ad details displayed successfully");
         }
 
-        function loadSimilarAds() {
-            if (!currentAd || !currentAd.category) {
-                console.log("⚠️ No category for similar ads");
+        // ⭐ REVIEWS SYSTEM
+        async function loadReviews() {
+            try {
+                const snapshot = await db.collection('ads').doc(adId).collection('reviews').orderBy('createdAt', 'desc').get();
+                const reviews = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
+                
+                // Calculate average rating
+                let total = 0;
+                const ratingCounts = {1:0, 2:0, 3:0, 4:0, 5:0};
+                reviews.forEach(r => {
+                    total += r.rating || 0;
+                    if (ratingCounts[r.rating] !== undefined) ratingCounts[r.rating]++;
+                });
+                const avg = reviews.length > 0 ? (total / reviews.length).toFixed(1) : '0.0';
+                
+                document.getElementById('avgRating').textContent = avg;
+                document.getElementById('totalReviews').textContent = reviews.length;
+                
+                // Stars display
+                const fullStars = Math.floor(parseFloat(avg));
+                document.getElementById('avgStars').innerHTML = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+                
+                // Rating bars
+                const maxCount = Math.max(...Object.values(ratingCounts), 1);
+                document.getElementById('ratingBars').innerHTML = [5,4,3,2,1].map(n => `
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="w-3">${n}★</span>
+                        <div class="flex-1 bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width: ${(ratingCounts[n]/maxCount)*100}%"></div>
+                        </div>
+                        <span class="w-8 text-right text-gray-600">${ratingCounts[n]}</span>
+                    </div>
+                `).join('');
+                
+                // Reviews list
+                const container = document.getElementById('reviewsList');
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-400 py-4">No reviews yet. Be the first to review!</p>';
+                    return;
+                }
+                
+                container.innerHTML = reviews.map(r => {
+                    const date = r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString() : '';
+                    const stars = '★'.repeat(r.rating || 0) + '☆'.repeat(5 - (r.rating || 0));
+                    return `
+                        <div class="bg-gray-50 rounded-lg p-4 border">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                        ${(r.userName || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-800">${r.userName || 'Anonymous'}</p>
+                                        <div class="text-yellow-500 text-sm">${stars}</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-500">${date}</span>
+                            </div>
+                            <p class="text-gray-700 text-sm">${r.text || ''}</p>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('reviewsList').innerHTML = '<p class="text-center text-gray-400 py-4">Could not load reviews</p>';
+            }
+        }
+
+        // Submit Review
+        document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('Please login first!');
                 return;
             }
             
-            console.log("🔍 Loading similar ads for category:", currentAd.category);
+            const rating = parseInt(document.getElementById('ratingValue').value);
+            const text = document.getElementById('reviewText').value.trim();
+            
+            if (rating === 0) {
+                alert('Please select a rating!');
+                return;
+            }
+            if (!text) {
+                alert('Please write a review!');
+                return;
+            }
+            
+            const reviewData = {
+                userId: currentUser.uid,
+                userName: currentUser.email.split('@')[0],
+                userEmail: currentUser.email,
+                rating: rating,
+                text: text,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                await db.collection('ads').doc(adId).collection('reviews').add(reviewData);
+                alert('Review submitted successfully!');
+                document.getElementById('reviewText').value = '';
+                document.getElementById('ratingValue').value = '0';
+                selectedRating = 0;
+                document.querySelectorAll('#starRating i').forEach(s => s.classList.remove('text-yellow-500'));
+                document.querySelectorAll('#starRating i').forEach(s => s.classList.add('text-gray-300'));
+                loadReviews();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Similar Ads (OPTIMIZED - Simple query)
+        function loadSimilarAds() {
+            if (!currentAd || !currentAd.category) return;
             
             db.collection('ads')
                 .where('status', '==', 'approved')
-                .where('category', '==', currentAd.category)
-                .orderBy('createdAt', 'desc')
-                .limit(3)
+                .limit(6)
                 .get()
                 .then(snapshot => {
                     const similarAds = snapshot.docs
                         .map(doc => ({ id: doc.id, ...doc.data() }))
-                        .filter(ad => ad.id !== currentAd.id);
+                        .filter(ad => ad.id !== currentAd.id)
+                        .slice(0, 3);
                     
                     const container = document.getElementById('similarAdsGrid');
                     
@@ -296,12 +433,9 @@
                     container.innerHTML = similarAds.map(ad => {
                         const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/400x300';
                         const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact';
-                        
                         return `
                             <a href="ad-details.html?id=${ad.id}" class="block bg-white rounded-lg shadow-sm hover:shadow-md transition border overflow-hidden">
-                                <div class="h-40 bg-gray-100">
-                                    <img src="${img}" class="w-full h-full object-cover">
-                                </div>
+                                <div class="h-40 bg-gray-100"><img src="${img}" class="w-full h-full object-cover" loading="lazy"></div>
                                 <div class="p-3">
                                     <h3 class="font-bold text-gray-800 text-sm line-clamp-2">${ad.title}</h3>
                                     <p class="text-blue-700 font-extrabold">${price}</p>
@@ -310,39 +444,29 @@
                             </a>
                         `;
                     }).join('');
-                    
-                    console.log("✅ Similar ads loaded:", similarAds.length);
                 })
                 .catch(error => {
-                    console.error("❌ Error loading similar ads:", error);
+                    console.error('Error loading similar ads:', error);
                 });
         }
 
         function contactSeller() {
-            if (currentAd && currentAd.phone) {
-                window.location.href = 'tel:' + currentAd.phone;
-            } else {
-                alert('Phone number not available');
-            }
+            if (currentAd && currentAd.phone) window.location.href = 'tel:' + currentAd.phone;
+            else alert('Phone number not available');
         }
 
-        // Share Functions
         function shareAdOnFacebook() {
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
         }
         function shareAdOnWhatsApp() {
-            const text = `${document.getElementById('adTitle').textContent}\n\nPrice: ${document.getElementById('adPrice').textContent}\nLocation: ${document.getElementById('adLocation').textContent}\n\n${window.location.href}`;
+            const text = `${document.getElementById('adTitle').textContent}\n\nPrice: ${document.getElementById('adPrice').textContent}\n\n${window.location.href}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
-        function shareAdOnTwitter() {
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(document.getElementById('adTitle').textContent)}&url=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
-        }
         function copyAdLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => alert('Ad link copied!'));
+            navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied!'));
         }
 
         // Initialize
-        console.log("🚀 Page loaded, starting to load ad...");
         document.addEventListener('DOMContentLoaded', loadAdDetails);
     </script>
 </body>
