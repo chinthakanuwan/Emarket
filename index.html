@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emarket - Sri Lanka's Best Classifieds</title>
     
-    <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Emarket - Sri Lanka's #1 Classified Ads Platform">
-    <meta property="og:description" content="Buy & Sell Anything in Sri Lanka for Free! Vehicles, Property, Mobiles, Jobs and more.">
+    <meta property="og:description" content="Buy & Sell Anything in Sri Lanka for Free!">
     <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200">
     <meta property="og:url" content="https://chinthakanuwan.github.io/Emarket/">
     <meta property="og:type" content="website">
     
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Emarket - Sri Lanka's Best Classifieds">
     <meta name="twitter:description" content="Buy & Sell Anything in Sri Lanka for Free!">
@@ -22,28 +20,131 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .mobile-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .mobile-nav .search-container {
+                order: 1;
+                width: 100%;
+            }
+            .mobile-nav .action-buttons {
+                order: 2;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                gap: 0.5rem;
+            }
+            .mobile-nav .action-buttons a,
+            .mobile-nav .action-buttons button {
+                flex: 1;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+                white-space: nowrap;
+            }
+            .mobile-nav .action-buttons a i,
+            .mobile-nav .action-buttons button i {
+                margin-right: 0.25rem;
+                font-size: 0.875rem;
+            }
+            .mobile-action-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.25rem;
+                padding: 0.6rem 0.5rem;
+                font-size: 0.75rem;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                min-height: 44px;
+            }
+            .mobile-action-btn i {
+                font-size: 1rem;
+            }
+            .desktop-only {
+                display: none !important;
+            }
+            .mobile-only {
+                display: flex !important;
+            }
+            .hero-title {
+                font-size: 1.75rem !important;
+            }
+            .hero-subtitle {
+                font-size: 1rem !important;
+            }
+            .insurance-banner .insurance-item {
+                padding: 0.75rem !important;
+            }
+            .insurance-banner .insurance-item h3 {
+                font-size: 0.875rem !important;
+            }
+            .insurance-banner .insurance-item p {
+                font-size: 0.7rem !important;
+            }
+            .insurance-banner .insurance-icon {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+            .insurance-banner .insurance-icon i {
+                font-size: 1rem !important;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-only {
+                display: none !important;
+            }
+        }
+        
+        .action-btn {
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Better touch targets */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
     <!-- Top Notice Bar -->
     <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4">
-        <div class="container mx-auto flex items-center justify-center gap-2 text-sm">
+        <div class="container mx-auto flex items-center justify-center gap-2 text-xs md:text-sm">
             <i class="fas fa-bullhorn"></i>
-            <span class="font-medium">🎉 Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform!</span>
+            <span class="font-medium"> Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform!</span>
         </div>
     </div>
 
-    <!-- Hero Slider -->
-    <div class="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-12">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-8 md:py-12">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Buy & Sell Anything in Sri Lanka</h1>
-                <p class="text-xl text-gray-300 mb-6">Join thousands of buyers and sellers on Emarket</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="post-ad.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-bold transition">
+                <h1 class="hero-title text-2xl md:text-5xl font-bold mb-3 md:mb-4">Buy & Sell Anything in Sri Lanka</h1>
+                <p class="hero-subtitle text-base md:text-xl text-gray-300 mb-4 md:mb-6">Join thousands of buyers and sellers on Emarket</p>
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+                    <a href="post-ad.html" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-lg font-bold transition touch-target">
                         <i class="fas fa-plus mr-2"></i>Post Free Ad
                     </a>
-                    <a href="#latest-ads" class="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-bold transition">
+                    <a href="#latest-ads" class="bg-white hover:bg-gray-100 text-gray-900 px-6 py-2.5 md:px-8 md:py-3 rounded-lg font-bold transition touch-target">
                         <i class="fas fa-search mr-2"></i>Browse Ads
                     </a>
                 </div>
@@ -52,42 +153,42 @@
     </div>
 
     <!-- Insurance Ads Banner -->
-    <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white py-6">
+    <div class="insurance-banner bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white py-4 md:py-6">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="insurance.html" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 transition flex items-center gap-4">
-                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-car text-2xl text-blue-600"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-3 md:p-4 transition flex items-center gap-3 md:gap-4">
+                    <div class="insurance-icon w-10 h-10 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-car text-lg md:text-2xl text-blue-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg">Vehicle Insurance</h3>
-                        <p class="text-sm text-blue-100">Get quotes from Rs. 5,000/year</p>
+                        <h3 class="font-bold text-sm md:text-lg">Vehicle Insurance</h3>
+                        <p class="text-xs md:text-sm text-blue-100">From Rs. 5,000/year</p>
                     </div>
                 </a>
-                <a href="insurance.html" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 transition flex items-center gap-4">
-                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-heart text-2xl text-purple-600"></i>
+                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-3 md:p-4 transition flex items-center gap-3 md:gap-4">
+                    <div class="insurance-icon w-10 h-10 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-heart text-lg md:text-2xl text-purple-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg">Life Insurance</h3>
-                        <p class="text-sm text-purple-100">Secure your family's future</p>
+                        <h3 class="font-bold text-sm md:text-lg">Life Insurance</h3>
+                        <p class="text-xs md:text-sm text-purple-100">Secure your family</p>
                     </div>
                 </a>
-                <a href="insurance.html" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-4 transition flex items-center gap-4">
-                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-hospital text-2xl text-green-600"></i>
+                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-3 md:p-4 transition flex items-center gap-3 md:gap-4">
+                    <div class="insurance-icon w-10 h-10 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-hospital text-lg md:text-2xl text-green-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg">Medical Insurance</h3>
-                        <p class="text-sm text-green-100">Health coverage for all</p>
+                        <h3 class="font-bold text-sm md:text-lg">Medical Insurance</h3>
+                        <p class="text-xs md:text-sm text-green-100">Health coverage</p>
                     </div>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
+    <!-- Navbar - Desktop Version -->
+    <nav class="desktop-only bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
@@ -95,21 +196,22 @@
                 </a>
                 <div class="flex-1 max-w-2xl">
                     <div class="flex gap-2">
-                        <input type="text" id="searchInput" placeholder="Search ads..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        <input type="text" id="searchInput" placeholder="Search ads..." 
+                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
                         <button onclick="searchAds()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="insurance.html" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700">
-                        <i class="fas fa-shield-alt mr-2"></i>Insurance
+                    <a href="insurance.html" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 action-btn">
+                        <i class="fas fa-shield-alt"></i>Insurance
                     </a>
-                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600">
-                        <i class="fas fa-plus mr-2"></i>Post Free Ad
+                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 action-btn">
+                        <i class="fas fa-plus"></i>Post Free Ad
                     </a>
-                    <button onclick="shareHomeOnWhatsApp()" class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600">
-                        <i class="fab fa-whatsapp mr-2"></i>Share
+                    <button onclick="shareHomeOnWhatsApp()" class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600 action-btn">
+                        <i class="fab fa-whatsapp"></i>Share
                     </button>
                     <div id="authSection">
                         <a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>
@@ -119,23 +221,67 @@
         </div>
     </nav>
 
+    <!-- Navbar - Mobile Version (Compact & Clean) -->
+    <nav class="mobile-only bg-white shadow-sm sticky top-0 z-50 border-b px-3 py-2">
+        <div class="flex items-center justify-between mb-2">
+            <a href="index.html" class="text-xl font-bold text-blue-600 flex items-center gap-1">
+                <i class="fas fa-layer-group"></i> Emarket
+            </a>
+            <div id="authSectionMobile">
+                <a href="login.html" class="text-blue-600 font-bold text-sm">Login</a>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="flex gap-2 mb-2">
+            <input type="text" id="searchInputMobile" placeholder="Search ads..." 
+                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+            <button onclick="searchAdsMobile()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 touch-target">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        <!-- Action Buttons (Compact Row) -->
+        <div class="flex gap-2">
+            <a href="insurance.html" class="mobile-action-btn bg-green-600 text-white hover:bg-green-700 flex-1">
+                <i class="fas fa-shield-alt"></i>
+                <span>Insurance</span>
+            </a>
+            <a href="post-ad.html" class="mobile-action-btn bg-orange-500 text-white hover:bg-orange-600 flex-1">
+                <i class="fas fa-plus"></i>
+                <span>Post Ad</span>
+            </a>
+            <button onclick="shareHomeOnWhatsApp()" class="mobile-action-btn bg-green-500 text-white hover:bg-green-600 flex-1">
+                <i class="fab fa-whatsapp"></i>
+                <span>Share</span>
+            </button>
+            <div id="userAvatarMobile" class="hidden w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                U
+            </div>
+        </div>
+    </nav>
+
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-6 flex-grow">
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+    <div class="container mx-auto px-4 py-4 md:py-6 flex-grow">
+        
+        <!-- Premium Ads Section -->
+        <div class="mb-6 md:mb-8">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
                 <i class="fas fa-star text-yellow-500"></i> Premium Ads
             </h2>
-            <div id="premiumAdsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="col-span-full text-center py-10 text-gray-400">
+            <div id="premiumAdsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div class="col-span-full text-center py-8 md:py-10 text-gray-400">
                     <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                     <p>Loading premium ads...</p>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+            
+            <!-- Left Sidebar -->
             <aside class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-32">
+                <div class="bg-white rounded-lg shadow-sm p-3 md:p-4 sticky top-32">
                     <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-sm">Categories</h3>
                     <ul class="space-y-1 text-xs" id="categoryList">
                         <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-2 py-1.5 rounded">
@@ -148,7 +294,7 @@
                             <i class="fas fa-home w-4"></i> Property
                         </button></li>
                         <li><button onclick="filterCategory('Mobiles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
-                            <i class="fas fa-mobile-alt w-4"></i> Mobile Phones
+                            <i class="fas fa-mobile-alt w-4"></i> Mobiles
                         </button></li>
                         <li><button onclick="filterCategory('Electronics')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-2 py-1.5 rounded">
                             <i class="fas fa-laptop w-4"></i> Electronics
@@ -163,13 +309,15 @@
                 </div>
             </aside>
 
+            <!-- Main Content -->
             <main class="lg:col-span-10">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 id="latest-ads" class="text-2xl font-bold text-gray-800">Latest Ads</h2>
-                    <span id="adsCount" class="text-sm text-gray-500">Loading...</span>
+                <div class="flex items-center justify-between mb-3 md:mb-4">
+                    <h2 id="latest-ads" class="text-xl md:text-2xl font-bold text-gray-800">Latest Ads</h2>
+                    <span id="adsCount" class="text-xs md:text-sm text-gray-500">Loading...</span>
                 </div>
-                <div id="latestAdsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="col-span-full text-center py-10 text-gray-400">
+                
+                <div id="latestAdsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                    <div class="col-span-full text-center py-8 md:py-10 text-gray-400">
                         <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                         <p>Loading ads...</p>
                     </div>
@@ -179,17 +327,17 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white mt-12">
-        <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer class="bg-gray-900 text-white mt-8 md:mt-12">
+        <div class="container mx-auto px-4 py-6 md:py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">About Emarket</h3>
-                    <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform.</p>
-                    <a href="about.html" class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Learn More →</a>
+                    <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">About Emarket</h3>
+                    <p class="text-gray-400 text-xs md:text-sm">Sri Lanka's #1 Classified Ads Platform.</p>
+                    <a href="about.html" class="text-blue-400 hover:text-blue-300 text-xs md:text-sm mt-2 inline-block">Learn More →</a>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
+                    <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">Quick Links</h3>
+                    <ul class="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-400">
                         <li><a href="index.html" class="hover:text-white">Home</a></li>
                         <li><a href="post-ad.html" class="hover:text-white">Post Free Ad</a></li>
                         <li><a href="insurance.html" class="hover:text-white">Insurance</a></li>
@@ -197,14 +345,14 @@
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
+                    <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4">Contact Us</h3>
+                    <p class="text-gray-400 text-xs md:text-sm mb-1 md:mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
+                    <p class="text-gray-400 text-xs md:text-sm"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
                 </div>
             </div>
-            <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
-                <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
+            <div class="border-t border-gray-800 mt-6 md:mt-8 pt-4 md:pt-6 text-center">
+                <p class="text-gray-400 text-xs md:text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+                <p class="text-blue-400 text-xs md:text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
             </div>
         </div>
     </footer>
@@ -225,11 +373,41 @@
 
         auth.onAuthStateChanged(user => {
             const authSection = document.getElementById('authSection');
+            const authSectionMobile = document.getElementById('authSectionMobile');
+            const userAvatarMobile = document.getElementById('userAvatarMobile');
+            
             if (user) {
-                authSection.innerHTML = `<div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">${user.email.charAt(0).toUpperCase()}</div>
-                    <span class="hidden md:inline text-sm font-medium">${user.email.split('@')[0]}</span>
-                </div>`;
+                const initial = user.email.charAt(0).toUpperCase();
+                const shortName = user.email.split('@')[0];
+                
+                if (authSection) {
+                    authSection.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">${initial}</div>
+                            <span class="hidden md:inline text-sm font-medium">${shortName}</span>
+                        </div>
+                    `;
+                }
+                if (authSectionMobile) {
+                    authSectionMobile.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-medium text-gray-700">${shortName}</span>
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">${initial}</div>
+                        </div>
+                    `;
+                }
+                if (userAvatarMobile) {
+                    userAvatarMobile.textContent = initial;
+                    userAvatarMobile.classList.remove('hidden');
+                    userAvatarMobile.classList.add('flex');
+                }
+            } else {
+                if (authSection) authSection.innerHTML = '<a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>';
+                if (authSectionMobile) authSectionMobile.innerHTML = '<a href="login.html" class="text-blue-600 font-bold text-sm">Login</a>';
+                if (userAvatarMobile) {
+                    userAvatarMobile.classList.add('hidden');
+                    userAvatarMobile.classList.remove('flex');
+                }
             }
         });
 
@@ -249,29 +427,29 @@
                 const latestAds = approvedAds.slice(0, 8);
                 
                 document.getElementById('adsCount').textContent = `${approvedAds.length} ads`;
-                renderAds('premiumAdsGrid', premiumAds, true);
-                renderAds('latestAdsGrid', latestAds, false);
+                renderAds('premiumAdsGrid', premiumAds);
+                renderAds('latestAdsGrid', latestAds);
             });
         }
 
-        function renderAds(containerId, ads, isPremium) {
+        function renderAds(containerId, ads) {
             const container = document.getElementById(containerId);
             if (ads.length === 0) { container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No ads found</div>'; return; }
-            container.className = 'grid grid-cols-2 md:grid-cols-4 gap-4';
+            container.className = 'grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4';
             container.innerHTML = ads.map(ad => {
                 const imageUrl = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://via.placeholder.com/400x300?text=No+Image';
                 const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact';
                 const location = ad.location || 'Sri Lanka';
                 return `
                     <a href="ad-details.html?id=${ad.id}" class="block bg-white rounded-lg shadow-sm hover:shadow-md transition border overflow-hidden group">
-                        <div class="relative h-40 bg-gray-100 overflow-hidden">
-                            <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/400x300?text=Error'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
+                        <div class="relative h-32 md:h-40 bg-gray-100 overflow-hidden">
+                            <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/400x300?text=Error'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                            ${ad.isPremium ? '<span class="absolute top-1 md:top-2 left-1 md:left-2 bg-yellow-500 text-white text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 md:py-1 rounded">PREMIUM</span>' : ''}
                         </div>
-                        <div class="p-3">
-                            <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title || 'Untitled'}</h3>
-                            <p class="text-blue-700 font-extrabold">${price}</p>
-                            <p class="text-xs text-gray-500 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>${location}</p>
+                        <div class="p-2 md:p-3">
+                            <h3 class="font-bold text-gray-800 text-xs md:text-sm line-clamp-2 mb-1">${ad.title || 'Untitled'}</h3>
+                            <p class="text-blue-700 font-extrabold text-xs md:text-base">${price}</p>
+                            <p class="text-[10px] md:text-xs text-gray-500 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>${location}</p>
                         </div>
                     </a>
                 `;
@@ -297,11 +475,20 @@
             db.collection('ads').get().then(snapshot => {
                 const filtered = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
                     .filter(ad => ad.status === 'approved' && (ad.title.toLowerCase().includes(term) || (ad.desc && ad.desc.toLowerCase().includes(term))));
-                renderAds('latestAdsGrid', filtered, false);
+                renderAds('latestAdsGrid', filtered);
             });
         }
 
-        // Share Home Function
+        function searchAdsMobile() {
+            const term = document.getElementById('searchInputMobile').value.toLowerCase();
+            if (!term) { loadAds(); return; }
+            db.collection('ads').get().then(snapshot => {
+                const filtered = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+                    .filter(ad => ad.status === 'approved' && (ad.title.toLowerCase().includes(term) || (ad.desc && ad.desc.toLowerCase().includes(term))));
+                renderAds('latestAdsGrid', filtered);
+            });
+        }
+
         function shareHomeOnWhatsApp() {
             const text = 'Check out Emarket Sri Lanka - Buy & Sell Anything for Free! https://chinthakanuwan.github.io/Emarket/';
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
