@@ -22,82 +22,90 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* Mobile Optimizations */
+        /* Mobile Navbar Styles */
         @media (max-width: 768px) {
-            .mobile-nav {
+            .mobile-nav-container {
+                display: flex !important;
                 flex-direction: column;
                 gap: 0.5rem;
+                padding: 0.5rem;
             }
-            .mobile-nav .search-container {
-                order: 1;
+            .mobile-nav-row {
+                display: flex !important;
                 width: 100%;
             }
-            .mobile-nav .action-buttons {
-                order: 2;
+            .mobile-search-row {
+                display: flex !important;
                 width: 100%;
-                display: flex;
-                justify-content: space-between;
                 gap: 0.5rem;
             }
-            .mobile-nav .action-buttons a,
-            .mobile-nav .action-buttons button {
+            .mobile-search-row input {
                 flex: 1;
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
-                white-space: nowrap;
+                min-width: 0;
             }
-            .mobile-nav .action-buttons a i,
-            .mobile-nav .action-buttons button i {
-                margin-right: 0.25rem;
-                font-size: 0.875rem;
+            .mobile-actions-row {
+                display: flex !important;
+                width: 100%;
+                gap: 0.5rem;
             }
             .mobile-action-btn {
+                flex: 1;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: 0.25rem;
-                padding: 0.6rem 0.5rem;
+                gap: 0.35rem;
+                padding: 0.6rem 0.25rem;
                 font-size: 0.75rem;
                 border-radius: 0.5rem;
                 font-weight: 600;
-                min-height: 44px;
+                min-height: 40px;
+                white-space: nowrap;
             }
             .mobile-action-btn i {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
-            .desktop-only {
+            .mobile-logo-row {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+            .desktop-nav {
                 display: none !important;
             }
-            .mobile-only {
+            .mobile-nav {
                 display: flex !important;
             }
             .hero-title {
-                font-size: 1.75rem !important;
+                font-size: 1.5rem !important;
             }
             .hero-subtitle {
-                font-size: 1rem !important;
+                font-size: 0.9rem !important;
             }
             .insurance-banner .insurance-item {
-                padding: 0.75rem !important;
+                padding: 0.6rem !important;
             }
             .insurance-banner .insurance-item h3 {
-                font-size: 0.875rem !important;
+                font-size: 0.75rem !important;
             }
             .insurance-banner .insurance-item p {
-                font-size: 0.7rem !important;
+                font-size: 0.65rem !important;
             }
             .insurance-banner .insurance-icon {
-                width: 2.5rem !important;
-                height: 2.5rem !important;
+                width: 2rem !important;
+                height: 2rem !important;
             }
             .insurance-banner .insurance-icon i {
-                font-size: 1rem !important;
+                font-size: 0.85rem !important;
             }
         }
         
         @media (min-width: 769px) {
-            .mobile-only {
+            .mobile-nav {
                 display: none !important;
+            }
+            .desktop-nav {
+                display: flex !important;
             }
         }
         
@@ -112,12 +120,10 @@
             transform: scale(0.95);
         }
         
-        /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
         
-        /* Better touch targets */
         .touch-target {
             min-height: 44px;
             min-width: 44px;
@@ -139,7 +145,7 @@
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="hero-title text-2xl md:text-5xl font-bold mb-3 md:mb-4">Buy & Sell Anything in Sri Lanka</h1>
-                <p class="hero-subtitle text-base md:text-xl text-gray-300 mb-4 md:mb-6">Join thousands of buyers and sellers on Emarket</p>
+                <p class="hero-subtitle text-sm md:text-xl text-gray-300 mb-4 md:mb-6">Join thousands of buyers and sellers on Emarket</p>
                 <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
                     <a href="post-ad.html" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-lg font-bold transition touch-target">
                         <i class="fas fa-plus mr-2"></i>Post Free Ad
@@ -153,42 +159,42 @@
     </div>
 
     <!-- Insurance Ads Banner -->
-    <div class="insurance-banner bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white py-4 md:py-6">
+    <div class="insurance-banner bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white py-3 md:py-6">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-3 md:p-4 transition flex items-center gap-3 md:gap-4">
-                    <div class="insurance-icon w-10 h-10 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-car text-lg md:text-2xl text-blue-600"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
+                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-2 md:p-4 transition flex items-center gap-2 md:gap-4">
+                    <div class="insurance-icon w-8 h-8 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-car text-sm md:text-2xl text-blue-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-sm md:text-lg">Vehicle Insurance</h3>
-                        <p class="text-xs md:text-sm text-blue-100">From Rs. 5,000/year</p>
+                        <h3 class="font-bold text-xs md:text-lg">Vehicle Insurance</h3>
+                        <p class="text-[10px] md:text-sm text-blue-100">From Rs. 5,000/year</p>
                     </div>
                 </a>
-                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-3 md:p-4 transition flex items-center gap-3 md:gap-4">
-                    <div class="insurance-icon w-10 h-10 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-heart text-lg md:text-2xl text-purple-600"></i>
+                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-2 md:p-4 transition flex items-center gap-2 md:gap-4">
+                    <div class="insurance-icon w-8 h-8 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-heart text-sm md:text-2xl text-purple-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-sm md:text-lg">Life Insurance</h3>
-                        <p class="text-xs md:text-sm text-purple-100">Secure your family</p>
+                        <h3 class="font-bold text-xs md:text-lg">Life Insurance</h3>
+                        <p class="text-[10px] md:text-sm text-purple-100">Secure your family</p>
                     </div>
                 </a>
-                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-3 md:p-4 transition flex items-center gap-3 md:gap-4">
-                    <div class="insurance-icon w-10 h-10 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-hospital text-lg md:text-2xl text-green-600"></i>
+                <a href="insurance.html" class="insurance-item bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg p-2 md:p-4 transition flex items-center gap-2 md:gap-4">
+                    <div class="insurance-icon w-8 h-8 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-hospital text-sm md:text-2xl text-green-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-sm md:text-lg">Medical Insurance</h3>
-                        <p class="text-xs md:text-sm text-green-100">Health coverage</p>
+                        <h3 class="font-bold text-xs md:text-lg">Medical Insurance</h3>
+                        <p class="text-[10px] md:text-sm text-green-100">Health coverage</p>
                     </div>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Navbar - Desktop Version -->
-    <nav class="desktop-only bg-white shadow-sm sticky top-0 z-50 border-b">
+    <!-- DESKTOP NAVBAR (Desktop only) -->
+    <nav class="desktop-nav bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
@@ -221,43 +227,45 @@
         </div>
     </nav>
 
-    <!-- Navbar - Mobile Version (Compact & Clean) -->
-    <nav class="mobile-only bg-white shadow-sm sticky top-0 z-50 border-b px-3 py-2">
-        <div class="flex items-center justify-between mb-2">
-            <a href="index.html" class="text-xl font-bold text-blue-600 flex items-center gap-1">
-                <i class="fas fa-layer-group"></i> Emarket
-            </a>
-            <div id="authSectionMobile">
-                <a href="login.html" class="text-blue-600 font-bold text-sm">Login</a>
+    <!-- MOBILE NAVBAR (Mobile only - FIXED LAYOUT) -->
+    <nav class="mobile-nav bg-white shadow-sm sticky top-0 z-50 border-b hidden">
+        <div class="mobile-nav-container">
+            
+            <!-- Row 1: Logo + Login -->
+            <div class="mobile-logo-row">
+                <a href="index.html" class="text-xl font-bold text-blue-600 flex items-center gap-1">
+                    <i class="fas fa-layer-group"></i> Emarket
+                </a>
+                <div id="authSectionMobile">
+                    <a href="login.html" class="text-blue-600 font-bold text-sm">Login</a>
+                </div>
             </div>
-        </div>
-        
-        <!-- Search Bar -->
-        <div class="flex gap-2 mb-2">
-            <input type="text" id="searchInputMobile" placeholder="Search ads..." 
-                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-            <button onclick="searchAdsMobile()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 touch-target">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-        
-        <!-- Action Buttons (Compact Row) -->
-        <div class="flex gap-2">
-            <a href="insurance.html" class="mobile-action-btn bg-green-600 text-white hover:bg-green-700 flex-1">
-                <i class="fas fa-shield-alt"></i>
-                <span>Insurance</span>
-            </a>
-            <a href="post-ad.html" class="mobile-action-btn bg-orange-500 text-white hover:bg-orange-600 flex-1">
-                <i class="fas fa-plus"></i>
-                <span>Post Ad</span>
-            </a>
-            <button onclick="shareHomeOnWhatsApp()" class="mobile-action-btn bg-green-500 text-white hover:bg-green-600 flex-1">
-                <i class="fab fa-whatsapp"></i>
-                <span>Share</span>
-            </button>
-            <div id="userAvatarMobile" class="hidden w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                U
+            
+            <!-- Row 2: Search Bar (Full Width) -->
+            <div class="mobile-search-row">
+                <input type="text" id="searchInputMobile" placeholder="Search ads..." 
+                       class="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                <button onclick="searchAdsMobile()" class="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 touch-target flex-shrink-0">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
+            
+            <!-- Row 3: Action Buttons (3 Equal Buttons) -->
+            <div class="mobile-actions-row">
+                <a href="insurance.html" class="mobile-action-btn bg-green-600 text-white hover:bg-green-700">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Insurance</span>
+                </a>
+                <a href="post-ad.html" class="mobile-action-btn bg-orange-500 text-white hover:bg-orange-600">
+                    <i class="fas fa-plus"></i>
+                    <span>Post Ad</span>
+                </a>
+                <button onclick="shareHomeOnWhatsApp()" class="mobile-action-btn bg-green-500 text-white hover:bg-green-600">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Share</span>
+                </button>
+            </div>
+            
         </div>
     </nav>
 
@@ -374,7 +382,6 @@
         auth.onAuthStateChanged(user => {
             const authSection = document.getElementById('authSection');
             const authSectionMobile = document.getElementById('authSectionMobile');
-            const userAvatarMobile = document.getElementById('userAvatarMobile');
             
             if (user) {
                 const initial = user.email.charAt(0).toUpperCase();
@@ -392,22 +399,13 @@
                     authSectionMobile.innerHTML = `
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-medium text-gray-700">${shortName}</span>
-                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">${initial}</div>
+                            <div class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs">${initial}</div>
                         </div>
                     `;
-                }
-                if (userAvatarMobile) {
-                    userAvatarMobile.textContent = initial;
-                    userAvatarMobile.classList.remove('hidden');
-                    userAvatarMobile.classList.add('flex');
                 }
             } else {
                 if (authSection) authSection.innerHTML = '<a href="login.html" class="text-blue-600 font-bold hover:underline">Login</a>';
                 if (authSectionMobile) authSectionMobile.innerHTML = '<a href="login.html" class="text-blue-600 font-bold text-sm">Login</a>';
-                if (userAvatarMobile) {
-                    userAvatarMobile.classList.add('hidden');
-                    userAvatarMobile.classList.remove('flex');
-                }
             }
         });
 
