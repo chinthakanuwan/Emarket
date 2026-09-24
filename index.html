@@ -22,182 +22,68 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* Mobile Optimizations - LARGER ELEMENTS */
         @media (max-width: 768px) {
-            .mobile-nav-container {
-                display: flex !important;
-                flex-direction: column;
-                gap: 0.75rem;
-                padding: 0.75rem;
-            }
-            .mobile-nav-row {
-                display: flex !important;
-                width: 100%;
-            }
-            .mobile-search-row {
-                display: flex !important;
-                width: 100%;
-                gap: 0.5rem;
-            }
-            .mobile-search-row input {
-                flex: 1;
-                min-width: 0;
-                font-size: 1rem;
-                padding: 0.75rem 1rem;
-            }
-            .mobile-search-row button {
-                padding: 0.75rem 1.25rem;
-                font-size: 1.1rem;
-            }
-            .mobile-actions-row {
-                display: flex !important;
-                width: 100%;
-                gap: 0.5rem;
-            }
-            .mobile-action-btn {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                padding: 0.85rem 0.5rem;
-                font-size: 0.95rem;
-                border-radius: 0.6rem;
-                font-weight: 700;
-                min-height: 48px;
-                white-space: nowrap;
-            }
-            .mobile-action-btn i {
-                font-size: 1.1rem;
-            }
-            .mobile-logo-row {
-                display: flex !important;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                padding-bottom: 0.25rem;
-            }
-            .mobile-logo-row a {
-                font-size: 1.5rem;
-            }
-            .desktop-nav {
-                display: none !important;
-            }
-            .mobile-nav {
-                display: flex !important;
-            }
-            .hero-title {
-                font-size: 2rem !important;
-                line-height: 1.2;
-            }
-            .hero-subtitle {
-                font-size: 1.1rem !important;
-            }
-            .hero-buttons a {
-                padding: 1rem 1.5rem !important;
-                font-size: 1.1rem !important;
-            }
-            .insurance-banner .insurance-item {
-                padding: 1rem !important;
-            }
-            .insurance-banner .insurance-item h3 {
-                font-size: 1.1rem !important;
-            }
-            .insurance-banner .insurance-item p {
-                font-size: 0.85rem !important;
-            }
-            .insurance-banner .insurance-icon {
-                width: 3rem !important;
-                height: 3rem !important;
-            }
-            .insurance-banner .insurance-icon i {
-                font-size: 1.25rem !important;
-            }
-            .ad-card-image {
-                height: 160px !important;
-            }
-            .ad-card-title {
-                font-size: 0.95rem !important;
-            }
-            .ad-card-price {
-                font-size: 1rem !important;
-            }
-            .ad-card-location {
-                font-size: 0.8rem !important;
-            }
-            .premium-badge {
-                font-size: 0.7rem !important;
-                padding: 0.3rem 0.6rem !important;
-            }
-            .section-title {
-                font-size: 1.5rem !important;
-            }
-            .category-list {
-                font-size: 0.95rem !important;
-            }
-            .category-list button {
-                padding: 0.6rem 0.75rem !important;
-            }
+            .mobile-nav-container { display: flex !important; flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
+            .mobile-search-row { display: flex !important; width: 100%; gap: 0.5rem; }
+            .mobile-search-row input { flex: 1; min-width: 0; font-size: 1rem; padding: 0.75rem 1rem; }
+            .mobile-search-row button { padding: 0.75rem 1.25rem; font-size: 1.1rem; }
+            .mobile-actions-row { display: flex !important; width: 100%; gap: 0.5rem; }
+            .mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.85rem 0.25rem; font-size: 0.95rem; border-radius: 0.6rem; font-weight: 700; min-height: 40px; white-space: nowrap; }
+            .mobile-action-btn i { font-size: 1.1rem; }
+            .mobile-logo-row { display: flex !important; justify-content: space-between; align-items: center; width: 100%; padding-bottom: 0.25rem; }
+            .mobile-logo-row a { font-size: 1.5rem; }
+            .desktop-nav { display: none !important; }
+            .mobile-nav { display: flex !important; }
+            .hero-title { font-size: 2rem !important; line-height: 1.2; }
+            .hero-subtitle { font-size: 1.1rem !important; }
+            .hero-buttons a { padding: 1rem 1.5rem !important; font-size: 1.1rem !important; }
+            .insurance-banner .insurance-item { padding: 1rem !important; }
+            .insurance-banner .insurance-item h3 { font-size: 1.1rem !important; }
+            .insurance-banner .insurance-item p { font-size: 0.85rem !important; }
+            .insurance-banner .insurance-icon { width: 3rem !important; height: 3rem !important; }
+            .insurance-banner .insurance-icon i { font-size: 1.25rem !important; }
+            .ad-card-image { height: 160px !important; }
+            .ad-card-title { font-size: 0.95rem !important; }
+            .ad-card-price { font-size: 1rem !important; }
+            .ad-card-location { font-size: 0.8rem !important; }
+            .premium-badge { font-size: 0.7rem !important; padding: 0.3rem 0.6rem !important; }
+            .section-title { font-size: 1.5rem !important; }
+            .category-list { font-size: 0.95rem !important; }
+            .category-list button { padding: 0.6rem 0.75rem !important; }
         }
         
         @media (min-width: 769px) {
-            .mobile-nav {
-                display: none !important;
-            }
-            .desktop-nav {
-                display: flex !important;
-            }
+            .mobile-nav { display: none !important; }
+            .desktop-nav { display: flex !important; }
         }
         
-        .action-btn {
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        .action-btn:active {
-            transform: scale(0.95);
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        .touch-target {
-            min-height: 48px;
-            min-width: 48px;
-        }
-        
-        .ad-card {
-            transition: all 0.3s ease;
-        }
-        .ad-card:active {
-            transform: scale(0.98);
-        }
+        .action-btn { transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .action-btn:active { transform: scale(0.95); }
+        html { scroll-behavior: smooth; }
+        .touch-target { min-height: 48px; min-width: 48px; }
+        .ad-card { transition: all 0.3s ease; }
+        .ad-card:active { transform: scale(0.98); }
     </style>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
-    <!-- Top Notice Bar -->
     <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2.5 px-4">
         <div class="container mx-auto flex items-center justify-center gap-2 text-sm md:text-base">
             <i class="fas fa-bullhorn"></i>
-            <span class="font-medium"> Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform!</span>
+            <span class="font-medium">🎉 Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform!</span>
         </div>
     </div>
 
-    <!-- Hero Section -->
     <div class="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-10 md:py-12">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="hero-title text-3xl md:text-5xl font-bold mb-3 md:mb-4">Buy & Sell Anything in Sri Lanka</h1>
                 <p class="hero-subtitle text-base md:text-xl text-gray-300 mb-5 md:mb-6">Join thousands of buyers and sellers on Emarket</p>
                 <div class="hero-buttons flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-                    <a href="post-ad.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 md:px-8 md:py-3 rounded-lg font-bold transition touch-target text-lg">
+                    <a href="post-ad.html" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2.5 md:px-8 md:py-3 rounded-lg font-bold transition touch-target text-lg">
                         <i class="fas fa-plus mr-2"></i>Post Free Ad
                     </a>
-                    <a href="#latest-ads" class="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 md:px-8 md:py-3 rounded-lg font-bold transition touch-target text-lg">
+                    <a href="#latest-ads" class="bg-white hover:bg-gray-100 text-gray-900 px-8 py-2.5 md:px-8 md:py-3 rounded-lg font-bold transition touch-target text-lg">
                         <i class="fas fa-search mr-2"></i>Browse Ads
                     </a>
                 </div>
@@ -205,7 +91,6 @@
         </div>
     </div>
 
-    <!-- Insurance Ads Banner -->
     <div class="insurance-banner bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white py-4 md:py-6">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
@@ -240,7 +125,7 @@
         </div>
     </div>
 
-    <!-- DESKTOP NAVBAR (Desktop only) -->
+    <!-- DESKTOP NAVBAR -->
     <nav class="desktop-nav bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -274,11 +159,9 @@
         </div>
     </nav>
 
-    <!-- MOBILE NAVBAR (Mobile only - LARGER ELEMENTS) -->
+    <!-- MOBILE NAVBAR -->
     <nav class="mobile-nav bg-white shadow-sm sticky top-0 z-50 border-b hidden">
         <div class="mobile-nav-container">
-            
-            <!-- Row 1: Logo + Login -->
             <div class="mobile-logo-row">
                 <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
                     <i class="fas fa-layer-group"></i> Emarket
@@ -287,8 +170,6 @@
                     <a href="login.html" class="text-blue-600 font-bold text-base">Login</a>
                 </div>
             </div>
-            
-            <!-- Row 2: Search Bar (Full Width, Larger) -->
             <div class="mobile-search-row">
                 <input type="text" id="searchInputMobile" placeholder="Search ads..." 
                        class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-500">
@@ -296,8 +177,6 @@
                     <i class="fas fa-search text-lg"></i>
                 </button>
             </div>
-            
-            <!-- Row 3: Action Buttons (Larger) -->
             <div class="mobile-actions-row">
                 <a href="insurance.html" class="mobile-action-btn bg-green-600 text-white hover:bg-green-700">
                     <i class="fas fa-shield-alt"></i>
@@ -312,14 +191,11 @@
                     <span>Share</span>
                 </button>
             </div>
-            
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mx-auto px-4 py-6 md:py-6 flex-grow">
         
-        <!-- Premium Ads Section -->
         <div class="mb-8 md:mb-8">
             <h2 class="section-title text-2xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-4 flex items-center gap-2">
                 <i class="fas fa-star text-yellow-500 text-2xl"></i> Premium Ads
@@ -334,37 +210,17 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-6">
             
-            <!-- Left Sidebar -->
             <aside class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm p-4 md:p-4 sticky top-32">
                     <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-base">Categories</h3>
                     <ul class="category-list space-y-1.5" id="categoryList">
-                        <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-th-large w-5"></i> All Ads
-                        </button></li>
-                        <li><button onclick="filterCategory('Vehicles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-car w-5"></i> Vehicles
-                        </button></li>
-                        <li><button onclick="filterCategory('Property')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-home w-5"></i> Property
-                        </button></li>
-                        <li><button onclick="filterCategory('Mobiles')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-mobile-alt w-5"></i> Mobiles
-                        </button></li>
-                        <li><button onclick="filterCategory('Electronics')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-laptop w-5"></i> Electronics
-                        </button></li>
-                        <li><button onclick="filterCategory('Fashion')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-tshirt w-5"></i> Fashion
-                        </button></li>
-                        <li><button onclick="filterCategory('Jobs')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
-                            <i class="fas fa-briefcase w-5"></i> Jobs
-                        </button></li>
+                        <li class="text-center py-4 text-gray-400">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </li>
                     </ul>
                 </div>
             </aside>
 
-            <!-- Main Content -->
             <main class="lg:col-span-10">
                 <div class="flex items-center justify-between mb-4 md:mb-4">
                     <h2 id="latest-ads" class="section-title text-2xl md:text-2xl font-bold text-gray-800">Latest Ads</h2>
@@ -381,7 +237,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white mt-12 md:mt-12">
         <div class="container mx-auto px-4 py-8 md:py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8">
@@ -539,7 +394,36 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        document.addEventListener('DOMContentLoaded', () => { loadAds(); });
+        // Load Categories for Sidebar
+        function loadSidebarCategories() {
+            db.collection('categories').orderBy('order', 'asc').get().then(snap => {
+                const categories = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                const list = document.getElementById('categoryList');
+                
+                if (categories.length === 0) {
+                    list.innerHTML = '<li class="text-center py-4 text-gray-400">No categories</li>';
+                    return;
+                }
+                
+                list.innerHTML = `
+                    <li><button onclick="filterCategory('All')" class="w-full text-left flex items-center gap-2 text-blue-600 font-medium hover:bg-blue-50 px-3 py-2 rounded text-base">
+                        <i class="fas fa-th-large w-5"></i> All Ads
+                    </button></li>
+                    ${categories.map(cat => `
+                        <li><button onclick="filterCategory('${cat.name}')" class="w-full text-left flex items-center gap-2 text-gray-600 hover:bg-gray-50 px-3 py-2 rounded text-base">
+                            <i class="fas ${cat.icon} w-5 text-${cat.color}-600"></i> ${cat.name}
+                        </button></li>
+                    `).join('')}
+                `;
+            }).catch(error => {
+                console.error('Error loading categories:', error);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { 
+            loadAds();
+            loadSidebarCategories();
+        });
     </script>
 </body>
 </html>
