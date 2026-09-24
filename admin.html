@@ -112,12 +112,12 @@
                 <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="premium">
                     <i class="fas fa-crown w-5"></i> Premium Ads
                 </button>
+                <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="categories">
+                    <i class="fas fa-folder w-5"></i> Categories
+                </button>
                 <button onclick="showSection('notifications')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn relative" data-section="notifications">
                     <i class="fas fa-bell w-5"></i> Notifications
                     <span id="notifBadge" class="notification-badge hidden">0</span>
-                </button>
-                <button onclick="showSection('categories')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="categories">
-                    <i class="fas fa-folder w-5"></i> Categories
                 </button>
                 <button onclick="showSection('adslots')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="adslots">
                     <i class="fas fa-image w-5"></i> Ad Slots
@@ -304,7 +304,6 @@
                     </div>
                 </section>
 
-                <!-- PAYMENTS SECTION -->
                 <section id="section-payments" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -375,9 +374,11 @@
                 <section id="section-categories" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-xl font-bold text-gray-800">Categories</h2>
-                            <button onclick="addCategory()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 touch-btn">
-                                <i class="fas fa-plus mr-2"></i>Add
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-folder text-blue-600"></i> Categories Management
+                            </h2>
+                            <button onclick="openCategoryModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 touch-btn">
+                                <i class="fas fa-plus mr-2"></i>Add Category
                             </button>
                         </div>
                         <div id="categoriesList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -414,6 +415,86 @@
                 </section>
 
             </main>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal-overlay">
+        <div class="modal-content p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800" id="categoryModalTitle">
+                    <i class="fas fa-folder-plus text-blue-600 mr-2"></i>Add Category
+                </h3>
+                <button onclick="closeCategoryModal()" class="text-gray-500 hover:text-gray-700 touch-btn">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="categoryForm" class="space-y-4">
+                <input type="hidden" id="editCategoryId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category Name *</label>
+                    <input type="text" id="catName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Vehicles">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Icon Class *</label>
+                    <input type="text" id="catIcon" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., fa-car">
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Use Font Awesome icons: fa-car, fa-home, fa-mobile-alt, fa-laptop, fa-tshirt, fa-briefcase, fa-hotel, fa-utensils, fa-tools, fa-paw, fa-football-ball, fa-book
+                        <a href="https://fontawesome.com/icons" target="_blank" class="text-blue-600 underline">Browse all icons</a>
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Color *</label>
+                    <select id="catColor" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="purple">Purple</option>
+                        <option value="pink">Pink</option>
+                        <option value="indigo">Indigo</option>
+                        <option value="teal">Teal</option>
+                        <option value="orange">Orange</option>
+                        <option value="gray">Gray</option>
+                        <option value="amber">Amber</option>
+                        <option value="cyan">Cyan</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Order Number</label>
+                    <input type="number" id="catOrder" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Lower number = appears first">
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Categories will be sorted by this number (1 = first)
+                    </p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-3">
+                    <p class="text-sm font-medium text-blue-800 mb-2">Preview:</p>
+                    <div class="flex items-center gap-3">
+                        <div id="previewIcon" class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-car text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p id="previewName" class="font-bold text-gray-800">Category Name</p>
+                            <p class="text-xs text-gray-500">Order: <span id="previewOrder">0</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeCategoryModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-400 touch-btn">Cancel</button>
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 touch-btn">
+                        <i class="fas fa-save mr-2"></i>Save Category
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -508,6 +589,7 @@
         let allUsers = [];
         let allInsuranceLeads = [];
         let allPayments = [];
+        let allCategories = [];
         let unreadNotifCount = 0;
         let notifUnsubscribe = null;
         let insuranceUnsubscribe = null;
@@ -634,7 +716,7 @@
             document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active', 'bg-blue-50', 'text-blue-600'));
             const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
             if (activeLink) activeLink.classList.add('active', 'bg-blue-50', 'text-blue-600');
-            const titles = { dashboard: 'Dashboard', ads: 'Ads Management', users: 'Users', insurance: 'Insurance Leads', payments: 'Payments', premium: 'Premium Ads', notifications: 'Notifications', categories: 'Categories', adslots: 'Ad Slots', settings: 'Settings' };
+            const titles = { dashboard: 'Dashboard', ads: 'Ads Management', users: 'Users', insurance: 'Insurance Leads', payments: 'Payments', premium: 'Premium Ads', categories: 'Categories', notifications: 'Notifications', adslots: 'Ad Slots', settings: 'Settings' };
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
             document.getElementById('mobileTitle').textContent = titles[sectionName] || 'Dashboard';
             if (window.innerWidth < 768) toggleSidebar();
@@ -643,8 +725,8 @@
             if (sectionName === 'insurance') loadInsuranceLeads();
             if (sectionName === 'payments') loadPayments();
             if (sectionName === 'premium') loadPremiumAds();
-            if (sectionName === 'notifications') loadNotifications();
             if (sectionName === 'categories') loadCategories();
+            if (sectionName === 'notifications') loadNotifications();
             if (sectionName === 'adslots') loadAdSlots();
         }
 
@@ -953,7 +1035,6 @@
             showToast('Leads exported successfully!', 'success');
         }
 
-        // PAYMENTS FUNCTIONS
         function loadPayments() {
             db.collection('payments').orderBy('createdAt', 'desc').get().then(snap => {
                 allPayments = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -1170,28 +1251,170 @@
             showToast('Notification deleted', 'success');
         }
 
+        // ===== CATEGORIES MANAGEMENT =====
         function loadCategories() {
+            db.collection('categories').orderBy('order', 'asc').get().then(snap => {
+                allCategories = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                renderCategories();
+            }).catch(error => {
+                console.error('Error loading categories:', error);
+                if (allCategories.length === 0) {
+                    loadDefaultCategories();
+                }
+            });
+        }
+
+        function loadDefaultCategories() {
             const defaultCategories = [
-                { name: 'Vehicles', icon: 'fa-car', color: 'blue' },
-                { name: 'Property', icon: 'fa-home', color: 'green' },
-                { name: 'Mobiles', icon: 'fa-mobile-alt', color: 'purple' },
-                { name: 'Electronics', icon: 'fa-laptop', color: 'indigo' },
-                { name: 'Fashion', icon: 'fa-tshirt', color: 'pink' },
-                { name: 'Jobs', icon: 'fa-briefcase', color: 'yellow' }
+                { name: 'Vehicles', icon: 'fa-car', color: 'blue', order: 1 },
+                { name: 'Property', icon: 'fa-home', color: 'green', order: 2 },
+                { name: 'Mobiles', icon: 'fa-mobile-alt', color: 'purple', order: 3 },
+                { name: 'Electronics', icon: 'fa-laptop', color: 'indigo', order: 4 },
+                { name: 'Fashion', icon: 'fa-tshirt', color: 'pink', order: 5 },
+                { name: 'Jobs', icon: 'fa-briefcase', color: 'yellow', order: 6 },
+                { name: 'Hotels', icon: 'fa-hotel', color: 'teal', order: 7 },
+                { name: 'Restaurants', icon: 'fa-utensils', color: 'orange', order: 8 },
+                { name: 'Services', icon: 'fa-tools', color: 'gray', order: 9 },
+                { name: 'Pets', icon: 'fa-paw', color: 'amber', order: 10 },
+                { name: 'Sports', icon: 'fa-football-ball', color: 'red', order: 11 },
+                { name: 'Books', icon: 'fa-book', color: 'cyan', order: 12 }
             ];
-            document.getElementById('categoriesList').innerHTML = defaultCategories.map(cat => `
-                <div class="bg-white rounded-lg p-4 border border-gray-200 flex items-center justify-between">
+            
+            const batch = db.batch();
+            defaultCategories.forEach(cat => {
+                const ref = db.collection('categories').doc();
+                batch.set(ref, cat);
+            });
+            batch.commit().then(() => {
+                showToast('Default categories loaded!', 'success');
+                loadCategories();
+            }).catch(err => showToast('Error: ' + err.message, 'error'));
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesList');
+            
+            if (allCategories.length === 0) {
+                container.innerHTML = '<p class="col-span-3 text-center text-gray-400 py-8">No categories found. Click "Add Category" to create one.</p>';
+                return;
+            }
+            
+            container.className = 'grid grid-cols-1 md:grid-cols-3 gap-4';
+            container.innerHTML = allCategories.map(cat => `
+                <div class="bg-white rounded-lg p-4 border border-gray-200 flex items-center justify-between hover:shadow-md transition">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-${cat.color}-100 rounded-lg flex items-center justify-center">
                             <i class="fas ${cat.icon} text-${cat.color}-600 text-xl"></i>
                         </div>
-                        <p class="font-bold text-gray-800">${cat.name}</p>
+                        <div>
+                            <p class="font-bold text-gray-800">${cat.name}</p>
+                            <p class="text-xs text-gray-500">Order: ${cat.order || 0}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editCategory('${cat.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded touch-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteCategory('${cat.id}')" class="p-2 text-red-600 hover:bg-red-50 rounded touch-btn" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function addCategory() { const name = prompt('Category name:'); if (name) showToast('Category added: ' + name, 'success'); }
+        function openCategoryModal(catId = null) {
+            const modal = document.getElementById('categoryModal');
+            const form = document.getElementById('categoryForm');
+            const title = document.getElementById('categoryModalTitle');
+            
+            form.reset();
+            document.getElementById('editCategoryId').value = '';
+            
+            if (catId) {
+                const cat = allCategories.find(c => c.id === catId);
+                if (cat) {
+                    title.innerHTML = '<i class="fas fa-edit text-blue-600 mr-2"></i>Edit Category';
+                    document.getElementById('editCategoryId').value = catId;
+                    document.getElementById('catName').value = cat.name || '';
+                    document.getElementById('catIcon').value = cat.icon || '';
+                    document.getElementById('catColor').value = cat.color || 'blue';
+                    document.getElementById('catOrder').value = cat.order || 0;
+                    updatePreview();
+                }
+            } else {
+                title.innerHTML = '<i class="fas fa-folder-plus text-blue-600 mr-2"></i>Add Category';
+                document.getElementById('catOrder').value = allCategories.length + 1;
+                updatePreview();
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('show');
+        }
+
+        function updatePreview() {
+            const name = document.getElementById('catName').value || 'Category Name';
+            const icon = document.getElementById('catIcon').value || 'fa-car';
+            const color = document.getElementById('catColor').value || 'blue';
+            const order = document.getElementById('catOrder').value || 0;
+            
+            document.getElementById('previewName').textContent = name;
+            document.getElementById('previewOrder').textContent = order;
+            document.getElementById('previewIcon').className = `w-12 h-12 bg-${color}-100 rounded-lg flex items-center justify-center`;
+            document.getElementById('previewIcon').innerHTML = `<i class="fas ${icon} text-${color}-600 text-xl"></i>`;
+        }
+
+        // Preview update listeners
+        document.getElementById('catName').addEventListener('input', updatePreview);
+        document.getElementById('catIcon').addEventListener('input', updatePreview);
+        document.getElementById('catColor').addEventListener('change', updatePreview);
+        document.getElementById('catOrder').addEventListener('input', updatePreview);
+
+        document.getElementById('categoryForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const catId = document.getElementById('editCategoryId').value;
+            const catData = {
+                name: document.getElementById('catName').value.trim(),
+                icon: document.getElementById('catIcon').value.trim(),
+                color: document.getElementById('catColor').value,
+                order: parseInt(document.getElementById('catOrder').value) || 99,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                if (catId) {
+                    await db.collection('categories').doc(catId).update(catData);
+                    showToast('Category updated!', 'success');
+                } else {
+                    catData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('categories').add(catData);
+                    showToast('Category added!', 'success');
+                }
+                closeCategoryModal();
+                loadCategories();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        });
+
+        function editCategory(catId) {
+            openCategoryModal(catId);
+        }
+
+        async function deleteCategory(catId) {
+            if (!confirm('Delete this category? This cannot be undone!')) return;
+            try {
+                await db.collection('categories').doc(catId).delete();
+                showToast('Category deleted!', 'success');
+                loadCategories();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
 
         function loadAdSlots() {
             const slots = [
@@ -1318,6 +1541,10 @@
 
         document.getElementById('editLeadModal').addEventListener('click', function(e) {
             if (e.target === this) closeEditModal();
+        });
+
+        document.getElementById('categoryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCategoryModal();
         });
     </script>
 </body>
