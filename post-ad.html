@@ -48,7 +48,6 @@
             <h3 class="text-xl font-bold text-green-800 mb-2">Ad Submitted Successfully!</h3>
             <p class="text-green-700 mb-4">Your ad will be reviewed and approved within 24 hours.</p>
             
-            <!-- Premium Upgrade Section -->
             <div id="makePremiumSection" class="hidden mt-6 p-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-lg">
                 <div class="flex items-center justify-center gap-3 mb-3">
                     <i class="fas fa-crown text-white text-3xl"></i>
@@ -90,28 +89,30 @@
                        placeholder="e.g., Toyota Prius 2012 for Sale">
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-folder mr-1"></i> Category *
-                    </label>
-                    <select id="adCategory" required 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="">Select Category</option>
-                        <option value="Vehicles">Vehicles</option>
-                        <option value="Property">Property</option>
-                        <option value="Mobiles">Mobile Phones</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Jobs">Jobs</option>
-                        <option value="Hotels">Hotels</option>
-                        <option value="Restaurants">Restaurants</option>
-                        <option value="Services">Services</option>
-                        <option value="Pets">Pets</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Books">Books</option>
-                    </select>
+            <!-- CATEGORY SELECTION - Dynamic from Firestore -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">
+                    <i class="fas fa-folder mr-1"></i> Select Category *
+                </label>
+                <input type="hidden" id="selectedCategory" value="">
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="categoryGrid">
+                    <div class="col-span-full text-center py-8 text-gray-400">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <p>Loading categories...</p>
+                    </div>
                 </div>
+
+                <!-- Selected Category Display -->
+                <div id="selectedCategoryDisplay" class="hidden mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p class="text-sm text-blue-800">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Selected: <strong id="selectedCategoryName"></strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-tag mr-1"></i> Price (Rs.) *
@@ -120,9 +121,6 @@
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                            placeholder="e.g., 1500000">
                 </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-map-marker-alt mr-1"></i> Location *
@@ -131,14 +129,15 @@
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                            placeholder="e.g., Colombo, Kandy">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-phone mr-1"></i> Phone Number *
-                    </label>
-                    <input type="tel" id="adPhone" required 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                           placeholder="e.g., 0771234567">
-                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-phone mr-1"></i> Phone Number *
+                </label>
+                <input type="tel" id="adPhone" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                       placeholder="e.g., 0771234567">
             </div>
 
             <div>
@@ -198,7 +197,7 @@
             <h3 class="font-bold text-blue-800 mb-3"><i class="fas fa-info-circle mr-2"></i>How It Works</h3>
             <ol class="space-y-2 text-sm text-blue-700">
                 <li><span class="font-bold">1.</span> Fill in all the required fields</li>
-                <li><span class="font-bold">2.</span> Add tags to help people find your ad</li>
+                <li><span class="font-bold">2.</span> Select a category for your ad</li>
                 <li><span class="font-bold">3.</span> Add clear photos of your item</li>
                 <li><span class="font-bold">4.</span> Submit for review</li>
                 <li><span class="font-bold">5.</span> Admin will approve within 24 hours</li>
@@ -242,11 +241,57 @@
             }
         });
 
+        // Load Categories from Firestore
+        function loadCategoriesForPost() {
+            db.collection('categories').orderBy('order', 'asc').get().then(snap => {
+                const categories = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                const grid = document.getElementById('categoryGrid');
+                
+                if (categories.length === 0) {
+                    grid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-8">No categories available</p>';
+                    return;
+                }
+                
+                grid.innerHTML = categories.map(cat => `
+                    <button type="button" onclick="selectCategory('${cat.name}', this)" 
+                            class="category-card flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
+                        <div class="w-12 h-12 bg-${cat.color}-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-${cat.color}-200 transition">
+                            <i class="fas ${cat.icon} text-${cat.color}-600 text-xl"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 group-hover:text-${cat.color}-600">${cat.name}</span>
+                    </button>
+                `).join('');
+            }).catch(error => {
+                console.error('Error loading categories:', error);
+            });
+        }
+
+        // Category Selection Function
+        function selectCategory(category, button) {
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50', 'ring-2', 'ring-blue-500');
+                card.classList.add('border-gray-200');
+            });
+            
+            button.classList.remove('border-gray-200');
+            button.classList.add('border-blue-500', 'bg-blue-50', 'ring-2', 'ring-blue-500');
+            
+            document.getElementById('selectedCategory').value = category;
+            document.getElementById('selectedCategoryDisplay').classList.remove('hidden');
+            document.getElementById('selectedCategoryName').textContent = category;
+        }
+
         document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             if (!currentUser) {
                 alert('Please login first!');
+                return;
+            }
+
+            const selectedCategory = document.getElementById('selectedCategory').value;
+            if (!selectedCategory) {
+                alert('Please select a category!');
                 return;
             }
 
@@ -258,7 +303,7 @@
 
             const adData = {
                 title: document.getElementById('adTitle').value.trim(),
-                category: document.getElementById('adCategory').value,
+                category: selectedCategory,
                 price: Number(document.getElementById('adPrice').value),
                 location: document.getElementById('adLocation').value.trim(),
                 phone: document.getElementById('adPhone').value.trim(),
@@ -297,7 +342,6 @@
                 loadingState.classList.add('hidden');
                 document.getElementById('adForm').classList.add('hidden');
                 
-                // Show success message with premium button
                 document.getElementById('successMessage').classList.remove('hidden');
                 document.getElementById('makePremiumSection').classList.remove('hidden');
                 document.getElementById('premiumPaymentLink').href = `premium-payment.html?id=${docRef.id}`;
@@ -308,6 +352,11 @@
                 submitBtn.classList.remove('hidden');
                 alert('Error submitting ad: ' + error.message);
             }
+        });
+
+        // Load categories when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategoriesForPost();
         });
     </script>
 </body>
