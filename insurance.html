@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Quotes - Emarket Sri Lanka</title>
+    
+    <!-- Open Graph Meta Tags (Facebook/WhatsApp Preview) -->
+    <meta property="og:title" content="Get Best Insurance Quotes in Sri Lanka - Emarket">
+    <meta property="og:description" content="Compare Vehicle, Life & Medical Insurance from top providers. Free quotes, instant results!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200">
+    <meta property="og:url" content="https://chinthakanuwan.github.io/Emarket/insurance.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Get Best Insurance Quotes in Sri Lanka">
+    <meta name="twitter:description" content="Compare Vehicle, Life & Medical Insurance. Free quotes!">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="text-2xl font-bold text-blue-600">
+                    <i class="fas fa-layer-group mr-2"></i>Emarket
+                </a>
+                <a href="index.html" class="text-gray-600 hover:text-blue-600">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="max-w-3xl mx-auto">
+                <i class="fas fa-shield-alt text-6xl mb-4 text-yellow-300"></i>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Get the Best Insurance Quotes</h1>
+                <p class="text-xl text-blue-100 mb-6">Compare prices from Sri Lanka's top insurance providers. Free quotes, no obligations!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Share Section -->
+    <div class="container mx-auto px-4 -mt-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-2xl mx-auto">
+            <h3 class="text-center font-bold text-gray-800 mb-2">
+                <i class="fas fa-share-alt text-blue-600 mr-2"></i>Share with Friends & Family
+            </h3>
+            <p class="text-center text-gray-600 text-sm mb-4">Help others get the best insurance rates!</p>
+            
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="shareOnFacebook()" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </button>
+                <button onclick="shareOnWhatsApp()" class="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button onclick="shareOnTwitter()" class="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fab fa-x-twitter"></i> Twitter
+                </button>
+                <button onclick="shareOnLinkedIn()" class="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+                    <i class="fab fa-linkedin-in"></i> LinkedIn
+                </button>
+                <button onclick="shareOnTelegram()" class="flex items-center gap-2 bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </button>
+                <button onclick="copyLink()" class="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-link"></i> Copy Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insurance Types -->
+    <div class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-blue-500">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-car text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-center text-gray-800 mb-2">Vehicle Insurance</h3>
+                <p class="text-gray-600 text-center text-sm">Comprehensive & Third Party coverage</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-purple-500">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-heart text-3xl text-purple-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-center text-gray-800 mb-2">Life Insurance</h3>
+                <p class="text-gray-600 text-center text-sm">Secure your family's future</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-green-500">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-hospital text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-center text-gray-800 mb-2">Medical Insurance</h3>
+                <p class="text-gray-600 text-center text-sm">Health coverage for individuals</p>
+            </div>
+        </div>
+
+        <!-- Quote Form -->
+        <div class="max-w-2xl mx-auto mb-12">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">
+                    <i class="fas fa-file-alt text-blue-600 mr-2"></i>Get Your Free Quote
+                </h2>
+                <p class="text-gray-600 text-center mb-6">Fill in the form and our agents will contact you</p>
+
+                <form id="insuranceForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Insurance Type *</label>
+                        <select id="insuranceType" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">Select Insurance Type</option>
+                            <option value="vehicle-comprehensive">Vehicle - Comprehensive</option>
+                            <option value="vehicle-third-party">Vehicle - Third Party</option>
+                            <option value="life-term">Life - Term Insurance</option>
+                            <option value="medical-individual">Medical - Individual</option>
+                            <option value="medical-family">Medical - Family</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                        <input type="text" id="fullName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                        <input type="tel" id="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="077 123 4567">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="your@email.com">
+                    </div>
+                    <div id="vehicleNumberField" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Vehicle Number</label>
+                        <input type="text" id="vehicleNumber" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., CBA-1234">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Additional Details</label>
+                        <textarea id="details" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Any specific requirements..."></textarea>
+                    </div>
+                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-bold text-lg hover:shadow-lg transition">
+                        <i class="fas fa-paper-plane mr-2"></i>Get Free Quote
+                    </button>
+                    <div id="loadingState" class="hidden text-center py-4">
+                        <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i>
+                        <p class="text-gray-600">Submitting...</p>
+                    </div>
+                </form>
+
+                <div id="successMessage" class="hidden bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                    <i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-green-800 mb-2">Request Submitted!</h3>
+                    <p class="text-green-700 mb-4">Our agents will contact you within 24 hours.</p>
+                    <a href="index.html" class="inline-block bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-12">
+        <div class="container mx-auto px-4 py-8 text-center">
+            <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+            <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
+        </div>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
+            authDomain: "emarket-e3421.firebaseapp.com",
+            projectId: "emarket-e3421",
+            storageBucket: "emarket-e3421.firebasestorage.app",
+            messagingSenderId: "1029527442178",
+            appId: "1:1029527442178:web:535443f333ce6e9deda81b"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Show/hide fields
+        document.getElementById('insuranceType').addEventListener('change', function() {
+            const type = this.value;
+            const vehicleField = document.getElementById('vehicleNumberField');
+            if (type.startsWith('vehicle')) {
+                vehicleField.classList.remove('hidden');
+            } else {
+                vehicleField.classList.add('hidden');
+            }
+        });
+
+        // Form submission
+        document.getElementById('insuranceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingState = document.getElementById('loadingState');
+            
+            const formData = {
+                insuranceType: document.getElementById('insuranceType').value,
+                fullName: document.getElementById('fullName').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                vehicleNumber: document.getElementById('vehicleNumber').value.trim(),
+                details: document.getElementById('details').value.trim(),
+                status: 'new',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            submitBtn.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+
+            try {
+                const docRef = await db.collection('insuranceLeads').add(formData);
+                await db.collection('notifications').add({
+                    title: '🆕 New Insurance Lead',
+                    message: `${formData.fullName} requested ${formData.insuranceType} insurance. Phone: ${formData.phone}`,
+                    type: 'insurance_lead',
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                loadingState.classList.add('hidden');
+                document.getElementById('insuranceForm').classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
+            } catch (error) {
+                loadingState.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // ===== SOCIAL SHARE FUNCTIONS =====
+        const shareUrl = window.location.href;
+        const shareTitle = 'Get Best Insurance Quotes in Sri Lanka - Emarket';
+        const shareDescription = 'Compare Vehicle, Life & Medical Insurance from top providers. Free quotes!';
+
+        function shareOnFacebook() {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
+        }
+        function shareOnWhatsApp() {
+            window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + '\n\n' + shareDescription + '\n\n' + shareUrl)}`, '_blank');
+        }
+        function shareOnTwitter() {
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
+        }
+        function shareOnLinkedIn() {
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
+        }
+        function shareOnTelegram() {
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`, '_blank');
+        }
+        function copyLink() {
+            navigator.clipboard.writeText(shareUrl).then(() => alert('Link copied to clipboard!'));
+        }
+    </script>
+</body>
+</html>
