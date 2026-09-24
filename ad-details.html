@@ -4,25 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Ad Details - Emarket</title>
+    
+    <!-- Dynamic Open Graph Meta Tags -->
+    <meta property="og:title" id="ogTitle" content="Ad Details - Emarket">
+    <meta property="og:description" id="ogDescription" content="Check out this ad on Emarket Sri Lanka">
+    <meta property="og:image" id="ogImage" content="https://via.placeholder.com/1200x630">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:type" content="product">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b sticky top-0 z-40">
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
-                <a href="index.html" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
-                    <i class="fas fa-layer-group"></i> Emarket
+                <a href="index.html" class="text-2xl font-bold text-blue-600">
+                    <i class="fas fa-layer-group mr-2"></i>Emarket
                 </a>
                 <div class="flex items-center gap-3">
-                    <a href="index.html" class="text-gray-600 hover:text-blue-600 font-medium">
-                        <i class="fas fa-home mr-1"></i> Home
+                    <a href="index.html" class="text-gray-600 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>Home
                     </a>
-                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600">
+                    <a href="post-ad.html" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold">
                         <i class="fas fa-plus mr-2"></i>Post Free Ad
                     </a>
                 </div>
@@ -31,12 +39,83 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-6 max-w-7xl">
+    <div class="container mx-auto px-4 py-6 max-w-6xl flex-grow">
         
         <!-- Loading -->
         <div id="loadingState" class="text-center py-20">
             <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
             <p class="text-gray-600">Loading ad details...</p>
+        </div>
+
+        <!-- Ad Content -->
+        <div id="adContent" class="hidden">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
+                <div class="relative">
+                    <img id="mainImage" src="" alt="" class="w-full h-96 object-cover">
+                    <div id="premiumBadge" class="hidden absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        <i class="fas fa-star mr-1"></i>PREMIUM
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+                        <div>
+                            <h1 id="adTitle" class="text-3xl font-bold text-gray-800 mb-2"></h1>
+                            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                <span><i class="fas fa-folder mr-1"></i><span id="adCategory"></span></span>
+                                <span><i class="fas fa-map-marker-alt mr-1"></i><span id="adLocation"></span></span>
+                                <span><i class="fas fa-eye mr-1"></i><span id="adViews"></span> views</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p id="adPrice" class="text-4xl font-bold text-blue-600"></p>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4 mt-4">
+                        <h2 class="text-xl font-bold text-gray-800 mb-3">Description</h2>
+                        <p id="adDescription" class="text-gray-700 leading-relaxed whitespace-pre-line"></p>
+                    </div>
+
+                    <!-- Social Share Section -->
+                    <div class="bg-gray-50 rounded-lg p-4 mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-share-alt text-blue-600 mr-2"></i>Share this Ad
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="shareAdOnFacebook()" class="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                            <button onclick="shareAdOnWhatsApp()" class="flex items-center gap-2 bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 text-sm">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button onclick="shareAdOnTwitter()" class="flex items-center gap-2 bg-black text-white px-3 py-2 rounded hover:bg-gray-800 text-sm">
+                                <i class="fab fa-x-twitter"></i> Twitter
+                            </button>
+                            <button onclick="copyAdLink()" class="flex items-center gap-2 bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 text-sm">
+                                <i class="fas fa-link"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4 mt-6 bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-gray-800 mb-3">Contact Seller</h3>
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600">Seller Email:</p>
+                                <p id="sellerEmail" class="font-medium text-gray-800"></p>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600">Phone:</p>
+                                <p id="sellerPhone" class="font-medium text-gray-800"></p>
+                            </div>
+                            <button onclick="contactSeller()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold">
+                                <i class="fas fa-phone mr-2"></i>Contact Seller
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Error -->
@@ -47,170 +126,17 @@
                 <i class="fas fa-arrow-left mr-2"></i>Back to Home
             </a>
         </div>
-
-        <!-- Ad Content -->
-        <div id="adContent" class="hidden">
-            
-            <!-- Top Section: Image Gallery + Ad Info -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                
-                <!-- Image Gallery (Left - 2/3 width) -->
-                <div class="lg:col-span-2">
-                    <!-- Main Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4">
-                        <div class="relative">
-                            <img id="mainImage" src="" alt="" class="w-full h-96 object-cover cursor-pointer hover:opacity-95 transition">
-                            <div id="premiumBadge" class="hidden absolute top-4 right-4 bg-yellow-500 text-white px-4 py-2 rounded-full font-bold shadow-lg">
-                                <i class="fas fa-star mr-1"></i> PREMIUM
-                            </div>
-                            <!-- Image Counter -->
-                            <div class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
-                                <span id="imageCounter">1</span> / <span id="totalImages">1</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Thumbnail Gallery -->
-                    <div id="thumbnailContainer" class="grid grid-cols-4 gap-2">
-                        <!-- Thumbnails will be added here -->
-                    </div>
-
-                    <!-- Image Navigation Buttons -->
-                    <div class="flex justify-between mt-4">
-                        <button onclick="previousImage()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium">
-                            <i class="fas fa-chevron-left mr-2"></i>Previous
-                        </button>
-                        <button onclick="nextImage()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium">
-                            Next<i class="fas fa-chevron-right ml-2"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Ad Info (Right - 1/3 width) -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-lg shadow-md p-6 sticky top-20">
-                        <div class="mb-4">
-                            <h1 id="adTitle" class="text-2xl font-bold text-gray-800 mb-2"></h1>
-                            <p id="adPrice" class="text-3xl font-bold text-blue-600 mb-4"></p>
-                        </div>
-
-                        <div class="space-y-3 mb-6">
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <i class="fas fa-folder text-blue-500"></i>
-                                <span id="adCategory"></span>
-                            </div>
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <i class="fas fa-map-marker-alt text-red-500"></i>
-                                <span id="adLocation"></span>
-                            </div>
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <i class="fas fa-eye text-green-500"></i>
-                                <span id="adViews"></span> views
-                            </div>
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <i class="fas fa-clock text-purple-500"></i>
-                                <span id="adDate"></span>
-                            </div>
-                        </div>
-
-                        <!-- Contact Seller Box -->
-                        <div class="border-t pt-4">
-                            <h3 class="font-bold text-gray-800 mb-3">Contact Seller</h3>
-                            <div class="space-y-2 mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500">Email</p>
-                                    <p id="sellerEmail" class="text-sm font-medium text-gray-800"></p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-500">Phone</p>
-                                    <p id="sellerPhone" class="text-sm font-medium text-gray-800"></p>
-                                </div>
-                            </div>
-                            <button onclick="contactSeller()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold mb-2">
-                                <i class="fas fa-phone mr-2"></i>Call Now
-                            </button>
-                            <button onclick="showContactForm()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold">
-                                <i class="fas fa-envelope mr-2"></i>Send Message
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Description Section -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Description</h2>
-                <p id="adDescription" class="text-gray-700 leading-relaxed whitespace-pre-line"></p>
-            </div>
-
-            <!-- Tags -->
-            <div id="tagsContainer" class="mb-6">
-                <div class="flex flex-wrap gap-2" id="adTags"></div>
-            </div>
-
-            <!-- Similar Ads Section -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-th-large text-blue-600"></i> Similar Ads
-                </h2>
-                <div id="similarAdsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="col-span-full text-center py-10 text-gray-400">
-                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                        <p>Loading similar ads...</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Image Lightbox Modal -->
-    <div id="lightboxModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
-        <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300">
-            <i class="fas fa-times"></i>
-        </button>
-        <button onclick="previousImage()" class="absolute left-4 text-white text-4xl hover:text-gray-300">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button onclick="nextImage()" class="absolute right-4 text-white text-4xl hover:text-gray-300">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        <img id="lightboxImage" src="" alt="" class="max-w-full max-h-[90vh] object-contain">
     </div>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white mt-12">
-        <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">About Emarket</h3>
-                    <p class="text-gray-400 text-sm">Sri Lanka's #1 Classified Ads Platform. Buy and sell anything for free!</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="index.html" class="hover:text-white">Home</a></li>
-                        <li><a href="post-ad.html" class="hover:text-white">Post Free Ad</a></li>
-                        <li><a href="about.html" class="hover:text-white">About Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-phone mr-2"></i>077-123-4567</p>
-                    <p class="text-gray-400 text-sm mb-2"><i class="fas fa-envelope mr-2"></i>info@emarket.lk</p>
-                    <p class="text-gray-400 text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Colombo, Sri Lanka</p>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-8 pt-6 text-center">
-                <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
-                <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
-            </div>
+        <div class="container mx-auto px-4 py-8 text-center">
+            <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+            <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
         </div>
     </footer>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -219,231 +145,87 @@
             messagingSenderId: "1029527442178",
             appId: "1:1029527442178:web:535443f333ce6e9deda81b"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Get ad ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const adId = urlParams.get('id');
         let currentAd = null;
-        let currentImageIndex = 0;
-        let allImages = [];
 
-        console.log(" URL:", window.location.href);
-        console.log("🔍 Ad ID:", adId);
-
-        // Load Ad Details
         async function loadAdDetails() {
             if (!adId) {
-                console.error("❌ No ad ID in URL!");
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
                 return;
             }
 
             try {
-                console.log("📥 Loading ad:", adId);
                 const doc = await db.collection('ads').doc(adId).get();
-                
-                console.log(" Document exists:", doc.exists);
-                
                 if (!doc.exists) {
-                    console.error("❌ Ad not found!");
                     document.getElementById('loadingState').classList.add('hidden');
                     document.getElementById('errorState').classList.remove('hidden');
                     return;
                 }
 
                 currentAd = { id: doc.id, ...doc.data() };
-                console.log("✅ Ad loaded:", currentAd);
-                
-                // Display ad
-                document.getElementById('pageTitle').textContent = currentAd.title + ' - Emarket';
-                document.getElementById('adTitle').textContent = currentAd.title || 'Untitled';
-                document.getElementById('adCategory').textContent = currentAd.category || 'General';
-                document.getElementById('adLocation').textContent = currentAd.location || 'Sri Lanka';
-                document.getElementById('adPrice').textContent = 'Rs. ' + Number(currentAd.price).toLocaleString();
-                document.getElementById('adDescription').textContent = currentAd.desc || 'No description';
-                document.getElementById('sellerEmail').textContent = currentAd.sellerEmail || 'N/A';
-                document.getElementById('sellerPhone').textContent = currentAd.phone || 'N/A';
-                document.getElementById('adViews').textContent = currentAd.views || 0;
-                document.getElementById('adDate').textContent = currentAd.createdAt ? new Date(currentAd.createdAt.seconds * 1000).toLocaleDateString() : 'Recently';
-                
-                if (currentAd.isPremium) {
-                    document.getElementById('premiumBadge').classList.remove('hidden');
-                }
+                displayAdDetails(currentAd);
 
-                // Setup images
-                allImages = currentAd.images && currentAd.images.length > 0 ? currentAd.images : ['https://via.placeholder.com/800x600?text=No+Image'];
-                document.getElementById('totalImages').textContent = allImages.length;
-                displayImage(0);
-                createThumbnails();
-
-                // Tags
-                if (currentAd.tags && currentAd.tags.length > 0) {
-                    document.getElementById('adTags').innerHTML = currentAd.tags.map(tag => 
-                        `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`
-                    ).join('');
-                } else {
-                    document.getElementById('tagsContainer').classList.add('hidden');
-                }
-
-                // Increment views (with error handling)
-                try {
-                    await db.collection('ads').doc(adId).update({
-                        views: (currentAd.views || 0) + 1
-                    });
-                    document.getElementById('adViews').textContent = (currentAd.views || 0) + 1;
-                    console.log("✅ View count updated");
-                } catch (permError) {
-                    console.warn("⚠️ View count not updated:", permError.message);
-                }
+                await db.collection('ads').doc(adId).update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                });
 
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('adContent').classList.remove('hidden');
 
-                // Load similar ads
-                loadSimilarAds();
-
             } catch (error) {
-                console.error("❌ Error:", error);
+                console.error("Error:", error);
                 document.getElementById('loadingState').classList.add('hidden');
                 document.getElementById('errorState').classList.remove('hidden');
             }
         }
 
-        // Display Image
-        function displayImage(index) {
-            if (index < 0) index = allImages.length - 1;
-            if (index >= allImages.length) index = 0;
+        function displayAdDetails(ad) {
+            document.getElementById('pageTitle').textContent = ad.title + ' - Emarket';
+            document.getElementById('mainImage').src = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/800x400';
+            document.getElementById('adTitle').textContent = ad.title;
+            document.getElementById('adCategory').textContent = ad.category || 'General';
+            document.getElementById('adLocation').textContent = ad.location || 'Sri Lanka';
+            document.getElementById('adPrice').textContent = 'Rs. ' + Number(ad.price).toLocaleString();
+            document.getElementById('adDescription').textContent = ad.desc || 'No description';
+            document.getElementById('sellerEmail').textContent = ad.sellerEmail || 'N/A';
+            document.getElementById('sellerPhone').textContent = ad.phone || 'N/A';
+            document.getElementById('adViews').textContent = ad.views || 0;
             
-            currentImageIndex = index;
-            document.getElementById('mainImage').src = allImages[index];
-            document.getElementById('imageCounter').textContent = index + 1;
-            
-            // Update thumbnail active state
-            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-                if (i === index) {
-                    thumb.classList.add('border-blue-500', 'ring-2');
-                    thumb.classList.remove('border-gray-300');
-                } else {
-                    thumb.classList.remove('border-blue-500', 'ring-2');
-                    thumb.classList.add('border-gray-300');
-                }
-            });
-        }
+            if (ad.isPremium) document.getElementById('premiumBadge').classList.remove('hidden');
 
-        // Create Thumbnails
-        function createThumbnails() {
-            const container = document.getElementById('thumbnailContainer');
-            container.innerHTML = allImages.map((img, index) => `
-                <img src="${img}" 
-                     onclick="displayImage(${index})" 
-                     class="thumbnail w-full h-20 object-cover rounded-lg cursor-pointer border-2 border-gray-300 hover:border-blue-500 transition ${index === 0 ? 'border-blue-500 ring-2' : ''}">
-            `).join('');
-        }
-
-        // Navigation
-        function previousImage() {
-            displayImage(currentImageIndex - 1);
-        }
-
-        function nextImage() {
-            displayImage(currentImageIndex + 1);
-        }
-
-        // Lightbox
-        document.getElementById('mainImage').addEventListener('click', function() {
-            document.getElementById('lightboxImage').src = allImages[currentImageIndex];
-            document.getElementById('lightboxModal').classList.remove('hidden');
-        });
-
-        function closeLightbox() {
-            document.getElementById('lightboxModal').classList.add('hidden');
-        }
-
-        // ===== SIMILAR ADS - FIXED VERSION (No Index Required) =====
-        function loadSimilarAds() {
-            if (!currentAd || !currentAd.category) {
-                document.getElementById('similarAdsGrid').innerHTML = 
-                    '<div class="col-span-full text-center py-10 text-gray-400">No similar ads found</div>';
-                return;
-            }
-            
-            console.log("🔄 Loading similar ads for category:", currentAd.category);
-            
-            // Fetch all approved ads and filter client-side (no index needed)
-            db.collection('ads')
-                .where('status', '==', 'approved')
-                .get()
-                .then(snapshot => {
-                    const allAds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    console.log("📋 Total approved ads:", allAds.length);
-                    
-                    // Filter by same category and exclude current ad
-                    const similarAds = allAds
-                        .filter(ad => ad.category === currentAd.category && ad.id !== currentAd.id)
-                        .sort((a, b) => {
-                            const dateA = a.createdAt ? a.createdAt.seconds : 0;
-                            const dateB = b.createdAt ? b.createdAt.seconds : 0;
-                            return dateB - dateA;
-                        })
-                        .slice(0, 4);
-                    
-                    console.log("⭐ Similar ads found:", similarAds.length);
-                    
-                    const container = document.getElementById('similarAdsGrid');
-                    
-                    if (similarAds.length === 0) {
-                        container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No similar ads found in this category</div>';
-                        return;
-                    }
-                    
-                    container.innerHTML = similarAds.map(ad => {
-                        const img = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/400x300';
-                        const price = ad.price ? `Rs. ${Number(ad.price).toLocaleString()}` : 'Contact';
-                        const views = ad.views || 0;
-                        
-                        return `
-                            <a href="ad-details.html?id=${ad.id}" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
-                                <div class="relative h-40 bg-gray-100">
-                                    <img src="${img}" class="w-full h-full object-cover">
-                                    ${ad.isPremium ? '<span class="absolute top-2 left-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>' : ''}
-                                </div>
-                                <div class="p-3">
-                                    <h3 class="font-bold text-gray-800 text-sm line-clamp-2 mb-1">${ad.title}</h3>
-                                    <p class="text-blue-700 font-extrabold">${price}</p>
-                                    <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
-                                        <span><i class="fas fa-map-marker-alt mr-1"></i>${ad.location || 'Sri Lanka'}</span>
-                                        <span><i class="fas fa-eye mr-1"></i>${views}</span>
-                                    </div>
-                                </div>
-                            </a>
-                        `;
-                    }).join('');
-                })
-                .catch(error => {
-                    console.error("❌ Error loading similar ads:", error);
-                    document.getElementById('similarAdsGrid').innerHTML = 
-                        '<div class="col-span-full text-center py-10 text-red-500">Error loading similar ads</div>';
-                });
+            // Update OG Meta Tags dynamically
+            document.getElementById('ogTitle').setAttribute('content', ad.title + ' - Emarket Sri Lanka');
+            document.getElementById('ogDescription').setAttribute('content', ad.desc || 'Check out this ad on Emarket');
+            document.getElementById('ogImage').setAttribute('content', ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/1200x630');
+            document.getElementById('ogUrl').setAttribute('content', window.location.href);
         }
 
         function contactSeller() {
-            if (currentAd && currentAd.phone) {
-                window.location.href = 'tel:' + currentAd.phone;
-            } else {
-                alert('Phone number not available');
-            }
+            if (currentAd && currentAd.phone) window.location.href = 'tel:' + currentAd.phone;
+            else alert('Phone number not available');
         }
 
-        function showContactForm() {
-            alert('Contact form feature coming soon!');
+        // ===== AD SHARE FUNCTIONS =====
+        function shareAdOnFacebook() {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
+        }
+        function shareAdOnWhatsApp() {
+            const text = `${document.getElementById('adTitle').textContent}\n\nPrice: ${document.getElementById('adPrice').textContent}\nLocation: ${document.getElementById('adLocation').textContent}\n\n${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+        function shareAdOnTwitter() {
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(document.getElementById('adTitle').textContent)}&url=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
+        }
+        function copyAdLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => alert('Ad link copied!'));
         }
 
-        // Initialize
-        loadAdDetails();
+        document.addEventListener('DOMContentLoaded', loadAdDetails);
     </script>
 </body>
 </html>
