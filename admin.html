@@ -33,6 +33,19 @@
         .feature-toggle { transition: all 0.3s ease; }
         .feature-toggle.active { background: #10b981; color: white; }
         .feature-toggle.inactive { background: #e5e7eb; color: #6b7280; }
+        
+        /* Insurance Lead Card Styles */
+        .lead-card { transition: all 0.3s ease; }
+        .lead-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .status-new { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+        .status-contacted { background: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b; }
+        .status-converted { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .status-rejected { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        
+        /* Modal Styles */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: white; border-radius: 1rem; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
 <body class="bg-gray-100 smooth-scroll">
@@ -96,6 +109,10 @@
                 <button onclick="showSection('users')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="users">
                     <i class="fas fa-users w-5"></i> Users
                 </button>
+                <button onclick="showSection('insurance')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn relative" data-section="insurance">
+                    <i class="fas fa-shield-alt w-5"></i> Insurance Leads
+                    <span id="insuranceBadge" class="notification-badge hidden">0</span>
+                </button>
                 <button onclick="showSection('premium')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 transition touch-btn" data-section="premium">
                     <i class="fas fa-crown w-5"></i> Premium Ads
                 </button>
@@ -158,6 +175,7 @@
 
             <main class="flex-1 overflow-y-auto p-4 md:p-6">
                 
+                <!-- Dashboard Section -->
                 <section id="section-dashboard" class="section card-enter">
                     <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div class="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-blue-500">
@@ -206,6 +224,7 @@
                     </div>
                 </section>
 
+                <!-- Ads Management Section -->
                 <section id="section-ads" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -236,6 +255,7 @@
                     </div>
                 </section>
 
+                <!-- Users Section -->
                 <section id="section-users" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">User Management</h2>
@@ -245,6 +265,58 @@
                     </div>
                 </section>
 
+                <!-- 🔔 INSURANCE LEADS SECTION - PROFESSIONAL CARDS -->
+                <section id="section-insurance" class="section hidden card-enter">
+                    <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-shield-alt text-blue-600"></i> Insurance Leads
+                            </h2>
+                            <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                                <input type="text" id="insuranceSearch" placeholder="Search leads..." 
+                                       oninput="filterInsuranceLeads()" 
+                                       class="flex-1 md:flex-none px-4 py-2 border border-gray-300 rounded-lg touch-btn">
+                                <select id="insuranceFilter" onchange="filterInsuranceLeads()" class="px-4 py-2 border border-gray-300 rounded-lg touch-btn">
+                                    <option value="all">All Status</option>
+                                    <option value="new">New</option>
+                                    <option value="contacted">Contacted</option>
+                                    <option value="converted">Converted</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <button onclick="exportInsuranceLeads()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 touch-btn text-sm">
+                                    <i class="fas fa-download mr-2"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Insurance Stats -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                                <p class="text-xs text-gray-600">Total Leads</p>
+                                <p class="text-2xl font-bold text-blue-600" id="statTotalLeads">0</p>
+                            </div>
+                            <div class="bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-500">
+                                <p class="text-xs text-gray-600">New</p>
+                                <p class="text-2xl font-bold text-yellow-600" id="statNewLeads">0</p>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-4 border-l-4 border-green-500">
+                                <p class="text-xs text-gray-600">Converted</p>
+                                <p class="text-2xl font-bold text-green-600" id="statConvertedLeads">0</p>
+                            </div>
+                            <div class="bg-purple-50 rounded-lg p-4 border-l-4 border-purple-500">
+                                <p class="text-xs text-gray-600">Est. Revenue</p>
+                                <p class="text-2xl font-bold text-purple-600" id="statRevenue">Rs. 0</p>
+                            </div>
+                        </div>
+
+                        <!-- Insurance Leads Cards -->
+                        <div id="insuranceLeadsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <p class="col-span-full text-center text-gray-400 py-8">Loading...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Premium Ads Section -->
                 <section id="section-premium" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">Premium Ads</h2>
@@ -254,6 +326,7 @@
                     </div>
                 </section>
 
+                <!-- Notifications Section -->
                 <section id="section-notifications" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex justify-between items-center mb-6">
@@ -268,6 +341,7 @@
                     </div>
                 </section>
 
+                <!-- Categories Section -->
                 <section id="section-categories" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <div class="flex justify-between items-center mb-6">
@@ -282,6 +356,7 @@
                     </div>
                 </section>
 
+                <!-- Ad Slots Section -->
                 <section id="section-adslots" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-2">Ad Slots Management</h2>
@@ -290,6 +365,7 @@
                     </div>
                 </section>
 
+                <!-- Settings Section -->
                 <section id="section-settings" class="section hidden card-enter">
                     <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-6">Site Settings</h2>
@@ -313,6 +389,94 @@
         </div>
     </div>
 
+    <!-- 🔔 EDIT INSURANCE LEAD MODAL -->
+    <div id="editLeadModal" class="modal-overlay">
+        <div class="modal-content p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-edit text-blue-600 mr-2"></i>Edit Insurance Lead
+                </h3>
+                <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700 touch-btn">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="editLeadForm" class="space-y-4">
+                <input type="hidden" id="editLeadId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                    <input type="text" id="editFullName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                    <input type="tel" id="editPhone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="editEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Insurance Type *</label>
+                    <select id="editInsuranceType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="vehicle-comprehensive">Vehicle - Comprehensive</option>
+                        <option value="vehicle-third-party">Vehicle - Third Party</option>
+                        <option value="vehicle-motorcycle">Motorcycle Insurance</option>
+                        <option value="vehicle-commercial">Commercial Vehicle</option>
+                        <option value="life-term">Life - Term Insurance</option>
+                        <option value="life-whole">Life - Whole Life</option>
+                        <option value="life-endowment">Life - Endowment</option>
+                        <option value="medical-individual">Medical - Individual</option>
+                        <option value="medical-family">Medical - Family</option>
+                        <option value="medical-group">Medical - Group/Corporate</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
+                    <input type="text" id="editVehicleNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                    <input type="number" id="editAge" min="18" max="80" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="editStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="new">New</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="converted">Converted</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Additional Details</label>
+                    <textarea id="editDetails" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Admin Notes (Internal)</label>
+                    <textarea id="editAdminNotes" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Your private notes..."></textarea>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeEditModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-400 touch-btn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 touch-btn">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <script>
@@ -331,8 +495,10 @@
         let currentUser = null;
         let allAds = [];
         let allUsers = [];
+        let allInsuranceLeads = [];
         let unreadNotifCount = 0;
         let notifUnsubscribe = null;
+        let insuranceUnsubscribe = null;
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -347,6 +513,7 @@
                         currentUser = user;
                         showDashboard(user);
                         setupRealtimeNotifications();
+                        setupInsuranceListener();
                     } else {
                         showToast('Access Denied! Not an admin.', 'error');
                         logout();
@@ -371,6 +538,22 @@
                     }
                     if (!document.getElementById('section-dashboard').classList.contains('hidden')) {
                         renderRecentNotifications(snapshot.docs.slice(0, 5));
+                    }
+                });
+        }
+
+        function setupInsuranceListener() {
+            if (insuranceUnsubscribe) insuranceUnsubscribe();
+            insuranceUnsubscribe = db.collection('insuranceLeads')
+                .where('status', '==', 'new')
+                .onSnapshot(snapshot => {
+                    const count = snapshot.size;
+                    const badge = document.getElementById('insuranceBadge');
+                    if (count > 0) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
                     }
                 });
         }
@@ -407,6 +590,7 @@
 
         function logout() {
             if (notifUnsubscribe) notifUnsubscribe();
+            if (insuranceUnsubscribe) insuranceUnsubscribe();
             auth.signOut().then(() => {
                 document.getElementById('dashboard').classList.add('hidden');
                 document.getElementById('loginScreen').classList.remove('hidden');
@@ -419,12 +603,13 @@
             document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active', 'bg-blue-50', 'text-blue-600'));
             const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
             if (activeLink) activeLink.classList.add('active', 'bg-blue-50', 'text-blue-600');
-            const titles = { dashboard: 'Dashboard', ads: 'Ads Management', users: 'Users', premium: 'Premium Ads', notifications: 'Notifications', categories: 'Categories', adslots: 'Ad Slots', settings: 'Settings' };
+            const titles = { dashboard: 'Dashboard', ads: 'Ads Management', users: 'Users', insurance: 'Insurance Leads', premium: 'Premium Ads', notifications: 'Notifications', categories: 'Categories', adslots: 'Ad Slots', settings: 'Settings' };
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
             document.getElementById('mobileTitle').textContent = titles[sectionName] || 'Dashboard';
             if (window.innerWidth < 768) toggleSidebar();
             if (sectionName === 'ads') loadAds();
             if (sectionName === 'users') loadUsers();
+            if (sectionName === 'insurance') loadInsuranceLeads();
             if (sectionName === 'premium') loadPremiumAds();
             if (sectionName === 'notifications') loadNotifications();
             if (sectionName === 'categories') loadCategories();
@@ -497,29 +682,13 @@
                 .catch(err => showToast('Error: ' + err.message, 'error'));
         }
 
-        // ✅ FIX: Load ALL users (not just admin)
         function loadUsers() {
             db.collection('users').get().then(snap => {
                 allUsers = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 const container = document.getElementById('usersList');
-                
-                console.log('📋 Total users found:', allUsers.length);
-                
-                if (allUsers.length === 0) { 
-                    container.innerHTML = '<p class="text-center text-gray-400 py-8">No users found</p>'; 
-                    return; 
-                }
-                
+                if (allUsers.length === 0) { container.innerHTML = '<p class="text-center text-gray-400 py-8">No users found</p>'; return; }
                 container.innerHTML = allUsers.map(user => {
-                    const features = user.features || { 
-                        canPostAds: true, 
-                        maxAdsPerMonth: 10, 
-                        isPremiumUser: false, 
-                        premiumAdsLimit: 0, 
-                        featuredListings: false, 
-                        prioritySupport: false 
-                    };
-                    
+                    const features = user.features || { canPostAds: true, maxAdsPerMonth: 10, isPremiumUser: false, premiumAdsLimit: 0, featuredListings: false, prioritySupport: false };
                     return `
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                             <div class="flex items-center justify-between mb-4">
@@ -531,56 +700,38 @@
                                         <p class="font-bold text-gray-800">${user.fullName || 'N/A'}</p>
                                         <p class="text-sm text-gray-600">${user.email}</p>
                                         <p class="text-xs text-gray-500">Ads Posted: ${user.adsPosted || 0}</p>
-                                        <p class="text-xs text-gray-500">Joined: ${user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown'}</p>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium ${user.userType === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">
-                                    ${user.userType || 'customer'}
-                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${user.userType === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">${user.userType || 'customer'}</span>
                             </div>
                             <div class="border-t pt-4">
                                 <h4 class="font-bold text-sm text-gray-700 mb-3">Features & Permissions</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-ad mr-2 text-blue-500"></i>Can Post Ads</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'canPostAds', ${!features.canPostAds})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.canPostAds ? 'active' : 'inactive'}">
-                                            ${features.canPostAds ? '✓ ON' : '✗ OFF'}
-                                        </button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'canPostAds', ${!features.canPostAds})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.canPostAds ? 'active' : 'inactive'}">${features.canPostAds ? '✓ ON' : '✗ OFF'}</button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-crown mr-2 text-yellow-500"></i>Premium User</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'isPremiumUser', ${!features.isPremiumUser})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.isPremiumUser ? 'active' : 'inactive'}">
-                                            ${features.isPremiumUser ? '✓ ON' : '✗ OFF'}
-                                        </button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'isPremiumUser', ${!features.isPremiumUser})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.isPremiumUser ? 'active' : 'inactive'}">${features.isPremiumUser ? '✓ ON' : '✗ OFF'}</button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-star mr-2 text-purple-500"></i>Featured Listings</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">
-                                            ${features.featuredListings ? '✓ ON' : '✗ OFF'}
-                                        </button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">${features.featuredListings ? '✓ ON' : '✗ OFF'}</button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-headset mr-2 text-green-500"></i>Priority Support</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'prioritySupport', ${!features.prioritySupport})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.prioritySupport ? 'active' : 'inactive'}">
-                                            ${features.prioritySupport ? '✓ ON' : '✗ OFF'}
-                                        </button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'prioritySupport', ${!features.prioritySupport})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.prioritySupport ? 'active' : 'inactive'}">${features.prioritySupport ? '✓ ON' : '✗ OFF'}</button>
                                     </div>
                                 </div>
                                 <div class="mt-3 flex gap-2">
-                                    <button onclick="resetUserPassword('${user.email}')" class="flex-1 bg-yellow-500 text-white py-2 rounded text-sm hover:bg-yellow-600 touch-btn">
-                                        <i class="fas fa-key mr-1"></i>Reset Password
-                                    </button>
-                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="flex-1 bg-blue-500 text-white py-2 rounded text-sm hover:bg-blue-600 touch-btn">
-                                        <i class="fas fa-user-edit mr-1"></i>Change Role
-                                    </button>
+                                    <button onclick="resetUserPassword('${user.email}')" class="flex-1 bg-yellow-500 text-white py-2 rounded text-sm hover:bg-yellow-600 touch-btn"><i class="fas fa-key mr-1"></i>Reset Password</button>
+                                    <button onclick="toggleUserRole('${user.id}', '${user.userType || 'customer'}')" class="flex-1 bg-blue-500 text-white py-2 rounded text-sm hover:bg-blue-600 touch-btn"><i class="fas fa-user-edit mr-1"></i>Change Role</button>
                                 </div>
                             </div>
                         </div>
                     `;
                 }).join('');
-            }).catch(error => {
-                console.error('Error loading users:', error);
-                document.getElementById('usersList').innerHTML = `<p class="text-center text-red-500 py-8">Error: ${error.message}</p>`;
             });
         }
 
@@ -590,6 +741,264 @@
                 showToast(`Feature updated!`, 'success');
                 loadUsers();
             } catch (error) { showToast('Error: ' + error.message, 'error'); }
+        }
+
+        // 🔔 INSURANCE LEADS - PROFESSIONAL CARDS WITH EDIT
+        function loadInsuranceLeads() {
+            db.collection('insuranceLeads').orderBy('createdAt', 'desc').get().then(snap => {
+                allInsuranceLeads = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                filterInsuranceLeads();
+            }).catch(error => {
+                console.error('Error loading leads:', error);
+                document.getElementById('insuranceLeadsList').innerHTML = `<p class="col-span-full text-center text-red-500 py-8">Error: ${error.message}</p>`;
+            });
+        }
+
+        function filterInsuranceLeads() {
+            const filter = document.getElementById('insuranceFilter').value;
+            const search = document.getElementById('insuranceSearch').value.toLowerCase();
+            
+            let filtered = allInsuranceLeads;
+            if (filter !== 'all') filtered = filtered.filter(l => l.status === filter);
+            if (search) {
+                filtered = filtered.filter(l => 
+                    (l.fullName && l.fullName.toLowerCase().includes(search)) ||
+                    (l.phone && l.phone.includes(search)) ||
+                    (l.email && l.email.toLowerCase().includes(search)) ||
+                    (l.insuranceType && l.insuranceType.toLowerCase().includes(search))
+                );
+            }
+            
+            // Update stats
+            document.getElementById('statTotalLeads').textContent = allInsuranceLeads.length;
+            document.getElementById('statNewLeads').textContent = allInsuranceLeads.filter(l => l.status === 'new').length;
+            document.getElementById('statConvertedLeads').textContent = allInsuranceLeads.filter(l => l.status === 'converted').length;
+            document.getElementById('statRevenue').textContent = 'Rs. ' + (allInsuranceLeads.filter(l => l.status === 'converted').length * 2500).toLocaleString();
+            
+            renderInsuranceLeads(filtered);
+        }
+
+        function renderInsuranceLeads(leads) {
+            const container = document.getElementById('insuranceLeadsList');
+            
+            if (leads.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-400 py-8">No leads found</p>';
+                return;
+            }
+            
+            const typeIcons = {
+                'vehicle-comprehensive': { icon: 'fa-car', color: 'blue', label: 'Vehicle - Comprehensive' },
+                'vehicle-third-party': { icon: 'fa-car', color: 'blue', label: 'Vehicle - Third Party' },
+                'vehicle-motorcycle': { icon: 'fa-motorcycle', color: 'blue', label: 'Motorcycle' },
+                'vehicle-commercial': { icon: 'fa-truck', color: 'blue', label: 'Commercial Vehicle' },
+                'life-term': { icon: 'fa-heart', color: 'purple', label: 'Life - Term' },
+                'life-whole': { icon: 'fa-heart', color: 'purple', label: 'Life - Whole Life' },
+                'life-endowment': { icon: 'fa-heart', color: 'purple', label: 'Life - Endowment' },
+                'medical-individual': { icon: 'fa-hospital', color: 'green', label: 'Medical - Individual' },
+                'medical-family': { icon: 'fa-hospital', color: 'green', label: 'Medical - Family' },
+                'medical-group': { icon: 'fa-hospital', color: 'green', label: 'Medical - Group' }
+            };
+            
+            const statusClasses = {
+                new: 'status-new',
+                contacted: 'status-contacted',
+                converted: 'status-converted',
+                rejected: 'status-rejected'
+            };
+            
+            container.innerHTML = leads.map(lead => {
+                const typeInfo = typeIcons[lead.insuranceType] || { icon: 'fa-shield-alt', color: 'gray', label: lead.insuranceType };
+                const statusClass = statusClasses[lead.status] || 'status-new';
+                const date = lead.createdAt ? new Date(lead.createdAt.seconds * 1000).toLocaleString() : 'Unknown';
+                const initials = (lead.fullName || 'U').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                const avatarColors = ['from-blue-500 to-purple-600', 'from-green-500 to-teal-600', 'from-orange-500 to-red-600', 'from-pink-500 to-rose-600', 'from-indigo-500 to-blue-600'];
+                const avatarColor = avatarColors[Math.abs(hashCode(lead.id || '')) % avatarColors.length];
+                
+                return `
+                    <div class="lead-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${statusClass}">
+                        <div class="p-4">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="w-16 h-16 bg-gradient-to-br ${avatarColor} rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                                    ${initials}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div>
+                                            <h4 class="font-bold text-gray-800 text-lg">${lead.fullName || 'Unknown'}</h4>
+                                            <p class="text-sm text-gray-600 flex items-center gap-1">
+                                                <i class="fas ${typeInfo.icon} text-${typeInfo.color}-600"></i>
+                                                ${typeInfo.label}
+                                            </p>
+                                        </div>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${getStatusBadgeClass(lead.status)}">
+                                            ${lead.status}
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1"><i class="fas fa-clock mr-1"></i>${date}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-2 mb-4 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-phone text-gray-500 w-5"></i>
+                                    <a href="tel:${lead.phone}" class="text-blue-600 hover:underline font-medium">${lead.phone || 'N/A'}</a>
+                                </div>
+                                ${lead.email ? `
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-envelope text-gray-500 w-5"></i>
+                                    <a href="mailto:${lead.email}" class="text-blue-600 hover:underline">${lead.email}</a>
+                                </div>` : ''}
+                                ${lead.vehicleNumber ? `
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-car text-gray-500 w-5"></i>
+                                    <span class="text-gray-700 font-medium">${lead.vehicleNumber}</span>
+                                </div>` : ''}
+                                ${lead.age ? `
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-birthday-cake text-gray-500 w-5"></i>
+                                    <span class="text-gray-700">Age: ${lead.age}</span>
+                                </div>` : ''}
+                            </div>
+                            
+                            ${lead.details ? `
+                            <div class="bg-gray-50 rounded p-3 mb-4 border">
+                                <p class="text-sm text-gray-700"><i class="fas fa-comment text-gray-500 mr-1"></i>${lead.details}</p>
+                            </div>` : ''}
+                            
+                            ${lead.adminNotes ? `
+                            <div class="bg-yellow-50 rounded p-3 mb-4 border border-yellow-200">
+                                <p class="text-sm text-yellow-800"><i class="fas fa-sticky-note text-yellow-600 mr-1"></i><strong>Admin Note:</strong> ${lead.adminNotes}</p>
+                            </div>` : ''}
+                            
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="openEditModal('${lead.id}')" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 touch-btn font-medium">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </button>
+                                <a href="tel:${lead.phone}" class="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700 touch-btn font-medium text-center">
+                                    <i class="fas fa-phone mr-1"></i>Call
+                                </a>
+                                <a href="https://wa.me/94${(lead.phone || '').replace(/^0/, '')}?text=Hi ${encodeURIComponent(lead.fullName || '')}, regarding your ${encodeURIComponent(lead.insuranceType || '')} inquiry from Emarket" target="_blank" class="flex-1 bg-green-500 text-white py-2 rounded-lg text-sm hover:bg-green-600 touch-btn font-medium text-center">
+                                    <i class="fab fa-whatsapp mr-1"></i>WhatsApp
+                                </a>
+                                <select onchange="updateLeadStatus('${lead.id}', this.value)" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm touch-btn bg-white">
+                                    <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+                                    <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                                    <option value="converted" ${lead.status === 'converted' ? 'selected' : ''}>Converted</option>
+                                    <option value="rejected" ${lead.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                </select>
+                                <button onclick="deleteInsuranceLead('${lead.id}')" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 touch-btn">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                new: 'bg-blue-100 text-blue-800',
+                contacted: 'bg-yellow-100 text-yellow-800',
+                converted: 'bg-green-100 text-green-800',
+                rejected: 'bg-red-100 text-red-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash;
+        }
+
+        // 🔔 EDIT MODAL FUNCTIONS
+        function openEditModal(leadId) {
+            const lead = allInsuranceLeads.find(l => l.id === leadId);
+            if (!lead) return;
+            
+            document.getElementById('editLeadId').value = leadId;
+            document.getElementById('editFullName').value = lead.fullName || '';
+            document.getElementById('editPhone').value = lead.phone || '';
+            document.getElementById('editEmail').value = lead.email || '';
+            document.getElementById('editInsuranceType').value = lead.insuranceType || '';
+            document.getElementById('editVehicleNumber').value = lead.vehicleNumber || '';
+            document.getElementById('editAge').value = lead.age || '';
+            document.getElementById('editStatus').value = lead.status || 'new';
+            document.getElementById('editDetails').value = lead.details || '';
+            document.getElementById('editAdminNotes').value = lead.adminNotes || '';
+            
+            document.getElementById('editLeadModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editLeadModal').classList.remove('show');
+        }
+
+        document.getElementById('editLeadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const leadId = document.getElementById('editLeadId').value;
+            const updatedData = {
+                fullName: document.getElementById('editFullName').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                email: document.getElementById('editEmail').value.trim(),
+                insuranceType: document.getElementById('editInsuranceType').value,
+                vehicleNumber: document.getElementById('editVehicleNumber').value.trim(),
+                age: document.getElementById('editAge').value ? Number(document.getElementById('editAge').value) : null,
+                status: document.getElementById('editStatus').value,
+                details: document.getElementById('editDetails').value.trim(),
+                adminNotes: document.getElementById('editAdminNotes').value.trim(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                await db.collection('insuranceLeads').doc(leadId).update(updatedData);
+                showToast('Lead updated successfully!', 'success');
+                closeEditModal();
+                loadInsuranceLeads();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        });
+
+        async function updateLeadStatus(leadId, newStatus) {
+            try {
+                await db.collection('insuranceLeads').doc(leadId).update({ status: newStatus });
+                showToast(`Status updated to ${newStatus}`, 'success');
+                loadInsuranceLeads();
+            } catch (error) { showToast('Error: ' + error.message, 'error'); }
+        }
+
+        async function deleteInsuranceLead(leadId) {
+            if (!confirm('Delete this lead permanently?')) return;
+            try {
+                await db.collection('insuranceLeads').doc(leadId).delete();
+                showToast('Lead deleted', 'success');
+                loadInsuranceLeads();
+            } catch (error) { showToast('Error: ' + error.message, 'error'); }
+        }
+
+        function exportInsuranceLeads() {
+            if (allInsuranceLeads.length === 0) {
+                showToast('No leads to export', 'error');
+                return;
+            }
+            let csv = 'Name,Phone,Email,Insurance Type,Vehicle Number,Age,Details,Status,Admin Notes,Date\n';
+            allInsuranceLeads.forEach(l => {
+                const date = l.createdAt ? new Date(l.createdAt.seconds * 1000).toLocaleString() : '';
+                csv += `"${l.fullName || ''}","${l.phone || ''}","${l.email || ''}","${l.insuranceType || ''}","${l.vehicleNumber || ''}","${l.age || ''}","${(l.details || '').replace(/"/g, '""')}","${l.status || ''}","${(l.adminNotes || '').replace(/"/g, '""')}","${date}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `insurance_leads_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            showToast('Leads exported successfully!', 'success');
         }
 
         function loadPremiumAds() {
@@ -624,7 +1033,7 @@
             if (docs.length === 0) { list.innerHTML = '<p class="text-center text-gray-400 py-4">No notifications</p>'; return; }
             list.innerHTML = docs.map(doc => {
                 const n = doc.data();
-                const typeColors = { new_user: 'bg-blue-50 border-blue-500', new_ad: 'bg-green-50 border-green-500', default: 'bg-gray-50 border-gray-500' };
+                const typeColors = { new_user: 'bg-blue-50 border-blue-500', new_ad: 'bg-green-50 border-green-500', insurance_lead: 'bg-purple-50 border-purple-500', default: 'bg-gray-50 border-gray-500' };
                 const color = typeColors[n.type] || typeColors.default;
                 return `
                     <div class="p-4 rounded-lg border-l-4 ${color} ${n.read ? 'opacity-60' : ''}">
@@ -650,7 +1059,7 @@
             container.innerHTML = docs.map(doc => {
                 const n = doc.data();
                 return `
-                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 ${n.type === 'new_user' ? 'border-blue-500' : n.type === 'new_ad' ? 'border-green-500' : 'border-gray-500'} ${n.read ? 'opacity-60' : ''}">
+                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 ${n.type === 'new_user' ? 'border-blue-500' : n.type === 'new_ad' ? 'border-green-500' : n.type === 'insurance_lead' ? 'border-purple-500' : 'border-gray-500'} ${n.read ? 'opacity-60' : ''}">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">
                                 <p class="font-bold text-sm text-gray-800">${n.title}</p>
@@ -824,6 +1233,11 @@
             document.getElementById('toastContainer').appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        // Close modal when clicking outside
+        document.getElementById('editLeadModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
     </script>
 </body>
 </html>
