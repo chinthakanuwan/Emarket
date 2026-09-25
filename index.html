@@ -6,14 +6,23 @@
     <title>Emarket - Sri Lanka's Best Classifieds</title>
     
     <meta property="og:title" content="Emarket - Sri Lanka's #1 Classified Ads Platform">
-    <meta property="og:description" content="Buy & Sell Anything in Sri Lanka for Free!">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200">
+    <meta property="og:description" content="Buy & Sell Anything in Sri Lanka for Free! Vehicles, Property, Mobiles, Jobs and more.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://chinthakanuwan.github.io/Emarket/">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Emarket Sri Lanka">
+    <meta property="og:locale" content="si_LK">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Emarket - Sri Lanka's Best Classifieds">
     <meta name="twitter:description" content="Buy & Sell Anything in Sri Lanka for Free!">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
+    
+    <meta name="description" content="Buy & Sell Anything in Sri Lanka - Free Classified Ads Platform">
+    <meta name="keywords" content="classifieds, sri lanka, buy sell, emarket, ads">
+    <meta name="author" content="T.K Chinthaka Nuwan">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -49,7 +58,6 @@
             .premium-badge { font-size: 0.7rem !important; padding: 0.3rem 0.6rem !important; }
             .section-title { font-size: 1.5rem !important; }
             
-            /* Categories Grid - Mobile 2 Columns */
             .categories-grid {
                 display: grid !important;
                 grid-template-columns: repeat(2, 1fr) !important;
@@ -118,7 +126,7 @@
     <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2.5 px-4">
         <div class="container mx-auto flex items-center justify-center gap-2 text-sm md:text-base">
             <i class="fas fa-bullhorn"></i>
-            <span class="font-medium"> Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform!</span>
+            <span class="font-medium">🎉 Welcome to Emarket - Sri Lanka's #1 Classified Ads Platform!</span>
         </div>
     </div>
 
@@ -173,7 +181,6 @@
         </div>
     </div>
 
-    <!-- DESKTOP NAVBAR -->
     <nav class="desktop-nav bg-white shadow-sm sticky top-0 z-50 border-b">
         <div class="container mx-auto px-4 py-3">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -182,8 +189,7 @@
                 </a>
                 <div class="flex-1 max-w-2xl">
                     <div class="flex gap-2">
-                        <input type="text" id="searchInput" placeholder="Search ads..." 
-                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        <input type="text" id="searchInput" placeholder="Search ads..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
                         <button onclick="searchAds()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                             <i class="fas fa-search"></i>
                         </button>
@@ -207,7 +213,6 @@
         </div>
     </nav>
 
-    <!-- MOBILE NAVBAR -->
     <nav class="mobile-nav bg-white shadow-sm sticky top-0 z-50 border-b hidden">
         <div class="mobile-nav-container">
             <div class="mobile-logo-row">
@@ -219,8 +224,7 @@
                 </div>
             </div>
             <div class="mobile-search-row">
-                <input type="text" id="searchInputMobile" placeholder="Search ads..." 
-                       class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-500">
+                <input type="text" id="searchInputMobile" placeholder="Search ads..." class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-500">
                 <button onclick="searchAdsMobile()" class="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 touch-target flex-shrink-0">
                     <i class="fas fa-search text-lg"></i>
                 </button>
@@ -263,7 +267,6 @@
                     <h3 class="font-bold text-gray-800 mb-3 border-b pb-2 text-base flex items-center gap-2">
                         <i class="fas fa-th-large text-blue-600"></i> Categories
                     </h3>
-                    <!-- Categories Grid - Mobile 2 Columns, Desktop 1 Column -->
                     <div class="categories-grid" id="categoryList">
                         <div class="col-span-2 text-center py-4 text-gray-400">
                             <i class="fas fa-spinner fa-spin"></i> Loading...
@@ -409,20 +412,15 @@
 
         function filterCategory(category) {
             currentCategory = category;
-            
-            // Update active state
             document.querySelectorAll('.categories-grid button').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Find and activate the clicked button
             const buttons = document.querySelectorAll('.categories-grid button');
             buttons.forEach(btn => {
                 if (btn.textContent.trim().includes(category) || (category === 'All' && btn.textContent.trim().includes('All'))) {
                     btn.classList.add('active');
                 }
             });
-            
             loadAds();
         }
 
@@ -451,7 +449,6 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        // Load Categories for Sidebar - GRID LAYOUT
         function loadSidebarCategories() {
             db.collection('categories').orderBy('order', 'asc').get().then(snap => {
                 const categories = snap.docs.map(d => ({id: d.id, ...d.data()}));
