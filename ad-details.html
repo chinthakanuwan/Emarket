@@ -5,12 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Ad Details - Emarket</title>
     
-    <meta property="og:title" id="ogTitle" content="Ad Details - Emarket">
-    <meta property="og:description" id="ogDescription" content="Check out this ad on Emarket Sri Lanka">
-    <meta property="og:image" id="ogImage" content="https://via.placeholder.com/1200x630">
+    <meta property="og:title" id="ogTitle" content="Ad Details - Emarket Sri Lanka">
+    <meta property="og:description" id="ogDescription" content="Check out this amazing ad on Emarket Sri Lanka - Buy & Sell Anything!">
+    <meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:url" id="ogUrl" content="">
     <meta property="og:type" content="product">
-
+    <meta property="og:site_name" content="Emarket Sri Lanka">
+    <meta property="og:locale" content="si_LK">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitterTitle" content="Ad Details - Emarket">
+    <meta name="twitter:description" id="twitterDescription" content="Check out this ad on Emarket Sri Lanka">
+    <meta name="twitter:image" id="twitterImage" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
+    
+    <meta name="description" content="Buy & Sell Anything in Sri Lanka - Emarket Classified Ads">
+    <meta name="keywords" content="classifieds, sri lanka, buy sell, emarket, ads">
+    <meta name="author" content="T.K Chinthaka Nuwan">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -108,7 +122,6 @@
                         </div>
                     </div>
 
-                    <!-- Premium Upgrade Button (Only shown to ad owner) -->
                     <div id="premiumUpgradeSection" class="hidden border-t pt-4 mt-6 bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border-2 border-yellow-300">
                         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                             <div class="flex items-center gap-3">
@@ -128,7 +141,6 @@
                 </div>
             </div>
 
-            <!-- Reviews Section -->
             <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <i class="fas fa-star text-yellow-500"></i>Reviews & Ratings
@@ -178,7 +190,6 @@
                 </div>
             </div>
 
-            <!-- Similar Ads -->
             <div class="mb-8">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-th-large text-blue-600 mr-2"></i>Similar Ads</h2>
                 <div id="similarAdsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -278,7 +289,7 @@
         }
 
         function displayAdDetails(ad) {
-            document.getElementById('pageTitle').textContent = ad.title + ' - Emarket';
+            document.getElementById('pageTitle').textContent = ad.title + ' - Emarket Sri Lanka';
             document.getElementById('mainImage').src = ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/800x400?text=No+Image';
             document.getElementById('adTitle').textContent = ad.title || 'Untitled';
             document.getElementById('adCategory').textContent = ad.category || 'General';
@@ -296,12 +307,20 @@
                 document.getElementById('adTags').innerHTML = ad.tags.map(tag => `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`).join('');
             }
 
-            document.getElementById('ogTitle').setAttribute('content', ad.title + ' - Emarket Sri Lanka');
-            document.getElementById('ogDescription').setAttribute('content', ad.desc || 'Check out this ad on Emarket');
-            document.getElementById('ogImage').setAttribute('content', ad.images && ad.images[0] ? ad.images[0] : 'https://via.placeholder.com/1200x630');
-            document.getElementById('ogUrl').setAttribute('content', window.location.href);
+            const adImageUrl = ad.images && ad.images[0] ? ad.images[0] : 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop';
+            const adTitle = ad.title || 'Amazing Ad on Emarket';
+            const adDesc = ad.desc ? ad.desc.substring(0, 150) : 'Check out this amazing ad on Emarket Sri Lanka';
+            const adUrl = window.location.href;
+            
+            document.getElementById('ogTitle').setAttribute('content', adTitle + ' - Emarket Sri Lanka');
+            document.getElementById('ogDescription').setAttribute('content', adDesc);
+            document.getElementById('ogImage').setAttribute('content', adImageUrl);
+            document.getElementById('ogUrl').setAttribute('content', adUrl);
+            
+            document.getElementById('twitterTitle').setAttribute('content', adTitle + ' - Emarket');
+            document.getElementById('twitterDescription').setAttribute('content', adDesc);
+            document.getElementById('twitterImage').setAttribute('content', adImageUrl);
 
-            // Show premium upgrade button if current user owns this ad and it's not premium
             if (currentUser && currentAd.sellerUid === currentUser.uid && !currentAd.isPremium) {
                 document.getElementById('premiumUpgradeSection').classList.remove('hidden');
                 document.getElementById('premiumUpgradeLink').href = `premium-payment.html?id=${adId}`;
@@ -383,14 +402,8 @@
             const rating = parseInt(document.getElementById('ratingValue').value);
             const text = document.getElementById('reviewText').value.trim();
             
-            if (rating === 0) {
-                alert('Please select a rating!');
-                return;
-            }
-            if (!text) {
-                alert('Please write a review!');
-                return;
-            }
+            if (rating === 0) { alert('Please select a rating!'); return; }
+            if (!text) { alert('Please write a review!'); return; }
             
             const reviewData = {
                 userId: currentUser.uid,
@@ -461,10 +474,11 @@
         }
 
         function shareAdOnFacebook() {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank', 'width=600,height=400');
         }
         function shareAdOnWhatsApp() {
-            const text = `${document.getElementById('adTitle').textContent}\n\nPrice: ${document.getElementById('adPrice').textContent}\n\n${window.location.href}`;
+            const text = `${document.getElementById('adTitle').textContent}\n\nPrice: ${document.getElementById('adPrice').textContent}\nLocation: ${document.getElementById('adLocation').textContent}\n\n${window.location.href}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
         function copyAdLink() {
