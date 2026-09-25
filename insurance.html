@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insurance Quotes - Emarket Sri Lanka</title>
     
-    <!-- Open Graph Meta Tags (Facebook/WhatsApp Preview) -->
     <meta property="og:title" content="Get Best Insurance Quotes in Sri Lanka - Emarket">
     <meta property="og:description" content="Compare Vehicle, Life & Medical Insurance from top providers. Free quotes, instant results!">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=630&fit=crop">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://chinthakanuwan.github.io/Emarket/insurance.html">
     <meta property="og:type" content="website">
     
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Get Best Insurance Quotes in Sri Lanka">
     <meta name="twitter:description" content="Compare Vehicle, Life & Medical Insurance. Free quotes!">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=630&fit=crop">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -25,7 +25,6 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
@@ -39,7 +38,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <div class="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white py-12">
         <div class="container mx-auto px-4 text-center">
             <div class="max-w-3xl mx-auto">
@@ -50,7 +48,6 @@
         </div>
     </div>
 
-    <!-- Social Share Section -->
     <div class="container mx-auto px-4 -mt-8">
         <div class="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-2xl mx-auto">
             <h3 class="text-center font-bold text-gray-800 mb-2">
@@ -68,12 +65,6 @@
                 <button onclick="shareOnTwitter()" class="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
                     <i class="fab fa-x-twitter"></i> Twitter
                 </button>
-                <button onclick="shareOnLinkedIn()" class="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
-                    <i class="fab fa-linkedin-in"></i> LinkedIn
-                </button>
-                <button onclick="shareOnTelegram()" class="flex items-center gap-2 bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition">
-                    <i class="fab fa-telegram-plane"></i> Telegram
-                </button>
                 <button onclick="copyLink()" class="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
                     <i class="fas fa-link"></i> Copy Link
                 </button>
@@ -81,7 +72,6 @@
         </div>
     </div>
 
-    <!-- Insurance Types -->
     <div class="container mx-auto px-4 py-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-blue-500">
@@ -107,7 +97,6 @@
             </div>
         </div>
 
-        <!-- Quote Form -->
         <div class="max-w-2xl mx-auto mb-12">
             <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">
@@ -166,7 +155,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white mt-12">
         <div class="container mx-auto px-4 py-8 text-center">
             <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
@@ -186,7 +174,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Show/hide fields
         document.getElementById('insuranceType').addEventListener('change', function() {
             const type = this.value;
             const vehicleField = document.getElementById('vehicleNumberField');
@@ -197,7 +184,6 @@
             }
         });
 
-        // Form submission
         document.getElementById('insuranceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
@@ -218,7 +204,7 @@
             loadingState.classList.remove('hidden');
 
             try {
-                const docRef = await db.collection('insuranceLeads').add(formData);
+                await db.collection('insuranceLeads').add(formData);
                 await db.collection('notifications').add({
                     title: '🆕 New Insurance Lead',
                     message: `${formData.fullName} requested ${formData.insuranceType} insurance. Phone: ${formData.phone}`,
@@ -237,7 +223,6 @@
             }
         });
 
-        // ===== SOCIAL SHARE FUNCTIONS =====
         const shareUrl = window.location.href;
         const shareTitle = 'Get Best Insurance Quotes in Sri Lanka - Emarket';
         const shareDescription = 'Compare Vehicle, Life & Medical Insurance from top providers. Free quotes!';
@@ -250,12 +235,6 @@
         }
         function shareOnTwitter() {
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
-        }
-        function shareOnLinkedIn() {
-            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
-        }
-        function shareOnTelegram() {
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`, '_blank');
         }
         function copyLink() {
             navigator.clipboard.writeText(shareUrl).then(() => alert('Link copied to clipboard!'));
