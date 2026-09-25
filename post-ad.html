@@ -54,20 +54,6 @@
                     <h4 class="font-bold text-white text-xl">Make This Ad Premium!</h4>
                 </div>
                 <p class="text-white mb-4">Get 5x more views and featured on homepage!</p>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                    <div class="bg-white bg-opacity-20 rounded-lg p-3 text-white text-sm">
-                        <p class="font-bold">Basic - Rs. 500</p>
-                        <p class="text-xs">7 days premium</p>
-                    </div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-3 text-white text-sm">
-                        <p class="font-bold">Standard - Rs. 1,000</p>
-                        <p class="text-xs">14 days premium</p>
-                    </div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-3 text-white text-sm">
-                        <p class="font-bold">Premium - Rs. 2,000</p>
-                        <p class="text-xs">30 days premium</p>
-                    </div>
-                </div>
                 <a href="#" id="premiumPaymentLink" class="inline-block bg-white text-orange-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition text-lg shadow-lg">
                     <i class="fas fa-arrow-right mr-2"></i>Upgrade to Premium Now
                 </a>
@@ -84,7 +70,9 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-heading mr-1"></i> Ad Title *
                 </label>
-                <input type="text" id="adTitle" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Toyota Prius 2012 for Sale">
+                <input type="text" id="adTitle" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                       placeholder="e.g., Toyota Prius 2012 for Sale">
             </div>
 
             <div>
@@ -113,13 +101,17 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-tag mr-1"></i> Price (Rs.) *
                     </label>
-                    <input type="number" id="adPrice" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., 1500000">
+                    <input type="number" id="adPrice" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                           placeholder="e.g., 1500000">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-map-marker-alt mr-1"></i> Location *
                     </label>
-                    <input type="text" id="adLocation" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Colombo, Kandy">
+                    <input type="text" id="adLocation" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                           placeholder="e.g., Colombo, Kandy">
                 </div>
             </div>
 
@@ -127,46 +119,86 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-phone mr-1"></i> Phone Number *
                 </label>
-                <input type="tel" id="adPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., 0771234567">
+                <input type="tel" id="adPhone" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                       placeholder="e.g., 0771234567">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-align-left mr-1"></i> Description *
                 </label>
-                <textarea id="adDescription" required rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Describe your item in detail..."></textarea>
+                <textarea id="adDescription" required rows="4"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                          placeholder="Describe your item in detail..."></textarea>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tags mr-1"></i> Tags (Optional)
                 </label>
-                <input type="text" id="adTags" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., toyota, prius, hybrid, 2012 (comma separated)">
-                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-info-circle mr-1"></i>Separate tags with commas</p>
+                <input type="text" id="adTags" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                       placeholder="e.g., toyota, prius, hybrid, 2012 (comma separated)">
+                <p class="text-xs text-gray-500 mt-1">
+                    <i class="fas fa-info-circle mr-1"></i>Separate tags with commas
+                </p>
             </div>
 
+            <!-- 🖼️ IMAGE UPLOAD SECTION -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <i class="fas fa-image mr-1"></i> Image URL
+                    <i class="fas fa-image mr-1"></i> Upload Image *
                 </label>
-                <input type="url" id="adImage" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="https://example.com/image.jpg">
-                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-info-circle mr-1"></i>Paste an image URL or leave empty</p>
+                
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition cursor-pointer" onclick="document.getElementById('adImageFile').click()">
+                    <input type="file" id="adImageFile" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                    <p class="text-gray-600 font-medium">Click to upload image</p>
+                    <p class="text-xs text-gray-500 mt-1">JPG, PNG (Max 5MB)</p>
+                </div>
+
+                <div id="imagePreviewContainer" class="hidden mt-4">
+                    <div class="relative">
+                        <img id="imagePreview" src="" class="w-full h-48 object-cover rounded-lg border">
+                        <button type="button" onclick="removeImage()" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full hover:bg-red-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm text-green-600 mt-2"><i class="fas fa-check-circle mr-1"></i>Image selected</p>
+                </div>
+
+                <div id="uploadProgress" class="hidden mt-4">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-spinner fa-spin text-blue-600"></i>
+                        <div class="flex-1">
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1" id="uploadStatus">Uploading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="adImageUrl" value="">
             </div>
 
             <div class="flex items-start gap-3">
-                <input type="checkbox" id="adTerms" required class="w-5 h-5 mt-1 text-blue-600 rounded focus:ring-blue-500">
+                <input type="checkbox" id="adTerms" required 
+                       class="w-5 h-5 mt-1 text-blue-600 rounded focus:ring-blue-500">
                 <label for="adTerms" class="text-sm text-gray-700">
                     I agree to the <a href="about.html" class="text-blue-600 hover:underline">Terms & Conditions</a> and confirm that this ad is accurate and lawful. *
                 </label>
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-lg font-bold text-lg transition">
+            <button type="submit" id="submitBtn" 
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-lg font-bold text-lg transition">
                 <i class="fas fa-paper-plane mr-2"></i>Submit Ad
             </button>
 
             <div id="loadingState" class="hidden text-center py-4">
                 <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i>
-                <p class="text-gray-600">Submitting your ad...</p>
+                <p class="text-gray-600">Processing...</p>
             </div>
 
         </form>
@@ -176,7 +208,7 @@
             <ol class="space-y-2 text-sm text-blue-700">
                 <li><span class="font-bold">1.</span> Fill in all the required fields</li>
                 <li><span class="font-bold">2.</span> Select a category for your ad</li>
-                <li><span class="font-bold">3.</span> Add clear photos of your item</li>
+                <li><span class="font-bold">3.</span> Upload clear photos of your item</li>
                 <li><span class="font-bold">4.</span> Submit for review</li>
                 <li><span class="font-bold">5.</span> Admin will approve within 24 hours</li>
                 <li><span class="font-bold">6.</span> Your ad will be live on Emarket!</li>
@@ -193,6 +225,7 @@
     </footer>
 
     <script>
+        // 🔥 Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDwEBngqfjL7COptg3abQCJA4X0wxz0MN4",
             authDomain: "emarket-e3421.firebaseapp.com",
@@ -206,8 +239,15 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        let currentUser = null;
+        // 🔥 ImgBB API Configuration (Your Key is added here!)
+        const IMGBB_API_KEY = '1b4de3a175c9a6b3b93aa88870535503';
+        const IMGBB_UPLOAD_URL = 'https://api.imgbb.com/1/upload';
 
+        let currentUser = null;
+        let selectedImageFile = null;
+        let uploadedImageUrl = null;
+
+        // Auth State
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
@@ -219,6 +259,7 @@
             }
         });
 
+        // Load Categories
         function loadCategoriesForPost() {
             db.collection('categories').orderBy('order', 'asc').get().then(snap => {
                 const categories = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -257,6 +298,92 @@
             document.getElementById('selectedCategoryName').textContent = category;
         }
 
+        // 🖼️ Image Upload Functions
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file (JPG, PNG)');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                return;
+            }
+            
+            selectedImageFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreviewContainer').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            selectedImageFile = null;
+            uploadedImageUrl = null;
+            document.getElementById('adImageFile').value = '';
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('adImageUrl').value = '';
+        }
+
+        async function uploadImageToImgBB(file) {
+            const uploadProgress = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const uploadStatus = document.getElementById('uploadStatus');
+            
+            uploadProgress.classList.remove('hidden');
+            uploadStatus.textContent = 'Uploading to ImgBB...';
+            
+            try {
+                const reader = new FileReader();
+                const base64 = await new Promise((resolve, reject) => {
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                
+                const formData = new FormData();
+                formData.append('key', IMGBB_API_KEY);
+                formData.append('image', base64);
+                formData.append('name', `emarket_${Date.now()}`);
+                
+                const response = await fetch(IMGBB_UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    uploadedImageUrl = data.data.url;
+                    document.getElementById('adImageUrl').value = uploadedImageUrl;
+                    uploadStatus.textContent = '✅ Upload complete!';
+                    uploadStatus.classList.add('text-green-600');
+                    progressBar.style.width = '100%';
+                    
+                    setTimeout(() => {
+                        uploadProgress.classList.add('hidden');
+                    }, 2000);
+                    
+                    return uploadedImageUrl;
+                } else {
+                    throw new Error(data.error?.message || 'Upload failed');
+                }
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Error uploading image: ' + error.message);
+                uploadProgress.classList.add('hidden');
+                throw error;
+            }
+        }
+
+        // Form Submission
         document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -274,34 +401,47 @@
             const submitBtn = document.getElementById('submitBtn');
             const loadingState = document.getElementById('loadingState');
 
-            const tagsInput = document.getElementById('adTags').value;
-            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag) : [];
-
-            const adData = {
-                title: document.getElementById('adTitle').value.trim(),
-                category: selectedCategory,
-                price: Number(document.getElementById('adPrice').value),
-                location: document.getElementById('adLocation').value.trim(),
-                phone: document.getElementById('adPhone').value.trim(),
-                desc: document.getElementById('adDescription').value.trim(),
-                tags: tags,
-                images: document.getElementById('adImage').value ? [document.getElementById('adImage').value] : ['https://via.placeholder.com/400x300?text=No+Image'],
-                isPremium: false,
-                status: 'pending',
-                sellerUid: currentUser.uid,
-                sellerEmail: currentUser.email,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                views: 0
-            };
-
             submitBtn.classList.add('hidden');
             loadingState.classList.remove('hidden');
 
             try {
+                let finalImageUrl = document.getElementById('adImageUrl').value;
+                
+                if (selectedImageFile && !finalImageUrl) {
+                    loadingState.innerHTML = '<i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i><p class="text-gray-600">Uploading image...</p>';
+                    finalImageUrl = await uploadImageToImgBB(selectedImageFile);
+                }
+
+                if (!finalImageUrl) {
+                    throw new Error('Image upload failed or no image selected');
+                }
+
+                const tagsInput = document.getElementById('adTags').value;
+                const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag) : [];
+
+                const adData = {
+                    title: document.getElementById('adTitle').value.trim(),
+                    category: selectedCategory,
+                    price: Number(document.getElementById('adPrice').value),
+                    location: document.getElementById('adLocation').value.trim(),
+                    phone: document.getElementById('adPhone').value.trim(),
+                    desc: document.getElementById('adDescription').value.trim(),
+                    tags: tags,
+                    images: [finalImageUrl],
+                    isPremium: false,
+                    status: 'pending',
+                    sellerUid: currentUser.uid,
+                    sellerEmail: currentUser.email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    views: 0
+                };
+
+                loadingState.innerHTML = '<i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i><p class="text-gray-600">Saving ad details...</p>';
+
                 const docRef = await db.collection('ads').add(adData);
 
                 await db.collection('notifications').add({
-                    title: ' New Ad Submitted',
+                    title: '📢 New Ad Submitted',
                     message: `${adData.title} by ${currentUser.email} is pending approval.`,
                     type: 'new_ad',
                     adId: docRef.id,
