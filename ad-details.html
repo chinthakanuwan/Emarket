@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Ad Details - Emarket</title>
     
+    <!-- 🔥 CRITICAL: Default OG Tags (JavaScript එකෙන් update වෙනවා) -->
     <meta property="og:title" id="ogTitle" content="Ad Details - Emarket Sri Lanka">
     <meta property="og:description" id="ogDescription" content="Check out this amazing ad on Emarket Sri Lanka - Buy & Sell Anything!">
     <meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
@@ -111,6 +112,7 @@
                             <button onclick="shareAdOnWhatsApp()" class="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 text-sm"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</button>
                             <button onclick="copyAdLink()" class="bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700 text-sm"><i class="fas fa-link mr-1"></i>Copy Link</button>
                         </div>
+                        <p class="text-xs text-gray-500 mt-2"><i class="fas fa-info-circle mr-1"></i>Share on Facebook to see the ad image in preview!</p>
                     </div>
 
                     <div class="border-t pt-4 mt-6 bg-gray-50 p-4 rounded-lg">
@@ -307,11 +309,13 @@
                 document.getElementById('adTags').innerHTML = ad.tags.map(tag => `<span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">#${tag}</span>`).join('');
             }
 
+            // 🔥 CRITICAL: Update OG Meta Tags for Facebook/WhatsApp
             const adImageUrl = ad.images && ad.images[0] ? ad.images[0] : 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop';
             const adTitle = ad.title || 'Amazing Ad on Emarket';
             const adDesc = ad.desc ? ad.desc.substring(0, 150) : 'Check out this amazing ad on Emarket Sri Lanka';
             const adUrl = window.location.href;
             
+            // Update all OG tags
             document.getElementById('ogTitle').setAttribute('content', adTitle + ' - Emarket Sri Lanka');
             document.getElementById('ogDescription').setAttribute('content', adDesc);
             document.getElementById('ogImage').setAttribute('content', adImageUrl);
@@ -320,6 +324,10 @@
             document.getElementById('twitterTitle').setAttribute('content', adTitle + ' - Emarket');
             document.getElementById('twitterDescription').setAttribute('content', adDesc);
             document.getElementById('twitterImage').setAttribute('content', adImageUrl);
+            
+            console.log(' OG Image URL:', adImageUrl);
+            console.log('🔥 OG Title:', adTitle);
+            console.log('🔥 OG URL:', adUrl);
 
             if (currentUser && currentAd.sellerUid === currentUser.uid && !currentAd.isPremium) {
                 document.getElementById('premiumUpgradeSection').classList.remove('hidden');
