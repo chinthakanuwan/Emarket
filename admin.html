@@ -10,21 +10,81 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; z-index: 50; transition: left 0.3s ease; width: 85%; max-width: 300px; }
-            .sidebar.open { left: 0; }
-            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
-            .sidebar-overlay.show { display: block; }
-            .main-content { margin-left: 0 !important; }
-            .mobile-header { display: flex !important; }
-            .desktop-header { display: none; }
-            .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-        }
+        /* Desktop Layout - NO GRAY SPACE */
         @media (min-width: 769px) {
-            .mobile-header { display: none !important; }
-            .sidebar-overlay { display: none !important; }
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 256px;
+                z-index: 40;
+                overflow-y: auto;
+            }
+            .main-content {
+                margin-left: 256px !important;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .mobile-header {
+                display: none !important;
+            }
+            .desktop-header {
+                display: flex !important;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
         }
+        
+        /* Mobile Layout */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                z-index: 50;
+                transition: left 0.3s ease;
+                width: 85%;
+                max-width: 300px;
+                overflow-y: auto;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 40;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+            .desktop-header {
+                display: none !important;
+            }
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        
         .touch-btn { min-height: 44px; min-width: 44px; }
         .smooth-scroll { scroll-behavior: smooth; }
         .card-enter { animation: cardSlideIn 0.3s ease-out; }
@@ -38,6 +98,16 @@
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.show { display: flex; }
         .modal-content { background: white; border-radius: 1rem; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        
+        body {
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        main {
+            flex: 1;
+        }
     </style>
 </head>
 <body class="bg-gray-100 smooth-scroll">
@@ -73,7 +143,7 @@
     <div id="dashboard" class="hidden">
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
         
-        <aside class="sidebar bg-white shadow-lg w-64 flex-shrink-0 h-screen overflow-y-auto" id="sidebar">
+        <aside class="sidebar bg-white shadow-lg w-64 flex-shrink-0 h-screen" id="sidebar">
             <div class="p-6 border-b">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -148,7 +218,7 @@
                 </div>
             </header>
 
-            <header class="desktop-header bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+            <header class="desktop-header bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-30">
                 <h1 id="pageTitle" class="text-xl font-bold text-gray-800">Dashboard</h1>
                 <div class="flex items-center gap-4">
                     <div class="relative">
@@ -169,7 +239,7 @@
                 </div>
             </header>
 
-            <main class="flex-1 overflow-y-auto p-4 md:p-6">
+            <main class="flex-1 p-4 md:p-6">
                 
                 <section id="section-dashboard" class="section card-enter">
                     <div class="stats-grid grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -432,22 +502,15 @@
             
             <form id="categoryForm" class="space-y-4">
                 <input type="hidden" id="editCategoryId">
-                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Category Name *</label>
                     <input type="text" id="catName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Vehicles">
                 </div>
-                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Icon Class *</label>
                     <input type="text" id="catIcon" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., fa-car">
-                    <p class="text-xs text-gray-500 mt-1">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Use Font Awesome icons: fa-car, fa-home, fa-mobile-alt, fa-laptop, fa-tshirt, fa-briefcase, fa-hotel, fa-utensils, fa-tools, fa-paw, fa-football-ball, fa-book
-                        <a href="https://fontawesome.com/icons" target="_blank" class="text-blue-600 underline">Browse all icons</a>
-                    </p>
+                    <p class="text-xs text-gray-500 mt-1">Use Font Awesome icons: fa-car, fa-home, fa-mobile-alt, fa-laptop, fa-tshirt, fa-briefcase, fa-hotel, fa-utensils, fa-tools, fa-paw, fa-football-ball, fa-book</p>
                 </div>
-                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Color *</label>
                     <select id="catColor" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
@@ -465,29 +528,10 @@
                         <option value="cyan">Cyan</option>
                     </select>
                 </div>
-                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Order Number</label>
                     <input type="number" id="catOrder" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Lower number = appears first">
-                    <p class="text-xs text-gray-500 mt-1">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Categories will be sorted by this number (1 = first)
-                    </p>
                 </div>
-                
-                <div class="bg-blue-50 rounded-lg p-3">
-                    <p class="text-sm font-medium text-blue-800 mb-2">Preview:</p>
-                    <div class="flex items-center gap-3">
-                        <div id="previewIcon" class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-car text-blue-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p id="previewName" class="font-bold text-gray-800">Category Name</p>
-                            <p class="text-xs text-gray-500">Order: <span id="previewOrder">0</span></p>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="flex gap-2 pt-2">
                     <button type="button" onclick="closeCategoryModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-400 touch-btn">Cancel</button>
                     <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 touch-btn">
@@ -831,7 +875,7 @@
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-star mr-2 text-purple-500"></i>Featured Listings</span>
-                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">${features.featuredListings ? '✓ ON' : '✗ OFF'}</button>
+                                        <button onclick="toggleUserFeature('${user.id}', 'featuredListings', ${!features.featuredListings})" class="feature-toggle px-3 py-1 rounded text-xs font-bold ${features.featuredListings ? 'active' : 'inactive'}">${features.featuredListings ? '✓ ON' : ' OFF'}</button>
                                     </div>
                                     <div class="flex items-center justify-between p-2 bg-white rounded border">
                                         <span class="text-sm"><i class="fas fa-headset mr-2 text-green-500"></i>Priority Support</span>
@@ -902,16 +946,14 @@
                 'medical-family': { icon: 'fa-hospital', color: 'green', label: 'Medical - Family' },
                 'medical-group': { icon: 'fa-hospital', color: 'green', label: 'Medical - Group' }
             };
-            const statusClasses = { new: 'status-new', contacted: 'status-contacted', converted: 'status-converted', rejected: 'status-rejected' };
             container.innerHTML = leads.map(lead => {
                 const typeInfo = typeIcons[lead.insuranceType] || { icon: 'fa-shield-alt', color: 'gray', label: lead.insuranceType };
-                const statusClass = statusClasses[lead.status] || 'status-new';
                 const date = lead.createdAt ? new Date(lead.createdAt.seconds * 1000).toLocaleString() : 'Unknown';
                 const initials = (lead.fullName || 'U').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
                 const avatarColors = ['from-blue-500 to-purple-600', 'from-green-500 to-teal-600', 'from-orange-500 to-red-600', 'from-pink-500 to-rose-600', 'from-indigo-500 to-blue-600'];
                 const avatarColor = avatarColors[Math.abs(hashCode(lead.id || '')) % avatarColors.length];
                 return `
-                    <div class="lead-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${statusClass}">
+                    <div class="lead-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="p-4">
                             <div class="flex items-start gap-4 mb-4">
                                 <div class="w-16 h-16 bg-gradient-to-br ${avatarColor} rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0">${initials}</div>
@@ -1251,7 +1293,6 @@
             showToast('Notification deleted', 'success');
         }
 
-        // ===== CATEGORIES MANAGEMENT =====
         function loadCategories() {
             db.collection('categories').orderBy('order', 'asc').get().then(snap => {
                 allCategories = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -1340,12 +1381,10 @@
                     document.getElementById('catIcon').value = cat.icon || '';
                     document.getElementById('catColor').value = cat.color || 'blue';
                     document.getElementById('catOrder').value = cat.order || 0;
-                    updatePreview();
                 }
             } else {
                 title.innerHTML = '<i class="fas fa-folder-plus text-blue-600 mr-2"></i>Add Category';
                 document.getElementById('catOrder').value = allCategories.length + 1;
-                updatePreview();
             }
             
             modal.classList.add('show');
@@ -1354,24 +1393,6 @@
         function closeCategoryModal() {
             document.getElementById('categoryModal').classList.remove('show');
         }
-
-        function updatePreview() {
-            const name = document.getElementById('catName').value || 'Category Name';
-            const icon = document.getElementById('catIcon').value || 'fa-car';
-            const color = document.getElementById('catColor').value || 'blue';
-            const order = document.getElementById('catOrder').value || 0;
-            
-            document.getElementById('previewName').textContent = name;
-            document.getElementById('previewOrder').textContent = order;
-            document.getElementById('previewIcon').className = `w-12 h-12 bg-${color}-100 rounded-lg flex items-center justify-center`;
-            document.getElementById('previewIcon').innerHTML = `<i class="fas ${icon} text-${color}-600 text-xl"></i>`;
-        }
-
-        // Preview update listeners
-        document.getElementById('catName').addEventListener('input', updatePreview);
-        document.getElementById('catIcon').addEventListener('input', updatePreview);
-        document.getElementById('catColor').addEventListener('change', updatePreview);
-        document.getElementById('catOrder').addEventListener('input', updatePreview);
 
         document.getElementById('categoryForm').addEventListener('submit', async function(e) {
             e.preventDefault();
