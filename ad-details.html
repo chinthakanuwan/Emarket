@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Ad Details - Emarket</title>
+    <title id="pageTitle">Ad Details - GoodMarket</title>
     
-    <meta property="og:title" id="ogTitle" content="Ad Details - Emarket Sri Lanka">
-    <meta property="og:description" id="ogDescription" content="Check out this amazing ad on Emarket Sri Lanka - Buy & Sell Anything!">
-    <meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
+    <!-- 🔥 CRITICAL: Open Graph Meta Tags for Facebook/WhatsApp (Default Banner) -->
+    <meta property="og:title" id="ogTitle" content="GoodMarket - Sri Lanka's #1 Classified Ads Platform">
+    <meta property="og:description" id="ogDescription" content="Check out this amazing deal on GoodMarket Sri Lanka - Buy & Sell Anything!">
+    <meta property="og:image" id="ogImage" content="https://i.ibb.co/q3LRMVdH/bda82a8b-e3d4-49d2-9523-5b66df989eff.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:type" content="image/jpeg">
-    <meta property="og:url" id="ogUrl" content="">
-    <meta property="og:type" content="product">
-    <meta property="og:site_name" content="Emarket Sri Lanka">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:url" id="ogUrl" content="https://chinthakanuwan.github.io/Emarket/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="GoodMarket Sri Lanka">
     <meta property="og:locale" content="si_LK">
     
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" id="twitterTitle" content="Ad Details - Emarket">
-    <meta name="twitter:description" id="twitterDescription" content="Check out this ad on Emarket Sri Lanka">
-    <meta name="twitter:image" id="twitterImage" content="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop">
+    <meta name="twitter:title" id="twitterTitle" content="GoodMarket - Amazing Deal">
+    <meta name="twitter:description" id="twitterDescription" content="Check out this ad on GoodMarket Sri Lanka">
+    <meta name="twitter:image" id="twitterImage" content="https://i.ibb.co/q3LRMVdH/bda82a8b-e3d4-49d2-9523-5b66df989eff.png">
     
-    <meta name="description" content="Buy & Sell Anything in Sri Lanka - Emarket Classified Ads">
-    <meta name="keywords" content="classifieds, sri lanka, buy sell, emarket, ads">
+    <!-- Additional SEO -->
+    <meta name="description" content="Buy & Sell Anything in Sri Lanka - GoodMarket Classified Ads">
+    <meta name="keywords" content="classifieds, sri lanka, buy sell, goodmarket, ads">
     <meta name="author" content="T.K Chinthaka Nuwan">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -54,7 +57,7 @@
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <a href="index.html" class="text-2xl font-bold text-blue-600">
-                    <i class="fas fa-layer-group mr-2"></i>Emarket
+                    <i class="fas fa-layer-group mr-2"></i>GoodMarket
                 </a>
                 <div class="flex items-center gap-3">
                     <a href="index.html" class="text-gray-600 hover:text-blue-600"><i class="fas fa-home mr-2"></i>Home</a>
@@ -234,7 +237,7 @@
 
     <footer class="bg-gray-900 text-white mt-12">
         <div class="container mx-auto px-4 py-8 text-center">
-            <p class="text-gray-400 text-sm">&copy; 2024 Emarket. All rights reserved.</p>
+            <p class="text-gray-400 text-sm">&copy; 2024 GoodMarket. All rights reserved.</p>
             <p class="text-blue-400 text-sm mt-2"><i class="fas fa-code mr-1"></i>Developed by <strong>T.K Chinthaka Nuwan</strong></p>
         </div>
     </footer>
@@ -324,7 +327,7 @@
         }
 
         function displayAdDetails(ad) {
-            document.getElementById('pageTitle').textContent = ad.title + ' - Emarket Sri Lanka';
+            document.getElementById('pageTitle').textContent = ad.title + ' - GoodMarket Sri Lanka';
             
             const images = ad.images || ['https://via.placeholder.com/800x400?text=No+Image'];
             totalImages = images.length;
@@ -353,17 +356,18 @@
             document.getElementById('currentImageNum').textContent = '1';
             document.getElementById('totalImages').textContent = totalImages;
             
+            // 🔥 Dynamically update OG tags with the Ad's specific image for better sharing
             const adImageUrl = images[0];
-            const adTitle = ad.title || 'Amazing Ad on Emarket';
-            const adDesc = ad.desc ? ad.desc.substring(0, 150) : 'Check out this amazing ad on Emarket Sri Lanka';
+            const adTitle = ad.title || 'Amazing Ad on GoodMarket';
+            const adDesc = ad.desc ? ad.desc.substring(0, 150) : 'Check out this amazing ad on GoodMarket Sri Lanka';
             const adUrl = window.location.href;
             
-            document.getElementById('ogTitle').setAttribute('content', adTitle + ' - Emarket Sri Lanka');
+            document.getElementById('ogTitle').setAttribute('content', adTitle + ' - GoodMarket Sri Lanka');
             document.getElementById('ogDescription').setAttribute('content', adDesc);
             document.getElementById('ogImage').setAttribute('content', adImageUrl);
             document.getElementById('ogUrl').setAttribute('content', adUrl);
             
-            document.getElementById('twitterTitle').setAttribute('content', adTitle + ' - Emarket');
+            document.getElementById('twitterTitle').setAttribute('content', adTitle + ' - GoodMarket');
             document.getElementById('twitterDescription').setAttribute('content', adDesc);
             document.getElementById('twitterImage').setAttribute('content', adImageUrl);
 
